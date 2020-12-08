@@ -139,7 +139,7 @@ export class ImageModalPage implements OnInit {
                 "title": form.value.title
             },
         }
-        fileTransfer.upload(this.imageData, 'http://devl06.borugroup.com/drakelighting/phoneapi/postPhotos.php?recordid=108405', options).then(data => {
+        fileTransfer.upload(this.imageData, 'http://devl06.borugroup.com/sunergy/phoneapi/postPhotos.php?recordid=108405', options).then(data => {
             console.log(JSON.stringify(data));
             this.presentToastPrimary('Photo uploaded and added to Service \n');
         }, error => {

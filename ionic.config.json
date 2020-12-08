@@ -1,22 +1,22 @@
 {
-  "name": "Drakelighting",
+  "name": "Sunergy",
   "integrations": {
     "cordova": {}
   },
   "type": "angular",
   "proxies": [
     {
-      "path": "/drakelighting/*",
+      "path": "/sunergy/*",
       "proxyUrl": "http://devl06.borugroup.com"
     },
     {
-      "path": "/drakelighting/*",
+      "path": "/sunergy/*",
       "proxyUrl": "http://localhost"
     },
     {
       "path": "/sales/*",
-      "proxyUrl": "https://www.drakelighting.com"
+      "proxyUrl": "https://sunergyinc.com/"
     }
   ],
-  "id": "abe8a4fa"
+  "id": "d35bd1be"
 }
