@@ -101,8 +101,8 @@ export class DetailPage implements OnInit {
     addUpdate(event) {
         var fieldname = event.target.name;
         var fieldvalue = event.target.textContent + event.target.value;
-        if (fieldname == 'cf_climb' || fieldname == 'cf_overnight') {
-            fieldvalue = event.detail.checked;
+        if (fieldname == 'cf_climb' || fieldname == 'cf_overnight' || event.target.tagName == 'ION-CHECKBOX') {
+            fieldvalue = (event.detail.checked) ? 1 : 0;
         }
         if (event.target.tagName == 'ION-TEXTAREA' || event.target.tagName == 'ION-SELECT') {
             fieldvalue = event.target.value;

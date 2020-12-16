@@ -79,7 +79,7 @@
           <ion-select-option *ngFor="let picklist of service.picklist" >{{picklist}}</ion-select-option>
         </ion-select>
         <!-- uitype = 7 -->
-        <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="7" type="text" name="{{service.columnname}}" value="{{service.value | number}}"></ion-input>
+        <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="7" type="number" name="{{service.columnname}}" value="{{service.value | number}}"></ion-input>
         <!-- uitype = 9 -->
         <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="9" type="text" name="{{service.columnname}}" value="{{service.value | number}}" width="100%"></ion-input>
         <!--else-->
