@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.boruapps.sunergy" version="2.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.boruapps.sunergy" version="2.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Drake Services</name>
     <description>Manage your Work Orders with ease.</description>
     <author email="appdev@boruapps.com" href="https://boruapps.com">Boru Apps</author>
@@ -117,4 +117,13 @@
     <plugin name="cordova-plugin-googlemaps" spec="^2.6.2" />
     <preference name="GOOGLE_MAPS_ANDROID_API_KEY" value="AIzaSyDmZNVDUxBxJvBByQcLZ4fOkOfgbCGaogA" />
     <preference name="GOOGLE_MAPS_IOS_API_KEY" value="AIzaSyDmZNVDUxBxJvBByQcLZ4fOkOfgbCGaogA" />
+    <platform name="windows">
+        <icon src="resources/windows/icon/Square44x44Logo.png" target="Square44x44Logo" />
+        <icon src="resources/windows/icon/SmallTile.png" target="Square71x71Logo" />
+        <icon src="resources/windows/icon/Square150x150Logo.png" target="Square150x150Logo" />
+        <icon src="resources/windows/icon/Square310x310Logo.png" target="Square310x310Logo" />
+        <icon src="resources/windows/icon/Wide310x150Logo.png" target="Wide310x150Logo" />
+        <icon src="resources/windows/icon/StoreLogo.png" target="StoreLogo" />
+        <splash src="resources/windows/splash/Splash.png" target="SplashScreen" />
+    </platform>
 </widget>
