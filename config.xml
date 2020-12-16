@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.boruapps.sunergy" version="2.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Drake Services</name>
+<widget id="com.boruapps.sunergy" version="2.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Sunergy Construction</name>
     <description>Manage your Work Orders with ease.</description>
     <author email="appdev@boruapps.com" href="https://boruapps.com">Boru Apps</author>
     <content src="index.html" />
