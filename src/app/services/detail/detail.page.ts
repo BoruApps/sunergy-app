@@ -397,6 +397,28 @@ export class DetailPage implements OnInit {
         return await modal_checklist.present();
     }
 
+    async openChecklistPhotos(record_id) {
+        console.log('opening checklist Photos for record', record_id);
+        const modal_checklist = await this.modalCtrl.create({
+            component: ChecklistModalPage,
+            componentProps: {
+                "paramTitle": "Click Photos",
+                "serviceid": record_id,
+                "user_id": this.userinfo.id,
+                "checklist_flag": true,
+            }
+        });
+
+        modal_checklist.onDidDismiss().then((dataReturned) => {
+            if (dataReturned !== null) {
+                this.dataReturned = dataReturned.data;
+                //alert('Modal Sent Data :'+ dataReturned);
+            }
+        });
+
+        return await modal_checklist.present();
+    }
+
     ngOnInit() {
         this.activatedRoute.params.subscribe((userData) => {
             if (userData.length !== 0) {

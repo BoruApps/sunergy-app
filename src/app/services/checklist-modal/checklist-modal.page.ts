@@ -17,6 +17,7 @@ export class ChecklistModalPage implements OnInit {
     updatefields: any = {};
     checklistDetail: any = {};
     user_id: any;
+    checklist_flag: any;
     public workorderdetail: any[] = [];
     public servicedetail: any[] = [];
     constructor(
@@ -37,6 +38,7 @@ export class ChecklistModalPage implements OnInit {
         this.serviceid = this.navParams.data.serviceid;
         this.modalTitle = this.navParams.data.paramTitle;
         this.user_id = this.navParams.data.user_id;
+        this.checklist_flag = this.navParams.data.checklist_flag;
         this.updatefields = this.navParams.data.current_updates;
         this.loadChecklist(this.serviceid);
 
