@@ -149,15 +149,24 @@ export class DetailPage implements OnInit {
                     this.serviceName = workorder['subject'];
                     for (let key in workorder) {
                         if (key != 'subject') {
+                            var fieldArray = [];
+                            for (let fieldkey in workorder[key]) {
+                                fieldArray.push({
+                                    columnname: fieldkey,
+                                    uitype: workorder[key][fieldkey].uitype,
+                                    value: workorder[key][fieldkey].value,
+                                    picklist: workorder[key][fieldkey].picklist,
+                                    fieldlabel: workorder[key][fieldkey].fieldlabel,
+                                })
+                            }
+
                             this.servicedetail.push({
-                                columnname: key,
-                                uitype: workorder[key].uitype,
-                                value: workorder[key].value,
-                                picklist: workorder[key].picklist,
-                                fieldlabel: workorder[key].fieldlabel,
+                                blockname: key,
+                                fields: fieldArray,
                             });
                         }
                     }
+
                     console.log('servicedetail', this.servicedetail);
 
                     //load item grid 43636
