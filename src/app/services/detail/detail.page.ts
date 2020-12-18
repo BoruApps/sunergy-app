@@ -13,6 +13,7 @@ import {ImageProvider} from '../../providers/image/image';
 import {AppConstants} from '../../providers/constant/constant';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {LoadingController} from '@ionic/angular';
+import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 
 @Component({
     selector: 'app-detail',
@@ -57,6 +58,24 @@ export class DetailPage implements OnInit {
     public countItemList: number = 0;
     updatefields: any = {};
 
+    blockGroups: any = {
+        'Visit Details': {
+            open: false
+        },
+        'Customer Questions': {
+            open: false
+        },
+        'Structural and Roof Details': {
+            open: false
+        },
+        'Main Service Panel': {
+            open: false
+        },
+        'System': {
+            open: false
+        },
+    }
+
     //actionSheet:any;
     constructor(
         public navCtrl: NavController,
@@ -74,9 +93,15 @@ export class DetailPage implements OnInit {
         public imgpov: ImageProvider,
         public appConst: AppConstants,
         private httpClient: HttpClient,
+        private iab: InAppBrowser,
         @Inject(LOCALE_ID) private locale: string,
         public loadingController: LoadingController
     ) {
+        this.blockGroups['Visit Details'].open = false;
+        this.blockGroups['Customer Questions'].open = false;
+        this.blockGroups['Structural and Roof Details'].open = false;
+        this.blockGroups['Main Service Panel'].open = false;
+        this.blockGroups['System'].open = false;
         this.apiurl = this.appConst.getApiUrl();
     }
 
@@ -118,6 +143,11 @@ export class DetailPage implements OnInit {
         txt.innerHTML = html;
         return txt.value;
     };
+
+    toggleSection(section) {
+        this.blockGroups[section].open = !this.blockGroups[section].open;
+        console.log('section is toggled', section, this.blockGroups[section].open);
+    }
 
     loadDetails(serviceid) {
         console.log('loading details for service id:', serviceid)
@@ -395,6 +425,62 @@ export class DetailPage implements OnInit {
         });
 
         return await modal_checklist.present();
+    }
+
+    call(phonenumber) {
+        console.log('calling ', phonenumber);
+        /* this.callNumber.callNumber(phonenumber, true)
+        .then(res => console.log("Launched dialer!", res))
+        .catch(err => console.log("Error launching", err)) */
+        this.iab.create('tel:' + phonenumber, '_system');
+    }
+
+    sms(phonenumber) {
+        console.log('smsing ', phonenumber);
+        /* this.callNumber.callNumber(phonenumber, true)
+        .then(res => console.log("Launched dialer!", res))
+        .catch(err => console.log("Error launching", err)) */
+        this.iab.create('sms:' + phonenumber, '_system');
+    }
+
+
+    email(email) {
+        console.log('emailing ', email);
+        this.iab.create('mailto:' + email, '_system');
+        /* let emailtemplate = {
+          to: email,
+          cc: 'chukwumaokere@yahoo.com',
+          isHtml: true,
+        }
+        this.emailComposer.isAvailable().then((available: boolean) => {
+          if(available){
+            //send
+          }
+        }) */
+    }
+
+    transferee(phonenumber) {
+        //console.log('opening action sheet for contact ', phonenumber, this.servicedetail.cf_765 );
+        const contactLabels = ['Call: ' + phonenumber, 'SMS: ' + phonenumber];
+
+        const contactOptions: ActionSheetOptions = {
+            title: 'Which would you like to do?',
+            buttonLabels: contactLabels,
+            addCancelButtonWithLabel: 'Cancel',
+            androidTheme: 1 //this.actionSheet.ANDROID_THEMES.THEME_HOLO_DARK,
+        }
+        this.actionSheet.show(contactOptions).then((buttonIndex: number) => {
+            console.log('Option pressed', buttonIndex);
+            if (buttonIndex == 1) {
+                this.call(phonenumber);
+            }
+            else if (buttonIndex == 2) {
+                this.sms(phonenumber);
+            }
+        }).catch((err) => {
+            console.log(err);
+            this.presentToast(`Operation failed! \n` + err);
+        })
     }
 
     ngOnInit() {

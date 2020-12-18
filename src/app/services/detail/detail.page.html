@@ -36,7 +36,7 @@
                         <ion-text *ngIf="!workorderdetail.mailingpobox">{{workorderdetail.mailingstreet}}
                             , {{workorderdetail.mailingcity}}
                             , {{workorderdetail.mailingstate}} {{workorderdetail.mailingzip}}</ion-text>
-                        <ion-button target="_blank" color="primary"
+                        <ion-button target="_blank" color="secondary"
                                     href="https://maps.apple.com/?daddr={{workorderdetail.mailingstreet}}, {{workorderdetail.mailingcity}}, {{workorderdetail.mailingstate}} {{workorderdetail.mailingzip}}"
                                     size="default" slot="end" type="button">
                             <ion-icon name="navigate" size="large"></ion-icon>
@@ -45,7 +45,7 @@
                     <ion-item lines="none">
                         <ion-label position="stacked">Contact Mobile Phone</ion-label>
                         <ion-text>{{workorderdetail.mobile}}</ion-text>
-                        <ion-button target="_self" color="primary" (click)="transferee(workorderdetail.mobile)"
+                        <ion-button target="_self" color="secondary" (click)="transferee(workorderdetail.mobile)"
                                     size="default" slot="end" type="button">
                             <ion-icon name="call" size="large"></ion-icon>
                         </ion-button>
@@ -53,7 +53,7 @@
                     <ion-item lines="none">
                         <ion-label position="stacked">Secondary Contact Mobile Phone</ion-label>
                         <ion-text>{{workorderdetail.secondary_contact_mobile}}</ion-text>
-                        <ion-button target="_self" color="primary"
+                        <ion-button target="_self" color="secondary"
                                     (click)="transferee(workorderdetail.secondary_contact_mobile)" size="default"
                                     slot="end" type="button">
                             <ion-icon name="call" size="large"></ion-icon>
@@ -85,66 +85,71 @@
             <!-- editable fields -->
             <div *ngIf="isCompleteWO == 0">
                 <ion-item-group *ngFor="let blockservice of servicedetail">
-                    <ion-label class="ion-padding">{{blockservice.blockname}}</ion-label>
-
-                    <ion-item detail="false" *ngFor="let service of blockservice.fields;">
-                        <ion-label position="stacked">{{service.fieldlabel}}</ion-label>
-
-                        <div [ngSwitch]="service.uitype">
-                            <!--uitype = 10-->
-                            <ion-text *ngSwitchCase="10">{{service.value}} </ion-text>
-
-                            <!--uitype = 56-->
-                            <div *ngSwitchCase="56">
-                                <ion-checkbox (ionChange)="addUpdate($event)" *ngIf="service.value == 1" checked="true"
-                                              name="{{service.columnname}}">{{service.value}} </ion-checkbox>
-                                <ion-checkbox (ionChange)="addUpdate($event)" *ngIf="service.value != 1"
-                                              name="{{service.columnname}}">{{service.value}} </ion-checkbox>
-                            </div>
-
-                            <!--uitype = 15.16-->
-                            <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="16" name="{{service.columnname}}"
-                                        value="{{service.value}}">
-                                <ion-select-option
-                                        *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
-                            </ion-select>
-                            <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="15" name="{{service.columnname}}"
-                                        value="{{service.value}}">
-                                <ion-select-option
-                                        *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
-                            </ion-select>
-                            <!--uitype = 33-->
-                            <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="33" name="{{service.columnname}}"
-                                        multiple="true">
-                                <ion-select-option
-                                        *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
-                            </ion-select>
-                            <!-- uitype = 7 -->
-                            <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="7" type="number"
-                                       name="{{service.columnname}}" value="{{service.value | number}}"></ion-input>
-                            <!-- uitype = 9 -->
-                            <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="9" type="text"
-                                       name="{{service.columnname}}" value="{{service.value | number}}"
-                                       width="100%"></ion-input>
-                            <!--else-->
-                            <ion-input (ionInput)="addUpdate($event)" type="text" name="{{service.columnname}}"
-                                       *ngSwitchDefault value="{{service.value}}"></ion-input>
-
-                            <!--uitype = 19.20-->
-                            <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
-                                          rows="3" *ngSwitchCase="19" value="{{service.value}}"
-                                          width="100%"></ion-textarea>
-                            <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
-                                          rows="3" *ngSwitchCase="20" value="{{service.value}}"
-                                          width="100%"></ion-textarea>
-
-                        </div>
+                    <ion-item class="blockheader_2" lines="full">
+                    <ion-label class="ion-padding blockheader" (click)="toggleSection(blockservice.blockname)">{{blockservice.blockname}}</ion-label>
+                    <ion-icon *ngIf="!blockGroups[blockservice.blockname].open" name="arrow-forward" slot="end"></ion-icon>
+                    <ion-icon *ngIf="blockGroups[blockservice.blockname].open" name="arrow-down" slot="end"></ion-icon>
                     </ion-item>
+                    <div [ngClass]="{'section-active': blockGroups[blockservice.blockname].open, 'section': !blockGroups[blockservice.blockname].open}">
+                        <ion-item detail="false" *ngFor="let service of blockservice.fields;">
+                            <ion-label position="stacked">{{service.fieldlabel}}</ion-label>
+
+                            <div [ngSwitch]="service.uitype">
+                                <!--uitype = 10-->
+                                <ion-text *ngSwitchCase="10">{{service.value}} </ion-text>
+
+                                <!--uitype = 56-->
+                                <div *ngSwitchCase="56">
+                                    <ion-checkbox (ionChange)="addUpdate($event)" *ngIf="service.value == 1" checked="true"
+                                                name="{{service.columnname}}">{{service.value}} </ion-checkbox>
+                                    <ion-checkbox (ionChange)="addUpdate($event)" *ngIf="service.value != 1"
+                                                name="{{service.columnname}}">{{service.value}} </ion-checkbox>
+                                </div>
+
+                                <!--uitype = 15.16-->
+                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="16" name="{{service.columnname}}"
+                                            value="{{service.value}}">
+                                    <ion-select-option
+                                            *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
+                                </ion-select>
+                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="15" name="{{service.columnname}}"
+                                            value="{{service.value}}">
+                                    <ion-select-option
+                                            *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
+                                </ion-select>
+                                <!--uitype = 33-->
+                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="33" name="{{service.columnname}}"
+                                            multiple="true">
+                                    <ion-select-option
+                                            *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
+                                </ion-select>
+                                <!-- uitype = 7 -->
+                                <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="7" type="number"
+                                        name="{{service.columnname}}" value="{{service.value | number}}"></ion-input>
+                                <!-- uitype = 9 -->
+                                <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="9" type="text"
+                                        name="{{service.columnname}}" value="{{service.value | number}}"
+                                        width="100%"></ion-input>
+                                <!--else-->
+                                <ion-input (ionInput)="addUpdate($event)" type="text" name="{{service.columnname}}"
+                                        *ngSwitchDefault value="{{service.value}}"></ion-input>
+
+                                <!--uitype = 19.20-->
+                                <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
+                                            rows="3" *ngSwitchCase="19" value="{{service.value}}"
+                                            width="100%"></ion-textarea>
+                                <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
+                                            rows="3" *ngSwitchCase="20" value="{{service.value}}"
+                                            width="100%"></ion-textarea>
+
+                            </div>
+                        </ion-item>
+                    </div>
                 </ion-item-group>
 
                 <!-- open checklist modal -->
                 <div class="button-grouping ion-padding">
-                    <ion-button expand="full" size="large" expand="block" color="primary"
+                    <ion-button expand="full" size="large" expand="block" color="secondary"
                                 (click)="openChecklist(workorderdetail.workorderid)">Complete Work Order
                     </ion-button>
                     <!-- <ion-button expand="full" size="large" expand="block" color="primary" (click)="checkJHA(workorderdetail.workorderid, workorderdetail.cf_site_coordinate)"> Add JHA/JSA</ion-button> -->
@@ -174,7 +179,7 @@
             <ion-grid class="ion-no-padding">
                 <ion-row class="ion-align-items-center ion-justify-content-center">
                     <ion-col class="padding-left-none" size="9">
-                        <ion-button expand="full" size="large" expand="block" color="tertiary"
+                        <ion-button expand="full" size="large" expand="block" color="secondary"
                                     (click)="openCamera(workorderdetail.workorderid)">
                             <ion-icon name="camera"></ion-icon>
                             <ion-text class="add-photo-button">
@@ -183,7 +188,7 @@
                         </ion-button>
                     </ion-col>
                     <ion-col size="3">
-                        <ion-button size="large" expand="block" color="tertiary"
+                        <ion-button size="large" expand="block" color="secondary"
                                     (click)="openLibrary(workorderdetail.workorderid)">
                             <ion-icon name="folder-open"></ion-icon>
                         </ion-button>

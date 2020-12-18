@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import { ImageProvider } from './providers/image/image';
 import { AppConstants } from './providers/constant/constant';
 import { GoogleMaps} from '@ionic-native/google-maps';
@@ -28,6 +29,7 @@ import { GoogleMaps} from '@ionic-native/google-maps';
     StatusBar,
     SplashScreen,
     GoogleMaps,
+    InAppBrowser,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Camera,
     ActionSheet,
