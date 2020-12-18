@@ -13,6 +13,7 @@ import {ImageProvider} from '../../providers/image/image';
 import {AppConstants} from '../../providers/constant/constant';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {LoadingController} from '@ionic/angular';
+// @ts-ignore
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 
 @Component({
@@ -410,7 +411,7 @@ export class DetailPage implements OnInit {
         const modal_checklist = await this.modalCtrl.create({
             component: ChecklistModalPage,
             componentProps: {
-                "paramTitle": "Complete Work Order",
+                "paramTitle": "Photos Checklist",
                 "serviceid": record_id,
                 "current_updates": this.updatefields,
                 "user_id": this.userinfo.id,

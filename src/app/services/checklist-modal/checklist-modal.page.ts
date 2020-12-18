@@ -17,7 +17,6 @@ export class ChecklistModalPage implements OnInit {
     updatefields: any = {};
     checklistDetail: any = {};
     user_id: any;
-    checklist_flag: any;
     public workorderdetail: any[] = [];
     public servicedetail: any[] = [];
     constructor(
@@ -38,7 +37,6 @@ export class ChecklistModalPage implements OnInit {
         this.serviceid = this.navParams.data.serviceid;
         this.modalTitle = this.navParams.data.paramTitle;
         this.user_id = this.navParams.data.user_id;
-        this.checklist_flag = this.navParams.data.checklist_flag;
         this.updatefields = this.navParams.data.current_updates;
         this.loadChecklist(this.serviceid);
 
@@ -103,9 +101,11 @@ export class ChecklistModalPage implements OnInit {
                 console.log('failed to fetch record');
             });
     }
+
     async closeModal() {
         await this.modalController.dismiss();
     }
+
     async presentToast(message: string) {
         var toast = await this.toastController.create({
             message: message,
@@ -167,6 +167,7 @@ export class ChecklistModalPage implements OnInit {
             console.log('no data modified for record', serviceid);
         }
     }
+
     addUpdate(event, value) {
         console.log(event);
         var fieldname = event.target.name;
@@ -182,6 +183,7 @@ export class ChecklistModalPage implements OnInit {
         console.log('adding update to queue: ', fieldname, value);
         console.log(this.updatefields);
     }
+
     async  checkItem(columnname, value) {
 
     }
