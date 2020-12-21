@@ -20,6 +20,7 @@ import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import { ImageProvider } from './providers/image/image';
 import { AppConstants } from './providers/constant/constant';
 import { GoogleMaps} from '@ionic-native/google-maps';
+import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +33,7 @@ import { GoogleMaps} from '@ionic-native/google-maps';
     InAppBrowser,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Camera,
+    PhotoViewer,
     ActionSheet,
     PhotoLibrary,
      FileTransfer,

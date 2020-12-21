@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AppConstants } from '../../providers/constant/constant';
 import { LoadingController } from '@ionic/angular';
 import {Camera, CameraOptions} from "@ionic-native/camera/ngx";
+import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import {ImageProvider} from "../../providers/image/image";
 import {ImageModalPage} from "../image-modal/image-modal.page";
 
@@ -42,6 +43,7 @@ export class ChecklistModalPage implements OnInit {
 
     constructor(
         private camera: Camera,
+        private photoviewer: PhotoViewer,
         public imgpov: ImageProvider,
         public modalCtrl: ModalController,
         private modalController: ModalController,
@@ -109,11 +111,10 @@ export class ChecklistModalPage implements OnInit {
                             uitype: workorder[key].uitype,
                             value: workorder[key].value,
                             fieldlabel: workorder[key].fieldlabel,
+                            imagepath: workorder[key].imagepath,
                         });
 
                         this.checklistDetail[key] = workorder[key].value;
-
-
                     }
                     console.log('workorder', this.servicedetail);
                 } else {
@@ -145,6 +146,17 @@ export class ChecklistModalPage implements OnInit {
                 this.presentToast(`Upload failed! Please try again \n` + err);
             }
         });
+    }
+
+    previewImage(imagepath) {
+        console.log('launching image viewer image =>',imagepath);
+        if (imagepath != '') {
+            this.photoviewer.show(imagepath);
+        }else{
+            // Handle error
+            console.error('Image preview failed, no image');
+            this.presentToast('Image preview failed.');
+        }
     }
 
     async openModal(serviceid, base64Image,columnname) {

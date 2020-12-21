@@ -147,13 +147,10 @@
                     </div>
                 </ion-item-group>
 
-                <!-- open checklist modal -->
                 <div class="button-grouping ion-padding">
-                    <ion-button expand="full" size="large" expand="block" color="secondary" >Complete Work Order
+                    <ion-button (click)="saveWO(workorderdetail.workorderid)" expand="full" size="large" expand="block" color="secondary" >Complete Work Order
                     </ion-button>
-                    <!-- <ion-button expand="full" size="large" expand="block" color="primary" (click)="checkJHA(workorderdetail.workorderid, workorderdetail.cf_site_coordinate)"> Add JHA/JSA</ion-button> -->
                 </div>
-                <!-- open checklist modal -->
             </div>
 
             <!-- if WO is Completed, Cancelled, Closed, make fields readonly-->
@@ -173,7 +170,9 @@
             <!-- editable fields -->
             <div><br><br><br><br><br></div>
         </ion-list>
-        <!--photos buttons -->
+    </form>
+
+    <!--photos buttons -->
         <div *ngIf="isCompleteWO == 0" class="button-grouping ion-padding anchor-bottom">
             <ion-grid class="ion-no-padding">
                 <ion-row class="ion-align-items-center ion-justify-content-center">
@@ -196,5 +195,4 @@
             </ion-grid>
         </div>
         <!--photos buttons -->
-    </form>
 </ion-content>
