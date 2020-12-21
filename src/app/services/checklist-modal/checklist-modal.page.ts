@@ -150,7 +150,7 @@ export class ChecklistModalPage implements OnInit {
 
     previewImage(imagepath) {
         console.log('launching image viewer image =>',imagepath);
-        if (imagepath != '') {
+        if (imagepath != '' && imagepath != 'undefined') {
             this.photoviewer.show(imagepath);
         }else{
             // Handle error
