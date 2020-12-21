@@ -23,7 +23,7 @@
                         <ion-button *ngIf="service.value == 1" color="success">
                             <ion-icon name="camera"></ion-icon>
                         </ion-button>
-                        <ion-button *ngIf="service.value == 0" color="danger">
+                        <ion-button *ngIf="service.value == 0" color="danger"  (click)="openCamera(serviceid,service.columnname)">
                             <ion-icon name="camera"></ion-icon>
                         </ion-button>
                         <ion-button *ngIf="service.value == 1" color="tertiary" title="Preview">

@@ -3,6 +3,9 @@ import { ModalController, NavParams, ToastController, PickerController, NavContr
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AppConstants } from '../../providers/constant/constant';
 import { LoadingController } from '@ionic/angular';
+import {Camera, CameraOptions} from "@ionic-native/camera/ngx";
+import {ImageProvider} from "../../providers/image/image";
+import {ImageModalPage} from "../image-modal/image-modal.page";
 
 @Component({
     selector: 'app-checklist-modal',
@@ -17,9 +20,30 @@ export class ChecklistModalPage implements OnInit {
     updatefields: any = {};
     checklistDetail: any = {};
     user_id: any;
+    dataReturned: any;
     public workorderdetail: any[] = [];
     public servicedetail: any[] = [];
+
+    options: CameraOptions = {
+        quality: 50,
+        destinationType: this.camera.DestinationType.DATA_URL,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE,
+        saveToPhotoAlbum: false //true causes crash probably due to permissions to access library.
+    }
+
+    libraryOptions: CameraOptions = {
+        quality: 100,
+        destinationType: this.camera.DestinationType.DATA_URL,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE,
+        sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
+    }
+
     constructor(
+        private camera: Camera,
+        public imgpov: ImageProvider,
+        public modalCtrl: ModalController,
         private modalController: ModalController,
         private navParams: NavParams,
         public httpClient: HttpClient,
@@ -100,6 +124,49 @@ export class ChecklistModalPage implements OnInit {
                 this.hideLoading();
                 console.log('failed to fetch record');
             });
+    }
+
+    openCamera(serviceid,columnname) {
+        console.log('launching camera');
+        this.camera.getPicture(this.options).then((imageData) => {
+            // imageData is either a base64 encoded string or a file URI
+            // If it's base64 (DATA_URL):
+            let base64Image = 'data:image/png;base64,' + imageData;
+            this.imgpov.setImage(imageData);
+            this.openModal(serviceid, base64Image,columnname);
+            // TODO: need code to upload to server here.
+            // On success: show toast
+            //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
+        }, (err) => {
+            // Handle error
+            console.error(err);
+            // On Fail: show toast
+            if (err != "no image selected") {
+                this.presentToast(`Upload failed! Please try again \n` + err);
+            }
+        });
+    }
+
+    async openModal(serviceid, base64Image,columnname) {
+        const modal = await this.modalCtrl.create({
+            component: ImageModalPage,
+            componentProps: {
+                "base64Image": base64Image,
+                "paramTitle": "Edit Photo",
+                "serviceid": serviceid,
+                "columnname": columnname,
+                "user_id": this.user_id,
+            }
+        });
+
+        modal.onDidDismiss().then((dataReturned) => {
+            if (dataReturned !== null) {
+                this.dataReturned = dataReturned.data;
+                //alert('Modal Sent Data :'+ dataReturned);
+            }
+        });
+
+        return await modal.present();
     }
 
     async closeModal() {

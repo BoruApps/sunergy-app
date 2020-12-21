@@ -18,6 +18,7 @@ export class ImageModalPage implements OnInit {
     modalTitle: string;
     modelId: number;
     serviceid: any;
+    columnname: any;
     apiurl: any;
     user_id: any;
     photo = {
@@ -49,6 +50,7 @@ export class ImageModalPage implements OnInit {
         //console.table(this.navParams);
         this.modelId = this.navParams.data.paramID;
         this.serviceid = this.navParams.data.serviceid;
+        this.columnname = this.navParams.data.columnname;
         this.modalTitle = this.navParams.data.paramTitle;
         this.user_id = this.navParams.data.user_id;
     }
@@ -123,40 +125,16 @@ export class ImageModalPage implements OnInit {
     }
 
     async uploadImage(form) {
-        //console.log('form submitted',form.value);
-        /*const fileTransfer: FileTransferObject = this.transfer.create();
-        let options: FileUploadOptions = {
-            fileKey: "photo",
-            fileName: "test3.jpg",
-            chunkedMode: false,
-            mimeType: "image/jpeg",
-            headers: {
-                "Accept": 'application/json',
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            params: {
-                "title": form.value.title
-            },
-        }
-        fileTransfer.upload(this.imageData, 'http://devl06.borugroup.com/sunergy/phoneapi/postPhotos.php?recordid=108405', options).then(data => {
-            console.log(JSON.stringify(data));
-            this.presentToastPrimary('Photo uploaded and added to Service \n');
-        }, error => {
-            console.log(error);
-            console.error(JSON.stringify(error));
-            this.presentToast("Upload failed! Please try again \n" + error.message);
-        });*/
-
-
         var headers = new HttpHeaders();
         headers.append("Accept", 'application/json');
         headers.append('Content-Type', 'application/json');
         headers.append('Access-Control-Allow-Origin', '*');
         form.value.base64Image = this.imageData;
         form.value.serviceid = this.serviceid;
+        form.value.columnname = this.columnname;
         form.value.logged_in_user = this.user_id;
         console.log('adding photo for', form.value.serviceid);
+        console.log('adding photo columnname', form.value.columnname);
         this.showLoading();
         this.httpClient.post(this.apiurl + "postPhotos.php", form.value, {headers: headers, observe: 'response'})
             .subscribe(data => {
