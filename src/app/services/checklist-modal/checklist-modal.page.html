@@ -8,8 +8,8 @@
     <form #form="ngForm"  (ngSubmit)="completeOrder(serviceid)">
         <ion-grid>
             <ion-row>
-                <ion-col size="8"><b>Photos Required</b></ion-col>
-                <ion-col size="4">
+                <ion-col size="7"><b>Photos Required</b></ion-col>
+                <ion-col size="5">
                     <div style="text-align: center;"><b>Status</b></div>
                 </ion-col>
             </ion-row>
@@ -17,8 +17,8 @@
                 <ion-col size="12"></ion-col>
             </ion-row>
             <ion-row *ngFor="let service of servicedetail" style="align-items: center;">
-                <ion-col size="8">{{service.fieldlabel}}</ion-col>
-                <ion-col size="4" style="text-align: center;">
+                <ion-col size="7">{{service.fieldlabel}}</ion-col>
+                <ion-col size="5" style="text-align: center;">
                     <ion-item-group>
                         <ion-button *ngIf="service.value == 1" color="success">
                             <ion-icon name="camera"></ion-icon>
