@@ -1,6 +1,6 @@
 {
   "name": "sunergy",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "author": "Boru Apps",
   "homepage": "https://boruapps.com",
   "scripts": {
@@ -104,7 +104,7 @@
       "cordova-plugin-file-transfer": {},
       "cordova-plugin-file": {},
       "cordova-plugin-ionic": {
-        "APP_ID": "abe8a4fa",
+        "APP_ID": "d35bd1be",
         "CHANNEL_NAME": "Production",
         "UPDATE_METHOD": "auto",
         "MAX_STORE": "2",
