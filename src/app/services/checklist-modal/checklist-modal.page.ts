@@ -8,6 +8,7 @@ import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import {ImageProvider} from "../../providers/image/image";
 import {ImageModalPage} from "../image-modal/image-modal.page";
 import {ActionSheet, ActionSheetOptions} from '@ionic-native/action-sheet/ngx';
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-checklist-modal',
@@ -62,6 +63,7 @@ export class ChecklistModalPage implements OnInit {
         public toastController: ToastController,
         private navCtrl: NavController,
         public appConst: AppConstants,
+        private router: Router,
         public loadingController: LoadingController,
         private actionSheet: ActionSheet
     ) {
@@ -343,5 +345,10 @@ export class ChecklistModalPage implements OnInit {
 
     async  checkItem(columnname, value) {
 
+    }
+
+    goToGallery(serviceid){
+        this.router.navigate([`/services/detail/${serviceid}/gallery`, {servicename: 'Service'}]);
+        this.closeModal();
     }
 }
