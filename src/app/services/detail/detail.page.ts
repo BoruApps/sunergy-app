@@ -126,6 +126,9 @@ export class DetailPage implements OnInit {
 
     addUpdate(event) {
         var fieldname = event.target.name;
+        if (fieldname){
+            fieldname = event.target.id;
+        }
         var fieldvalue = event.target.textContent + event.target.value;
         if (fieldname == 'cf_climb' || fieldname == 'cf_overnight' || event.target.tagName == 'ION-CHECKBOX') {
             fieldvalue = (event.detail.checked) ? 1 : 0;
