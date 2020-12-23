@@ -17,7 +17,7 @@
                 <ion-col size="12"></ion-col>
             </ion-row>
             <ion-row *ngFor="let service of servicedetail" style="align-items: center;">
-                <ion-col size="7">{{service.fieldlabel}}</ion-col>
+                <ion-col size="7">{{service.fieldlabel}} <span  *ngIf="service.imagecount != null"><b>({{service.imagecount}})</b></span></ion-col>
                 <ion-col size="5" style="text-align: center;">
                     <ion-item-group>
                         <ion-button *ngIf="service.value == 1" color="success" (click)="openActionSheet(serviceid,service.columnname)">
@@ -26,7 +26,7 @@
                         <ion-button *ngIf="service.value == 0" color="danger" (click)="openActionSheet(serviceid,service.columnname)">
                             <ion-icon name="camera"></ion-icon>
                         </ion-button>
-                        <ion-button *ngIf="service.value == 1" color="tertiary" title="Preview" (click)="goToGallery(serviceid)">
+                        <ion-button *ngIf="service.value == 1" color="tertiary" title="Preview" (click)="goToGallery(serviceid,service.columnname,service.fieldlabel)">
                             <ion-icon name="images"></ion-icon>
                         </ion-button>
                     </ion-item-group>

@@ -23,6 +23,7 @@ export class GalleryPage implements OnInit {
   userinfo: any;
   serviceName: any;
   serviceid: any;
+  columnname: any;
   apiurl: any;
 
   buttonLabels = ['Take Photo', 'Upload from Library'];
@@ -117,7 +118,7 @@ export class GalleryPage implements OnInit {
 
   /* Default Auth Guard and Theme Loader */
 
-  loadImages(recordid){
+  loadImages(recordid,columnname){
     /* this.propertyimages = pi.propertiesimages;
     console.log('loading images for', room, recordid);
     var images = this.propertyimages.filter(object => {
@@ -127,7 +128,8 @@ export class GalleryPage implements OnInit {
     var pics = images[0].rooms[room].images;
     this.propertypics = pics; */
     var params = {
-      recordid: recordid
+      recordid: recordid,
+      columnname: columnname
     }
     console.log('fetching documents for', params);
     var headers = new HttpHeaders();
@@ -270,6 +272,7 @@ export class GalleryPage implements OnInit {
       if(userData.length !== 0){
         this.serviceName = userData.servicename;
         this.serviceid = userData.serviceid;
+        this.columnname = userData.columnname;
         this.userinfo = userData;
         console.log('param user data:', userData);
         try{ 
@@ -285,7 +288,7 @@ export class GalleryPage implements OnInit {
               console.log('loading storage data (within param route function)', result);
               this.userinfo = result;
               this.loadTheme(result.theme.toLowerCase());
-              this.loadImages(this.serviceid);
+              this.loadImages(this.serviceid,this.columnname);
             }else{
               console.log('nothing in storage, going back to login');
               this.logout();
