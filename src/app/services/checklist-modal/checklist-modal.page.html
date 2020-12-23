@@ -20,10 +20,10 @@
                 <ion-col size="7">{{service.fieldlabel}}</ion-col>
                 <ion-col size="5" style="text-align: center;">
                     <ion-item-group>
-                        <ion-button *ngIf="service.value == 1" color="success">
+                        <ion-button *ngIf="service.value == 1" color="success" (click)="openActionSheet(serviceid,service.columnname)">
                             <ion-icon name="camera"></ion-icon>
                         </ion-button>
-                        <ion-button *ngIf="service.value == 0" color="danger"  (click)="openActionSheet(serviceid,service.columnname)">
+                        <ion-button *ngIf="service.value == 0" color="danger" (click)="openActionSheet(serviceid,service.columnname)">
                             <ion-icon name="camera"></ion-icon>
                         </ion-button>
                         <ion-button *ngIf="service.value == 1" color="tertiary" title="Preview" (click)="previewImage(service.imagepath)">
