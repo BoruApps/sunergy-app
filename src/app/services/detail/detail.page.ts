@@ -58,6 +58,7 @@ export class DetailPage implements OnInit {
     public itemgrid: any[] = [];
     public countItemList: number = 0;
     updatefields: any = {};
+    arrayfields: any = {};
 
     blockGroups: any = {
         'Visit Details': {
@@ -185,15 +186,18 @@ export class DetailPage implements OnInit {
                         if (key != 'subject') {
                             var fieldArray = [];
                             for (let fieldkey in workorder[key]) {
-                                fieldArray.push({
-                                    columnname: fieldkey,
-                                    uitype: workorder[key][fieldkey].uitype,
-                                    value: workorder[key][fieldkey].value,
-                                    picklist: workorder[key][fieldkey].picklist,
-                                    fieldlabel: workorder[key][fieldkey].fieldlabel,
-                                })
+                                if (key == 'Array Information'){
+                                    this.arrayfields[fieldkey] = workorder[key][fieldkey].value;
+                                }else{
+                                    fieldArray.push({
+                                        columnname: fieldkey,
+                                        uitype: workorder[key][fieldkey].uitype,
+                                        value: workorder[key][fieldkey].value,
+                                        picklist: workorder[key][fieldkey].picklist,
+                                        fieldlabel: workorder[key][fieldkey].fieldlabel,
+                                    })
+                                }
                             }
-
                             this.servicedetail.push({
                                 blockname: key,
                                 fields: fieldArray,
@@ -202,6 +206,7 @@ export class DetailPage implements OnInit {
                     }
 
                     console.log('servicedetail', this.servicedetail);
+                    console.log('arrayfields', this.arrayfields);
 
                     //load item grid 43636
                     this.httpClient.post(this.apiurl + "getItemList.php", params, {
