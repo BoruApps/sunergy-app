@@ -124,7 +124,7 @@ export class ChecklistModalPage implements OnInit {
                             uitype: workorder[key].uitype,
                             value: workorder[key].value,
                             fieldlabel: workorder[key].fieldlabel,
-                            imagepath: workorder[key].imagepath,
+                            imagecount: (workorder[key].imagecount) ? workorder[key].imagecount : null,
                         });
 
                         this.checklistDetail[key] = workorder[key].value;
