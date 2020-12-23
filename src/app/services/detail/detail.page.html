@@ -149,6 +149,34 @@
                         </ion-item>
                     </div>
                 </ion-item-group>
+                
+                <div class="readonly-fields">
+                    <ion-item-group>
+                        <br>
+                        <ion-item lines="none">
+                            <ion-text>Array Information</ion-text>
+                        </ion-item>
+                        <br>
+                    </ion-item-group>
+                </div>
+                    
+                <div class="array_info">
+                    <table class="tableizer-table">
+                        <thead>
+                         <tr class="tableizer-firstrow"><th></th><th>Azimuth</th><th>Roof Pitch</th><th># of Panels</th><th>Efficiency</th></tr></thead><tbody>
+                         <tr><td class="orange">Array #1</td><td><input class="table-input" id="cf_array_1_azimuth"></td><td><input class="table-input" id="cf_array_1_roof_pitch"></td><td><input class="table-input" id="cf_array_1_number_of_panels"></td><td><input class="table-input" id="cf_array_1_efficiency"></td></tr>
+                         <tr><td class="orange">Array #2</td><td><input class="table-input" id="cf_array_2_azimuth"></td><td><input class="table-input" id="cf_array_2_roof_pitch"></td><td><input class="table-input" id="cf_array_2_number_of_panels"></td><td><input class="table-input" id="cf_array_2_efficiency"></td></tr>
+                         <tr><td class="orange">Array #3</td><td><input class="table-input" id="cf_array_3_azimuth"></td><td><input class="table-input" id="cf_array_3_roof_pitch"></td><td><input class="table-input" id="cf_array_3_number_of_panels"></td><td><input class="table-input" id="cf_array_3_efficiency"></td></tr>
+                         <tr><td class="orange">Array #4</td><td><input class="table-input" id="cf_array_4_azimuth"></td><td><input class="table-input" id="cf_array_4_roof_pitch"></td><td><input class="table-input" id="cf_array_4_number_of_panels"></td><td><input class="table-input" id="cf_array_4_efficiency"></td></tr>
+                         <tr><td class="orange">Array #5</td><td><input class="table-input" id="cf_array_5_azimuth"></td><td><input class="table-input" id="cf_array_5_roof_pitch"></td><td><input class="table-input" id="cf_array_5_number_of_panels"></td><td><input class="table-input" id="cf_array_5_efficiency"></td></tr>
+                         <tr><td class="orange">Array #6</td><td><input class="table-input" id="cf_array_6_azimuth"></td><td><input class="table-input" id="cf_array_6_roof_pitch"></td><td><input class="table-input" id="cf_array_6_number_of_panels"></td><td><input class="table-input" id="cf_array_6_efficiency"></td></tr>
+                         <tr><td class="orange">Array #7</td><td><input class="table-input" id="cf_array_7_azimuth"></td><td><input class="table-input" id="cf_array_7_roof_pitch"></td><td><input class="table-input" id="cf_array_7_number_of_panels"></td><td><input class="table-input" id="cf_array_7_efficiency"></td></tr>
+                         <tr><td class="orange">Array #8</td><td><input class="table-input" id="cf_array_8_azimuth"></td><td><input class="table-input" id="cf_array_8_roof_pitch"></td><td><input class="table-input" id="cf_array_8_number_of_panels"></td><td><input class="table-input" id="cf_array_8_efficiency"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <br>
 
                 <div class="button-grouping ion-padding">
                     <ion-button (click)="saveWO(workorderdetail.workorderid)" expand="full" size="large" expand="block" color="secondary" >Complete Work Order
@@ -179,21 +207,24 @@
         <div *ngIf="isCompleteWO == 0" class="button-grouping ion-padding anchor-bottom">
             <ion-grid class="ion-no-padding">
                 <ion-row class="ion-align-items-center ion-justify-content-center">
-                    <ion-col class="padding-left-none" size="9">
+                    <ion-col class="padding-left-none" size="12">
                         <ion-button expand="full" size="large" expand="block" color="secondary"
                                     (click)="openChecklist(workorderdetail.workorderid)">
                             <ion-icon name="camera"></ion-icon>
                             <ion-text class="add-photo-button">
-                                Take Photos
+                                Add Photos
                             </ion-text>
                         </ion-button>
                     </ion-col>
+                    
+                    <!--
                     <ion-col size="3">
                         <ion-button size="large" expand="block" color="secondary"
                                     (click)="openLibrary(workorderdetail.workorderid)">
                             <ion-icon name="folder-open"></ion-icon>
                         </ion-button>
                     </ion-col>
+                    -->
                 </ion-row>
             </ion-grid>
         </div>

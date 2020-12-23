@@ -7,6 +7,7 @@ import {Camera, CameraOptions} from "@ionic-native/camera/ngx";
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import {ImageProvider} from "../../providers/image/image";
 import {ImageModalPage} from "../image-modal/image-modal.page";
+import {ActionSheet, ActionSheetOptions} from '@ionic-native/action-sheet/ngx';
 
 @Component({
     selector: 'app-checklist-modal',
@@ -24,6 +25,15 @@ export class ChecklistModalPage implements OnInit {
     dataReturned: any;
     public workorderdetail: any[] = [];
     public servicedetail: any[] = [];
+
+    buttonLabels = ['Take Photo', 'Upload from Library'];
+
+    actionOptions: ActionSheetOptions = {
+        title: 'Which would you like to do?',
+        buttonLabels: this.buttonLabels,
+        addCancelButtonWithLabel: 'Cancel',
+        androidTheme: 1 //this.actionSheet.ANDROID_THEMES.THEME_HOLO_DARK,
+    }
 
     options: CameraOptions = {
         quality: 50,
@@ -52,7 +62,8 @@ export class ChecklistModalPage implements OnInit {
         public toastController: ToastController,
         private navCtrl: NavController,
         public appConst: AppConstants,
-        public loadingController: LoadingController
+        public loadingController: LoadingController,
+        private actionSheet: ActionSheet
     ) {
         this.apiurl = this.appConst.getApiUrl();
     }
@@ -157,6 +168,73 @@ export class ChecklistModalPage implements OnInit {
             console.error('Image preview failed, no image');
             this.presentToast('Image preview failed.');
         }
+    }
+
+    openLibrary(serviceid, columnname) {
+        console.log('launching gallery');
+        this.camera.getPicture(this.libraryOptions).then((imageData) => {
+            // imageData is either a base64 encoded string or a file URI
+            // If it's base64 (DATA_URL):
+            let base64Image = 'data:image/png;base64,' + imageData;
+            this.imgpov.setImage(imageData);
+            this.openModal(serviceid, base64Image, columnname);
+            // TODO: need code to upload to server here.
+            // On success: show toast
+            //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
+        }, (err) => {
+            // Handle error
+            console.error(err);
+            // On Fail: show toast
+            if (err != "has no access to assets") {
+                this.presentToast(`Upload failed! Please try again \n` + err);
+            }
+        });
+    }
+
+    openActionSheet(serviceid, columnname) {
+        console.log('launching actionsheet');
+
+        this.actionSheet.show(this.actionOptions).then((buttonIndex: number) => {
+            console.log('Option pressed', buttonIndex);
+            if (buttonIndex == 1) {
+                console.log('launching camera');
+                this.camera.getPicture(this.options).then((imageData) => {
+                    // imageData is either a base64 encoded string or a file URI
+                    // If it's base64 (DATA_URL):
+                    let base64Image = 'data:image/png;base64,' + imageData;
+                    this.imgpov.setImage(imageData);
+                    this.openModal(serviceid, base64Image, columnname);
+                    // TODO: need code to upload to server here.
+                    // On success: show toast
+                    //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
+                }, (err) => {
+                    // Handle error
+                    console.error(err);
+                    // On Fail: show toast
+                    this.presentToast(`Upload failed! Please try again \n` + err);
+                });
+            } else if (buttonIndex == 2) {
+                console.log('launching gallery');
+                this.camera.getPicture(this.libraryOptions).then((imageData) => {
+                    // imageData is either a base64 encoded string or a file URI
+                    // If it's base64 (DATA_URL):
+                    let base64Image = 'data:image/png;base64,' + imageData;
+                    this.imgpov.setImage(imageData);
+                    this.openModal(serviceid, base64Image, columnname);
+                    // TODO: need code to upload to server here.
+                    // On success: show toast
+                    //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
+                }, (err) => {
+                    // Handle error
+                    console.error(err);
+                    // On Fail: show toast
+                    this.presentToast(`Upload failed! Please try again \n` + err);
+                });
+            }
+        }).catch((err) => {
+            console.log(err);
+            this.presentToast(`Operation failed! \n` + err);
+        });
     }
 
     async openModal(serviceid, base64Image,columnname) {

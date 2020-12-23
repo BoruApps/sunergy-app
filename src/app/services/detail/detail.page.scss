@@ -69,3 +69,29 @@ ion-item > div {
     --color: white;
     color: white !important;
 }
+
+table.tableizer-table {
+    font-size: 12px;
+    border: 1px solid #CCC; 
+    font-family: Arial, Helvetica, sans-serif;
+border-radius: 5px;
+} 
+.tableizer-table td {
+    padding: 4px;
+    margin: 3px;
+    border: 1px solid #CCC;
+}
+.tableizer-table th {
+    background-color: #00954C; 
+    color: #FFF;
+    font-weight: bold;
+}
+
+.orange{
+    background-color: #DF782B;
+    color: white;
+}
+
+.table-input{
+    width: 70px;
+}
