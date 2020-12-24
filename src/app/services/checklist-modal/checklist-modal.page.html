@@ -26,7 +26,7 @@
                         <ion-button *ngIf="service.value == 0" color="danger" (click)="openActionSheet(serviceid,service.columnname)">
                             <ion-icon name="camera"></ion-icon>
                         </ion-button>
-                        <ion-button *ngIf="service.value == 1" color="tertiary" title="Preview" (click)="goToGallery(serviceid)">
+                        <ion-button *ngIf="service.value == 1" color="tertiary" title="Preview" (click)="goToGallery(serviceid,service.columnname,service.fieldlabel)">
                             <ion-icon name="images"></ion-icon>
                         </ion-button>
                     </ion-item-group>

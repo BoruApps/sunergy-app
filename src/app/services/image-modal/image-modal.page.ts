@@ -7,6 +7,8 @@ import {Validators, FormBuilder, FormGroup} from '@angular/forms';
 import {ImageProvider} from '../../providers/image/image';
 import {AppConstants} from '../../providers/constant/constant';
 import {LoadingController} from '@ionic/angular';
+import {ImageConfirmModalPage} from "../image-confirm-modal/image-confirm-modal.page";
+import {ChecklistModalPage} from "../checklist-modal/checklist-modal.page";
 
 @Component({
     selector: 'app-image-modal',
@@ -21,6 +23,7 @@ export class ImageModalPage implements OnInit {
     columnname: any;
     apiurl: any;
     user_id: any;
+    dataReturned: any;
     photo = {
         title: '',
         primary_title: '',
@@ -32,6 +35,7 @@ export class ImageModalPage implements OnInit {
 
     constructor(
         private modalController: ModalController,
+        public modalCtrl: ModalController,
         private navParams: NavParams,
         public httpClient: HttpClient,
         private pickerCtrl: PickerController,
@@ -133,6 +137,7 @@ export class ImageModalPage implements OnInit {
         form.value.serviceid = this.serviceid;
         form.value.columnname = this.columnname;
         form.value.logged_in_user = this.user_id;
+        form.value.mode = 'image_upload';
         console.log('adding photo for', form.value.serviceid);
         console.log('adding photo columnname', form.value.columnname);
         this.showLoading();
@@ -143,6 +148,7 @@ export class ImageModalPage implements OnInit {
                 if (data['body']['success'] == true) {
                     this.presentToastPrimary('Photo uploaded and added to Work Order \n');
                     this.closeModal();
+                    this.openConfirmModal(this.serviceid,this.columnname);
                 } else {
                     console.log('upload failed');
                     this.presentToast('Upload failed! Please try again \n');
@@ -154,6 +160,27 @@ export class ImageModalPage implements OnInit {
                 //console.error(error.message);
                 this.presentToast("Upload failed! Please try again \n" + error.message);
             });
+    }
+
+    async openConfirmModal(serviceid,columnname) {
+        const modal = await this.modalCtrl.create({
+            component: ImageConfirmModalPage,
+            componentProps: {
+                "paramTitle": "Confirm",
+                "serviceid": serviceid,
+                "columnname": columnname,
+                "user_id": this.user_id,
+            }
+        });
+
+        modal.onDidDismiss().then((dataReturned) => {
+            if (dataReturned !== null) {
+                this.dataReturned = dataReturned.data;
+                //alert('Modal Sent Data :'+ dataReturned);
+            }
+        });
+
+        return await modal.present();
     }
 
     async fillTitlePrimary(title) {

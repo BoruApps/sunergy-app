@@ -1,0 +1,29 @@
+<ion-header>
+    <ion-toolbar text-center>
+        <ion-title>{{modalTitle}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card>
+        <ion-card-header class="ion-padding">
+            <ion-card-title style="text-align: center;">Are you finished taking pictures for this category?</ion-card-title>
+        </ion-card-header>
+        <div class="button-grouping ion-padding">
+            <ion-grid class="ion-no-padding">
+                <ion-row class="ion-align-items-center ion-justify-content-center" >
+                    <ion-col class="padding-left-none" size="6">
+                        <ion-button size="default" expand="block" color="primary" (click)="ConfirmModalYes(serviceid,columnname)">
+                            <ion-text>Yes</ion-text>
+                        </ion-button>
+                    </ion-col>
+                    <ion-col size="6">
+                        <ion-button size="default" expand="block" color="danger" (click)="ConfirmModalNo(serviceid,columnname)">
+                            <ion-text>No</ion-text>
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+    </ion-card>
+</ion-content>

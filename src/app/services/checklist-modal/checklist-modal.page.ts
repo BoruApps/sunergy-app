@@ -347,8 +347,7 @@ export class ChecklistModalPage implements OnInit {
 
     }
 
-    goToGallery(serviceid){
-        this.router.navigate([`/services/detail/${serviceid}/gallery`, {servicename: 'Service'}]);
-        this.closeModal();
+    goToGallery(serviceid,columnname,fieldlabel){
+        this.router.navigate([`/services/detail/${serviceid}/gallery`, {servicename: fieldlabel,columnname:columnname}]);        this.closeModal();
     }
 }
