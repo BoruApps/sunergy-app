@@ -155,6 +155,7 @@ export class DetailPage implements OnInit {
     }
 
     loadDetails(serviceid) {
+        this.servicedetail = [];
         console.log('loading details for service id:', serviceid)
         var params = {
             record_id: serviceid
