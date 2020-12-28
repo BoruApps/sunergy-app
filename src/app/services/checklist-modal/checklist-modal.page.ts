@@ -244,7 +244,7 @@ export class ChecklistModalPage implements OnInit {
             component: ImageModalPage,
             componentProps: {
                 "base64Image": base64Image,
-                "paramTitle": "Edit Photo",
+                "paramTitle": "Upload Photo",
                 "serviceid": serviceid,
                 "columnname": columnname,
                 "user_id": this.user_id,
