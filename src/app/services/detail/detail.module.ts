@@ -16,6 +16,7 @@ import { File } from '@ionic-native/file/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { ImageModalPage } from '../image-modal/image-modal.page';
 import { ChecklistModalPage } from '../checklist-modal/checklist-modal.page';
+import {ImageConfirmModalPage} from "../image-confirm-modal/image-confirm-modal.page";
 
 const routes: Routes = [
   {
@@ -31,8 +32,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DetailPage, ImageModalPage, ChecklistModalPage ],
-    entryComponents: [ImageModalPage, ChecklistModalPage ],
+  declarations: [DetailPage, ImageModalPage, ChecklistModalPage, ImageConfirmModalPage  ],
+    entryComponents: [ImageModalPage, ChecklistModalPage, ImageConfirmModalPage  ],
     providers: [
         StatusBar,
         SplashScreen,
