@@ -8,7 +8,6 @@ import {ImageProvider} from '../../providers/image/image';
 import {AppConstants} from '../../providers/constant/constant';
 import {LoadingController} from '@ionic/angular';
 import {ImageConfirmModalPage} from "../image-confirm-modal/image-confirm-modal.page";
-import {ChecklistModalPage} from "../checklist-modal/checklist-modal.page";
 
 @Component({
     selector: 'app-image-modal',
@@ -148,6 +147,7 @@ export class ImageModalPage implements OnInit {
                 if (data['body']['success'] == true) {
                     this.presentToastPrimary('Photo uploaded and added to Work Order \n');
                     this.closeModal();
+                    console.log('openConfirmModal', this.serviceid);
                     this.openConfirmModal(this.serviceid,this.columnname);
                 } else {
                     console.log('upload failed');
