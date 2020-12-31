@@ -31,6 +31,36 @@ export class ImageModalPage implements OnInit {
         serviceid: '',
         base64Image: ''
     };
+    allTitlelist = {
+        cf_photo_checklist_1: 'Front_House',
+        cf_photo_checklist_2: 'Ext_Walls_Ele_Eav',
+        cf_photo_checklist_3: 'Attic_Structural',
+        cf_photo_checklist_4: 'MSP_D_Plate',
+        cf_photo_checklist_5: 'MSP_Brkrs_DP',
+        cf_photo_checklist_6: 'MSP_Cls',
+        cf_photo_checklist_7: 'MSP_Stck',
+        cf_photo_checklist_8: 'Sub_D_Cover',
+        cf_photo_checklist_9: 'Surr_MSP',
+        cf_photo_checklist_10: 'Cls_Elec_M_Number',
+        cf_photo_checklist_11: 'Gas_Meter',
+        cf_photo_checklist_12: 'Dig_A',
+        cf_photo_checklist_13: 'Ovr_Feed',
+        cf_photo_checklist_14: 'Ovr_Feed_Drp',
+        cf_photo_checklist_15: 'Und_Utl_Wire',
+        cf_photo_checklist_16: 'Roof_Plane',
+        cf_photo_checklist_17: 'Dmg_Roof',
+        cf_photo_checklist_18: 'Tile_Cond',
+        cf_photo_checklist_19: 'Tile_Thk',
+        cf_photo_checklist_20: 'Tilt_Mnt',
+        cf_photo_checklist_21: 'Ext_Sol',
+        cf_photo_checklist_22: 'Ext_Stckr_Inv',
+        cf_photo_checklist_23: 'Pat_Cov',
+        cf_photo_checklist_24: 'Gate_MS',
+        cf_photo_checklist_25: 'Batt_Wall_Loc',
+        cf_photo_checklist_26: 'Add_Rqst',
+        cf_photo_checklist_27: 'Back_Door',
+        cf_photo_checklist_28: 'MSP_Gnd',
+    };
 
     constructor(
         private modalController: ModalController,
@@ -55,46 +85,13 @@ export class ImageModalPage implements OnInit {
         this.serviceid = this.navParams.data.serviceid;
         this.columnname = this.navParams.data.columnname;
         this.modalTitle = this.navParams.data.paramTitle;
+        this.photo.title = this.allTitlelist[this.columnname];
         this.user_id = this.navParams.data.user_id;
     }
 
     async closeModal() {
         const onClosedData: string = "Wrapped Up!";
         await this.modalController.dismiss(onClosedData);
-    }
-
-    async showPicker() {
-        var x;
-        var optionValues = [];
-        for (x = 0; x < 101; x++) {
-            optionValues.push({text: x, value: x})
-        }
-        let opts = {
-            cssClass: 'section-picker',
-            buttons: [
-                {text: 'Cancel', role: 'cancel', cssClass: 'section-picker-cancel'},
-                {text: 'Confirm', cssClass: 'section-picker-confirm'},
-            ],
-            columns: [{
-                name: 'section',
-                options: optionValues
-            }],
-        }
-
-        let picker = await this.pickerCtrl.create(opts);
-        picker.present();
-        picker.onDidDismiss().then(async data => {
-            let col = await picker.getColumn('section');
-            if (col.options[col.selectedIndex].text) {
-                this.photo.tower_section = col.options[col.selectedIndex].text;
-                if (this.photo.primary_title !== '' || this.photo.secondary_title !== '') {
-                    this.photo.title = this.photo.primary_title + "-" + this.photo.secondary_title + "-" + this.photo.tower_section;
-                } else {
-                    this.photo.title = this.photo.tower_section;
-                }
-                //this.photo.title = this.photo.primary_title + "-" + this.photo.secondary_title + "-" + col.options[col.selectedIndex].text;
-            }
-        })
     }
 
     loading: any;
@@ -112,19 +109,6 @@ export class ImageModalPage implements OnInit {
                 this.loading.dismiss();
             }
         }, 1000);
-    }
-
-
-    modifyTowerSection(direction) {
-        if (direction == 'up') {
-            var val = parseInt(this.photo.tower_section) + 1;
-            this.photo.tower_section = val.toString();
-            this.photo.title = this.photo.primary_title + "-" + this.photo.secondary_title + "-" + this.photo.tower_section;
-        } else if (direction == 'down') {
-            var val = parseInt(this.photo.tower_section) - 1;
-            this.photo.tower_section = val.toString();
-            this.photo.title = this.photo.primary_title + "-" + this.photo.secondary_title + "-" + this.photo.tower_section;
-        }
     }
 
     async uploadImage(form) {
@@ -181,34 +165,6 @@ export class ImageModalPage implements OnInit {
         });
 
         return await modal.present();
-    }
-
-    async fillTitlePrimary(title) {
-        this.photo.primary_title = title;
-        if (this.photo.secondary_title !== '' || this.photo.tower_section !== '') {
-            this.photo.title = this.photo.primary_title + "-" + this.photo.secondary_title + "-" + this.photo.tower_section;
-        } else {
-            this.photo.title = title;
-        }
-    }
-
-    async fillTitleSecondary(title) {
-        this.photo.secondary_title = title;
-        if (this.photo.primary_title !== '' || this.photo.tower_section !== '') {
-            this.photo.title = this.photo.primary_title + "-" + this.photo.secondary_title + "-" + this.photo.tower_section;
-        } else {
-            this.photo.title = this.photo.secondary_title;
-        }
-
-    }
-
-    async fillTowerSection(section) {
-        this.photo.tower_section = section;
-        if (this.photo.primary_title !== '' || this.photo.secondary_title !== '') {
-            this.photo.title = this.photo.primary_title + "-" + this.photo.secondary_title + "-" + this.photo.tower_section;
-        } else {
-            this.photo.title = this.photo.tower_section;
-        }
     }
 
     async presentToast(message: string) {
