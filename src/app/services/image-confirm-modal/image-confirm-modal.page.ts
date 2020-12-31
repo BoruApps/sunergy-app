@@ -143,22 +143,42 @@ export class ImageConfirmModalPage implements OnInit {
         console.log('serviceid',serviceid);
         console.log('columnname',columnname);
         this.actionSheet.show(this.actionOptions).then((buttonIndex: number) => {
-            console.log('launching camera');
-            this.camera.getPicture(this.options).then((imageData) => {
-                // imageData is either a base64 encoded string or a file URI
-                // If it's base64 (DATA_URL):
-                let base64Image = 'data:image/png;base64,' + imageData;
-                this.imgpov.setImage(imageData);
-                this.openModal(serviceid, base64Image, columnname);
-                // TODO: need code to upload to server here.
-                // On success: show toast
-                //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
-            }, (err) => {
-                // Handle error
-                console.error(err);
-                // On Fail: show toast
-                this.presentToast(`Upload failed! Please try again \n` + err);
-            });
+            console.log('Option pressed', buttonIndex);
+            if (buttonIndex == 1) {
+                console.log('launching camera');
+                this.camera.getPicture(this.options).then((imageData) => {
+                    // imageData is either a base64 encoded string or a file URI
+                    // If it's base64 (DATA_URL):
+                    let base64Image = 'data:image/png;base64,' + imageData;
+                    this.imgpov.setImage(imageData);
+                    this.openModal(serviceid, base64Image, columnname);
+                    // TODO: need code to upload to server here.
+                    // On success: show toast
+                    //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
+                }, (err) => {
+                    // Handle error
+                    console.error(err);
+                    // On Fail: show toast
+                    this.presentToast(`Upload failed! Please try again \n` + err);
+                });
+            } else if (buttonIndex == 2) {
+                console.log('launching gallery');
+                this.camera.getPicture(this.libraryOptions).then((imageData) => {
+                    // imageData is either a base64 encoded string or a file URI
+                    // If it's base64 (DATA_URL):
+                    let base64Image = 'data:image/png;base64,' + imageData;
+                    this.imgpov.setImage(imageData);
+                    this.openModal(serviceid, base64Image, columnname);
+                    // TODO: need code to upload to server here.
+                    // On success: show toast
+                    //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
+                }, (err) => {
+                    // Handle error
+                    console.error(err);
+                    // On Fail: show toast
+                    this.presentToast(`Upload failed! Please try again \n` + err);
+                });
+            }
         }).catch((err) => {
             console.log(err);
             this.presentToast(`Operation failed! \n` + err);
