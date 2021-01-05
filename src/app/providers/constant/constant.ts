@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AppConstants  {
-    apiurl : string = 'https://devl06.borugroup.com/sunergy/phoneapi/';
-    vturl : string = 'https://devl06.borugroup.com/sunergy/';
+    apiurl : string = 'http://192.241.134.167/phoneapi/';
+    vturl : string = 'http://192.241.134.167/';
     getApiUrl() {
         return this.apiurl;
     }

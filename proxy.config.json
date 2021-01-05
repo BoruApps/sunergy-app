@@ -10,7 +10,7 @@
     "logLevel": "debug"
   },
   {
-  "target": "https://sunergyinc.com/sales",
+  "target": "http://192.241.134.167",
   "secure": false,
   "logLevel": "debug"
   }

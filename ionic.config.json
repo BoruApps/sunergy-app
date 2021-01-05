@@ -14,8 +14,8 @@
       "proxyUrl": "http://localhost"
     },
     {
-      "path": "/sales/*",
-      "proxyUrl": "https://sunergyinc.com/"
+      "path": "/*",
+      "proxyUrl": "http://192.241.134.167"
     }
   ],
   "id": "d35bd1be"
