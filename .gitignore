@@ -9,7 +9,6 @@
 *.sublime-project
 *.sublime-workspace
 .DS_Store
-/src/app/providers/constant/constant.ts
 Thumbs.db
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/
