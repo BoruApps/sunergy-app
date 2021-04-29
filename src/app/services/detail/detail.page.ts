@@ -127,7 +127,7 @@ export class DetailPage implements OnInit {
 
     addUpdate(event) {
         var fieldname = event.target.name;
-        if (fieldname){
+        if (!fieldname || fieldname == '' || fieldname == undefined){
             fieldname = event.target.id;
         }
         var fieldvalue = event.target.textContent + event.target.value;
