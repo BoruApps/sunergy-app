@@ -52,6 +52,7 @@ export class DetailPage implements OnInit {
     serviceid: any;
     apiurl: any;
     serviceName: string;
+    inspection_type: string;
     isCompleteWO: number = 0;
     public workorderdetail: any[] = [];
     public servicedetail: any[] = [];
@@ -74,6 +75,12 @@ export class DetailPage implements OnInit {
             open: false
         },
         'System': {
+            open: false
+        },
+        'Inspection A Questions': {
+            open: false
+        },
+        'Inspection B Questions': {
             open: false
         },
     }
@@ -104,6 +111,8 @@ export class DetailPage implements OnInit {
         this.blockGroups['Structural and Roof Details'].open = false;
         this.blockGroups['Main Service Panel'].open = false;
         this.blockGroups['System'].open = false;
+        this.blockGroups['Inspection A Questions'].open = false;
+        this.blockGroups['Inspection B Questions'].open = false;
         this.apiurl = this.appConst.getApiUrl();
     }
 
@@ -159,7 +168,8 @@ export class DetailPage implements OnInit {
         this.arrayfields = [];
         console.log('loading details for service id:', serviceid)
         var params = {
-            record_id: serviceid
+            user_id: this.userinfo.id,
+            record_id: serviceid,
         }
         var headers = new HttpHeaders();
         headers.append("Accept", 'application/json');
@@ -174,6 +184,7 @@ export class DetailPage implements OnInit {
                 console.log('getWorkOrderDetail response was', success);
                 if (success == true) {
                     var workorder = data['body']['data'];
+                    this.inspection_type = data['body']['inspection_type'];
                     var allfields = data['body']['allfields'];
                     allfields.description.replace(/\n/g, "<br>");
                     var longitude = this.decodeHTML(allfields.cf_longtitude);
@@ -395,13 +406,14 @@ export class DetailPage implements OnInit {
         });
     }
 
-    async openChecklist(record_id) {
+    async openChecklist(record_id,inspection_type) {
         console.log('opening checklist for record', record_id);
         const modal_checklist = await this.modalCtrl.create({
             component: ChecklistModalPage,
             componentProps: {
                 "paramTitle": "Photos Checklist",
                 "serviceid": record_id,
+                "inspection_type": inspection_type,
                 "current_updates": this.updatefields,
                 "user_id": this.userinfo.id,
             }

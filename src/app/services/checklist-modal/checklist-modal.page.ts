@@ -19,6 +19,7 @@ export class ChecklistModalPage implements OnInit {
     modalTitle: string;
     modelId: number;
     serviceid: any;
+    inspection_type: any;
     apiurl: any;
     updatefields: any = {};
     checklistDetail: any = {};
@@ -101,7 +102,8 @@ export class ChecklistModalPage implements OnInit {
     loadChecklist(serviceid) {
         console.log('loading details for service id:', serviceid)
         var params = {
-            record_id: serviceid
+            record_id: serviceid,
+            inspection_type: this.inspection_type
         }
         var headers = new HttpHeaders();
         headers.append("Accept", 'application/json');

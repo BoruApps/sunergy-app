@@ -395,22 +395,13 @@
                 <ion-row class="ion-align-items-center ion-justify-content-center">
                     <ion-col class="padding-left-none" size="12">
                         <ion-button expand="full" size="large" expand="block" color="secondary"
-                                    (click)="openChecklist(workorderdetail.workorderid)">
+                                    (click)="openChecklist(workorderdetail.workorderid,inspection_type)">
                             <ion-icon name="camera"></ion-icon>
                             <ion-text class="add-photo-button">
                                 Add Photos
                             </ion-text>
                         </ion-button>
                     </ion-col>
-                    
-                    <!--
-                    <ion-col size="3">
-                        <ion-button size="large" expand="block" color="secondary"
-                                    (click)="openLibrary(workorderdetail.workorderid)">
-                            <ion-icon name="folder-open"></ion-icon>
-                        </ion-button>
-                    </ion-col>
-                    -->
                 </ion-row>
             </ion-grid>
         </div>
