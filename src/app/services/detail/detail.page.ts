@@ -76,13 +76,7 @@ export class DetailPage implements OnInit {
         },
         'System': {
             open: false
-        },
-        'Inspection A Questions': {
-            open: false
-        },
-        'Inspection B Questions': {
-            open: false
-        },
+        }
     }
 
     //actionSheet:any;
@@ -111,8 +105,6 @@ export class DetailPage implements OnInit {
         this.blockGroups['Structural and Roof Details'].open = false;
         this.blockGroups['Main Service Panel'].open = false;
         this.blockGroups['System'].open = false;
-        this.blockGroups['Inspection A Questions'].open = false;
-        this.blockGroups['Inspection B Questions'].open = false;
         this.apiurl = this.appConst.getApiUrl();
     }
 
@@ -215,6 +207,7 @@ export class DetailPage implements OnInit {
                                 blockname: key,
                                 fields: fieldArray,
                             });
+                            this.blockGroups[key]={open: false};
                         }
                     }
 
