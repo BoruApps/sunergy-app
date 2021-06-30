@@ -53,6 +53,7 @@ export class DetailPage implements OnInit {
     apiurl: any;
     serviceName: string;
     inspection_type: string;
+    activityid: string;
     isCompleteWO: number = 0;
     public workorderdetail: any[] = [];
     public servicedetail: any[] = [];
@@ -61,23 +62,7 @@ export class DetailPage implements OnInit {
     updatefields: any = {};
     arrayfields: any = {};
 
-    blockGroups: any = {
-        'Visit Details': {
-            open: false
-        },
-        'Customer Questions': {
-            open: false
-        },
-        'Structural and Roof Details': {
-            open: false
-        },
-        'Main Service Panel': {
-            open: false
-        },
-        'System': {
-            open: false
-        }
-    }
+    blockGroups: any = {}
 
     //actionSheet:any;
     constructor(
@@ -100,12 +85,10 @@ export class DetailPage implements OnInit {
         @Inject(LOCALE_ID) private locale: string,
         public loadingController: LoadingController
     ) {
-        this.blockGroups['Visit Details'].open = false;
-        this.blockGroups['Customer Questions'].open = false;
-        this.blockGroups['Structural and Roof Details'].open = false;
-        this.blockGroups['Main Service Panel'].open = false;
-        this.blockGroups['System'].open = false;
         this.apiurl = this.appConst.getApiUrl();
+        if (this.router.getCurrentNavigation().extras.state){
+            this.activityid = this.router.getCurrentNavigation().extras.state.activityid;
+        }
     }
 
     loading: any;
@@ -161,6 +144,7 @@ export class DetailPage implements OnInit {
         console.log('loading details for service id:', serviceid)
         var params = {
             user_id: this.userinfo.id,
+            activityid: this.activityid,
             record_id: serviceid,
         }
         var headers = new HttpHeaders();

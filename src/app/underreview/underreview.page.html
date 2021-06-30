@@ -7,7 +7,7 @@
 <ion-content>
     <ion-list lines="full">
         <div *ngIf="count_underreview > 0">
-        <ion-item (click)="goToDetail(service.workorderid)" detail *ngFor="let service of underreview">
+        <ion-item (click)="goToDetail(service.workorderid,service.activityid)" detail *ngFor="let service of underreview">
             <ion-avatar><ion-icon color="warning" size="large" name="alert"></ion-icon></ion-avatar>
             <ion-label>
               <h2>{{service[0]}}</h2>

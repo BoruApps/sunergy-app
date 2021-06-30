@@ -124,8 +124,8 @@ export class ServicesPage implements OnInit {
         return services;
     }
 
-    goToDetail(serviceid) {
-        this.router.navigateByUrl(`/services/detail/${serviceid}`, {state: {}});
+    goToDetail(serviceid,activityid=null) {
+        this.router.navigateByUrl(`/services/detail/${serviceid}`, {state: {'activityid':activityid}});
     }
 
     logout() {

@@ -60,8 +60,8 @@ export class UnderreviewPage implements OnInit {
         }, 1000);
     }
 
-    goToDetail(serviceid) {
-        this.router.navigateByUrl(`/services/detail/${serviceid}`, {state: {}});
+    goToDetail(serviceid,activityid=null) {
+        this.router.navigateByUrl(`/services/detail/${serviceid}`, {state: {'activityid':activityid}});
     }
 
     logout() {
