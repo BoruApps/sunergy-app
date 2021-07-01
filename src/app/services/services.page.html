@@ -42,13 +42,10 @@
           </ion-grid>
         </div>
       </ion-label>
-      <ion-badge slot="end" class="status" color="white"
-      data-color="{{(service?.wostatus == 'Cancelled' || service?.wostatus == 'Declined') ? 'danger' : 'warning'}}"
-      [ngStyle]="{'background-color': service?.wostatus == 'Cancelled' || service?.wostatus == 'Declined' ? 'var(--ion-color-danger)' :
-      service?.wostatus == 'Under Review' ? 'var(--ion-color-warning)' :
-      service?.wostatus == 'Completed' ? 'var(--ion-color-medium)' : 'var(--ion-color-success)', 'border-color':service?.wostatus == 'Cancelled' || service?.wostatus == 'Declined' ? 'var(--ion-color-danger)' : service?.wostatus == 'Under Review' ? 'var(--ion-color-warning)' : 'var(--ion-color-success)' }"
-      >
-        <ion-text class="status-text">{{service.wostatus}}</ion-text>
+      <ion-badge slot="end" class="status" color="medium"
+                 data-color="{'success'}}"
+                 [ngStyle]="{'background-color': 'var(--ion-color-success)' }"        >
+        <ion-text class="status-text">{{service.activitytype}}</ion-text>
       </ion-badge>
     </ion-item>
     </div>
@@ -83,12 +80,9 @@
           </div>
         </ion-label>
         <ion-badge slot="end" class="status" color="medium"
-        data-color="{{(service?.wostatus == 'Cancelled' || service?.wostatus == 'Declined') ? 'danger' : 'success'}}"
-        [ngStyle]="{'background-color': service?.wostatus == 'Cancelled' || service?.wostatus == 'Declined' ? 'var(--ion-color-danger)' :
-      service?.wostatus == 'Under Review' ? 'var(--ion-color-warning)' :
-      service?.wostatus == 'Completed' ? 'var(--ion-color-medium)' : 'var(--ion-color-success)', 'border-color':service?.wostatus == 'Cancelled' || service?.wostatus == 'Declined' ? 'var(--ion-color-danger)' : service?.wostatus == 'Under Review' ? 'var(--ion-color-warning)' : 'var(--ion-color-success)' }"
-        >
-          <ion-text class="status-text">{{service.wostatus}}</ion-text>
+        data-color="{'success'}}"
+        [ngStyle]="{'background-color': 'var(--ion-color-success)' }"        >
+          <ion-text class="status-text">{{service.activitytype}}</ion-text>
         </ion-badge>
       </ion-item>
     <p class="ion-padding" *ngIf="count_futureServices == 0">No work orders available for this section</p>
@@ -123,9 +117,10 @@
           </ion-grid>
         </div>
       </ion-label>
-      <ion-badge size="large" slot="end" color="white" data-color="medium" class="status"
-      [ngStyle]="{'background-color': 'var(--ion-color-medium)' , 'border-color': 'var(--ion-color-medium)' }">
-        <ion-text class="status-text">{{service.wostatus}}</ion-text>
+      <ion-badge slot="end" class="status" color="medium"
+                 data-color="{'success'}}"
+                 [ngStyle]="{'background-color': 'var(--ion-color-success)' }"        >
+        <ion-text class="status-text">{{service.activitytype}}</ion-text>
       </ion-badge>
     </ion-item>
     <p class="ion-padding" *ngIf="count_completedServices == 0">No work orders available for this section</p>

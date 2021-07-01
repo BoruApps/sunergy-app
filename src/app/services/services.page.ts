@@ -70,60 +70,6 @@ export class ServicesPage implements OnInit {
         }, 1000);
     }
 
-    async loadRandomServices(type) {
-        var limit = 16;
-        var init = 0;
-        if (type == 'today') {
-            var limit = 5;
-        } else if (type == 'future') {
-            var limit = 10;
-            init = 5;
-        } else if (type == 'completed') {
-            init = 0;
-        }
-        var services = [];
-        for (var i = init; i < limit; i += 1) {
-            var date = new Date();
-            var startDay = Math.floor(Math.random() * 90) - 45;
-            var endDay = Math.floor(Math.random() * 2) + startDay;
-            var startTime;
-            var endTime;
-            var desc;
-            var startMinute = Math.floor(Math.random() * 24 * 60);
-            var endMinute = Math.floor(Math.random() * 180) + startMinute;
-            startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + startDay, 0, date.getMinutes() + startMinute);
-            endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + endDay, 0, date.getMinutes() + endMinute);
-            var randomTOS = i % this.typesOfServices.length;
-            var randomStatus = i % this.statuses.length;
-            let start = formatDate(startTime, 'shortTime', this.locale);
-            let end = formatDate(endTime, 'shortTime', this.locale);
-            let longdate = formatDate(startTime, 'medium', this.locale);
-            var availableStatuses = this.statuses;
-            var status = this.statuses[randomStatus];
-            if (type == 'today') {
-                var availableStatuses = ['Open', 'Cancelled', 'Attention Required'];
-            }
-            if (type == 'future') {
-                var availableStatuses = ['Cancelled', 'Open', 'Declined',];
-            }
-            var status = availableStatuses[i % availableStatuses.length];
-            if (type == 'completed') {
-                var status = 'Completed';
-            }
-            services.push({
-                id: i,
-                tower: this.randomPeople[i],
-                tos: this.typesOfServices[randomTOS],
-                desc: '',
-                longdate: longdate,
-                startTime: start,
-                endTime: end,
-                status: status,
-            });
-        }
-        return services;
-    }
-
     goToDetail(serviceid,activityid=null) {
         this.router.navigateByUrl(`/services/detail/${serviceid}`, {state: {'activityid':activityid}});
     }
@@ -222,6 +168,9 @@ export class ServicesPage implements OnInit {
 
                 if (success == true) {
                     var workorders = data['body']['data'];
+                    console.log('=====================');
+                    console.log('type',type);
+                    console.log('=====================');
                     console.log('services page: workorders', workorders);
                     if (data['body']['count'] > 0) {
                         workorders.forEach(workorder => {
@@ -243,10 +192,6 @@ export class ServicesPage implements OnInit {
                 }
 
             }, error => {
-                //this.hideLoading();
-                //console.log(error);
-                //console.log(error.message);
-                //console.error(error.message);
                 console.log('failed to fetch records');
             });
     }
@@ -300,9 +245,6 @@ export class ServicesPage implements OnInit {
                 }
             }
         });
-        //this.loadRandomServices('today').then((result) => { this.todayServices= result; });
-        // this.loadRandomServices('future').then((result) => { this.futureServices= result; });
-        // this.loadRandomServices('completed').then((result) => { this.completedServices= result; });
     }
 
 }
