@@ -7,31 +7,26 @@
 <ion-content class="ion-padding">
     <form #form="ngForm"  (ngSubmit)="completeOrder(serviceid)">
         <ion-grid>
-            <ion-row>
-                <ion-col size="7"><b>Photos Required</b></ion-col>
-                <ion-col size="5">
-                    <div style="text-align: center;"><b>Status</b></div>
-                </ion-col>
-            </ion-row>
-            <ion-row>
-                <ion-col size="12"></ion-col>
-            </ion-row>
-            <ion-row *ngFor="let service of servicedetail" style="align-items: center;">
-                <ion-col size="7">{{service.fieldlabel}} <span  *ngIf="service.imagecount != null"><b>({{service.imagecount}})</b></span></ion-col>
-                <ion-col size="5" style="text-align: center;">
-                    <ion-item-group>
-                        <ion-button *ngIf="service.value == 1" color="success" (click)="openActionSheet(serviceid,service.columnname)">
-                            <ion-icon name="camera"></ion-icon>
-                        </ion-button>
-                        <ion-button *ngIf="service.value == 0" color="danger" (click)="openActionSheet(serviceid,service.columnname)">
-                            <ion-icon name="camera"></ion-icon>
-                        </ion-button>
-                        <ion-button *ngIf="service.value == 1" color="tertiary" title="Preview" (click)="goToGallery(serviceid,service.columnname,service.fieldlabel)">
-                            <ion-icon name="images"></ion-icon>
-                        </ion-button>
-                    </ion-item-group>
-                </ion-col>
-            </ion-row>
+            <ion-item-group *ngFor="let service of servicedetail" style="align-items: center;">
+                <ion-item lines="none">
+                    {{service.fieldlabel}}  <ion-icon name="help-circle-outline" (click)="toggleHelper(service.columnname)" class="checklist-helper"></ion-icon>
+                </ion-item>
+                <ion-item lines="none">
+                    <ul style="display: contents;">
+                        <li *ngFor="let thumb of service.images" class="checklist-thumb-list">
+                            <ion-thumbnail class="checklist-thumb"> <img src="{{thumb}}"> </ion-thumbnail>
+                        </li>
+                        <li class="checklist-thumb-list">
+                            <ion-button *ngIf="service.value == 1"  size="large" color="success" (click)="openActionSheet(serviceid,service.columnname)">
+                                <ion-icon name="camera"></ion-icon>
+                            </ion-button>
+                            <ion-button *ngIf="service.value == 0"  size="large" color="danger" (click)="openActionSheet(serviceid,service.columnname)">
+                                <ion-icon name="camera"></ion-icon>
+                            </ion-button>
+                        </li>
+                    </ul>
+                </ion-item>
+            </ion-item-group>
         </ion-grid>
     </form>
 </ion-content>

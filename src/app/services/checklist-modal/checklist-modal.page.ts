@@ -126,7 +126,7 @@ export class ChecklistModalPage implements OnInit {
                             uitype: workorder[key].uitype,
                             value: workorder[key].value,
                             fieldlabel: workorder[key].fieldlabel,
-                            imagecount: (workorder[key].imagecount) ? workorder[key].imagecount : null,
+                            images: workorder[key].images,
                         });
 
                         this.checklistDetail[key] = workorder[key].value;
@@ -351,5 +351,8 @@ export class ChecklistModalPage implements OnInit {
 
     goToGallery(serviceid,columnname,fieldlabel){
         this.router.navigate([`/services/detail/${serviceid}/gallery`, {servicename: fieldlabel,columnname:columnname}]);        this.closeModal();
+    }
+
+    toggleHelper(columnname){
     }
 }
