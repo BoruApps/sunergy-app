@@ -7,11 +7,14 @@
 <ion-content class="ion-padding">
     <form #form="ngForm"  (ngSubmit)="completeOrder(serviceid)">
         <ion-grid>
-            <ion-item-group *ngFor="let service of servicedetail" style="align-items: center;">
+            <ion-item-group *ngFor="let service of servicedetail" style="align-items: center;margin-bottom: 25px">
                 <ion-item lines="none">
                     {{service.fieldlabel}}  <ion-icon name="help-circle-outline" (click)="toggleHelper(service.columnname)" class="checklist-helper"></ion-icon>
                 </ion-item>
-                <ion-item lines="none">
+                <ion-item *ngIf="service.helpinfo != '' && checklisthelper[service.columnname] == 1" lines="none" class="helper-text-box">
+                    {{service.helpinfo}}
+                </ion-item>
+                <ion-item lines="none" style="margin-top: 5px;">
                     <ul style="display: contents;">
                         <li *ngFor="let thumb of service.images" class="checklist-thumb-list">
                             <ion-thumbnail class="checklist-thumb"> <img src="{{thumb}}"> </ion-thumbnail>

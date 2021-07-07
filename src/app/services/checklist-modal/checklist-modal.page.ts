@@ -23,6 +23,7 @@ export class ChecklistModalPage implements OnInit {
     apiurl: any;
     updatefields: any = {};
     checklistDetail: any = {};
+    checklisthelper: any = {};
     user_id: any;
     dataReturned: any;
     public workorderdetail: any[] = [];
@@ -126,9 +127,11 @@ export class ChecklistModalPage implements OnInit {
                             uitype: workorder[key].uitype,
                             value: workorder[key].value,
                             fieldlabel: workorder[key].fieldlabel,
+                            helpinfo: workorder[key].helpinfo,
                             images: workorder[key].images,
                         });
 
+                        this.checklisthelper[key] = 0;
                         this.checklistDetail[key] = workorder[key].value;
                     }
                     console.log('workorder', this.servicedetail);
@@ -354,5 +357,6 @@ export class ChecklistModalPage implements OnInit {
     }
 
     toggleHelper(columnname){
+        this.checklisthelper[columnname] = (this.checklisthelper[columnname] == 1) ? 0 : 1;
     }
 }
