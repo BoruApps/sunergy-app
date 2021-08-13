@@ -37,8 +37,19 @@ ion-select{
 .readonly-fields{
     
 }
-ion-item > div {
+ion-item > div:not(.photo-icon) {
     width: 100% !important;
+}
+
+ion-item {
+    position: relative;
+}
+
+.photo-icon {
+    width: 35px;
+    position: absolute;
+    right: .5em;
+    font-size: 2em;
 }
 
 .section{

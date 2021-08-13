@@ -147,6 +147,7 @@ export class DetailPage implements OnInit {
             activityid: this.activityid,
             record_id: serviceid,
         }
+        if(!(serviceid in this.appConst.workOrder)) this.appConst.workOrder[serviceid] = {};
         var headers = new HttpHeaders();
         headers.append("Accept", 'application/json');
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
@@ -184,7 +185,12 @@ export class DetailPage implements OnInit {
                                         value: workorder[key][fieldkey].value,
                                         picklist: workorder[key][fieldkey].picklist,
                                         fieldlabel: workorder[key][fieldkey].fieldlabel,
+                                        json: this.checkJson(workorder[key][fieldkey].default),
+                                        default: workorder[key][fieldkey].default
                                     })
+                                    if(this.checkJson(workorder[key][fieldkey].default)) {
+                                        this.appConst.workOrder[serviceid][fieldkey] = (workorder[key][fieldkey].value !== "") ? JSON.parse(workorder[key][fieldkey].value) : JSON.parse(workorder[key][fieldkey].default);
+                                    }
                                 }
                             }
                             this.servicedetail.push({
@@ -222,6 +228,21 @@ export class DetailPage implements OnInit {
             });
     }
 
+    checkJson(data) {
+        data = typeof data !== "string" ? JSON.stringify(data) : data;
+
+        try {
+            data = JSON.parse(data);
+        } catch (e) {
+            return false;
+        }
+
+        if(typeof data === "object" && data !== null) {
+            return true;
+        }
+        return false;
+    }
+    
     logout() {
         console.log('logout clicked');
         this.storage.set("userdata", null);
@@ -383,16 +404,19 @@ export class DetailPage implements OnInit {
         });
     }
 
-    async openChecklist(record_id,inspection_type) {
+    async openChecklist(record_id,inspection_type, defaultContent, currentValue, title, columnName) {
         console.log('opening checklist for record', record_id);
         const modal_checklist = await this.modalCtrl.create({
             component: ChecklistModalPage,
             componentProps: {
-                "paramTitle": "Photos Checklist",
+                "paramTitle": title,
                 "serviceid": record_id,
                 "inspection_type": inspection_type,
                 "current_updates": this.updatefields,
                 "user_id": this.userinfo.id,
+                "defaultContent": defaultContent,
+                "value" : currentValue,
+                "field": columnName
             }
         });
 

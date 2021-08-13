@@ -10,6 +10,10 @@
             <ion-item-group *ngFor="let service of servicedetail" style="align-items: center;margin-bottom: 25px">
                 <ion-item lines="none">
                     {{service.fieldlabel}}  <ion-icon name="help-circle-outline" (click)="toggleHelper(service.columnname)" class="checklist-helper"></ion-icon>
+
+                    <ion-button (click)="openActionSheet(service.columnname)" class = "camera-holder">
+                        <ion-icon name="camera"></ion-icon>
+                    </ion-button>
                 </ion-item>
                 <ion-item *ngIf="service.helpinfo != '' && checklisthelper[service.columnname] == 1" lines="none" class="helper-text-box">
                     {{service.helpinfo}}
@@ -18,14 +22,6 @@
                     <ul style="display: contents;">
                         <li *ngFor="let thumb of service.images" class="checklist-thumb-list">
                             <ion-thumbnail class="checklist-thumb"> <img src="{{thumb}}"> </ion-thumbnail>
-                        </li>
-                        <li class="checklist-thumb-list">
-                            <ion-button *ngIf="service.value == 1"  size="large" color="success" (click)="openActionSheet(serviceid,service.columnname)">
-                                <ion-icon name="camera"></ion-icon>
-                            </ion-button>
-                            <ion-button *ngIf="service.value == 0"  size="large" color="danger" (click)="openActionSheet(serviceid,service.columnname)">
-                                <ion-icon name="camera"></ion-icon>
-                            </ion-button>
                         </li>
                     </ul>
                 </ion-item>

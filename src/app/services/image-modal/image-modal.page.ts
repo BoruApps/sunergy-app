@@ -23,6 +23,7 @@ export class ImageModalPage implements OnInit {
     apiurl: any;
     user_id: any;
     dataReturned: any;
+    index:any;
     photo = {
         title: '',
         primary_title: '',
@@ -87,6 +88,7 @@ export class ImageModalPage implements OnInit {
         this.modalTitle = this.navParams.data.paramTitle;
         this.photo.title = this.allTitlelist[this.columnname];
         this.user_id = this.navParams.data.user_id;
+        this.index = this.navParams.data.columnIndex;
     }
 
     async closeModal() {
@@ -112,6 +114,7 @@ export class ImageModalPage implements OnInit {
     }
 
     async uploadImage(form) {
+        console.log(this);
         var headers = new HttpHeaders();
         headers.append("Accept", 'application/json');
         headers.append('Content-Type', 'application/json');
@@ -120,6 +123,7 @@ export class ImageModalPage implements OnInit {
         form.value.serviceid = this.serviceid;
         form.value.columnname = this.columnname;
         form.value.logged_in_user = this.user_id;
+        form.value.index = this.index;
         form.value.mode = 'image_upload';
         console.log('adding photo for', form.value.serviceid);
         console.log('adding photo columnname', form.value.columnname);
@@ -131,8 +135,10 @@ export class ImageModalPage implements OnInit {
                 if (data['body']['success'] == true) {
                     this.presentToastPrimary('Photo uploaded and added to Work Order \n');
                     this.closeModal();
-                    console.log('openConfirmModal', this.serviceid);
-                    this.openConfirmModal(this.serviceid,this.columnname);
+                    this.appConst.workOrder[this.serviceid][this.columnname][this.index]['photos'].push(data['body']['data']);
+                    console.log(this.appConst.workOrder);
+                    // console.log('openConfirmModal', this.serviceid);
+                    // this.openConfirmModal(this.serviceid,this.columnname);
                 } else {
                     console.log('upload failed');
                     this.presentToast('Upload failed! Please try again \n');

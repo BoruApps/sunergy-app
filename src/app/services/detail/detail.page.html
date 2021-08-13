@@ -60,27 +60,6 @@
                         </ion-button>
                     </ion-item>
                 </ion-item-group>
-
-                <br><br>
-                <!--
-                <ion-item lines="none">
-                    <ion-label>Equipment List</ion-label>
-                </ion-item>
-                <div *ngIf="countItemList > 0">
-                    <ion-grid class="ion-padding">
-                        <ion-row class="ion-align-items-center ion-justify-content-center"
-                                 *ngFor="let item of itemgrid">
-                            <ion-col class="padding-left-none" size="9">
-                                {{item.itemname}}
-                            </ion-col>
-                            <ion-col size="3" align-self-center class="text-align-center">
-                                <ion-text> {{item.quantity}}</ion-text>
-                            </ion-col>
-                        </ion-row>
-                    </ion-grid>
-                </div>
-                <p class="ion-padding" *ngIf="countItemList == 0">No Equipment Available</p>
-                -->
             </div>
             <!-- read only fields -->
 
@@ -96,6 +75,10 @@
                     </ion-item>
                     <div [ngClass]="{'section-active': blockGroups[blockservice.blockname].open, 'section': !blockGroups[blockservice.blockname].open}">
                         <ion-item detail="false" *ngFor="let service of blockservice.fields;">
+                            
+                            <div *ngIf="service.json && service.uitype == 21" class = "photo-icon">
+                                    <ion-icon name="camera" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)"></ion-icon>
+                            </div>
                             <ion-label position="stacked">{{service.fieldlabel}}</ion-label>
 
                             <div [ngSwitch]="service.uitype">
@@ -116,20 +99,24 @@
                                     <ion-select-option
                                             *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
                                 </ion-select>
+
                                 <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="15" name="{{service.columnname}}"
                                             value="{{service.value}}">
                                     <ion-select-option
                                             *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
                                 </ion-select>
+
                                 <!--uitype = 33-->
                                 <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="33" name="{{service.columnname}}"
                                             multiple="true">
                                     <ion-select-option
                                             *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
                                 </ion-select>
+
                                 <!-- uitype = 7 -->
                                 <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="7" type="number"
                                         name="{{service.columnname}}" value="{{service.value | number}}"></ion-input>
+                                
                                 <!-- uitype = 9 -->
                                 <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="9" type="text"
                                         name="{{service.columnname}}" value="{{service.value | number}}"
@@ -145,6 +132,12 @@
                                 <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
                                             rows="3" *ngSwitchCase="20" value="{{service.value}}"
                                             width="100%"></ion-textarea>
+                                
+                                <div *ngSwitchCase="21" >
+                                    <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
+                                            rows="3" value="{{service.value}}"
+                                            width="100%"></ion-textarea>
+                                </div>
 
                             </div>
                         </ion-item>
@@ -389,21 +382,4 @@
         </ion-list>
     </form>
 
-    <!--photos buttons -->
-        <div *ngIf="isCompleteWO == 0" class="button-grouping ion-padding anchor-bottom">
-            <ion-grid class="ion-no-padding">
-                <ion-row class="ion-align-items-center ion-justify-content-center">
-                    <ion-col class="padding-left-none" size="12">
-                        <ion-button expand="full" size="large" expand="block" color="secondary"
-                                    (click)="openChecklist(workorderdetail.workorderid,inspection_type)">
-                            <ion-icon name="camera"></ion-icon>
-                            <ion-text class="add-photo-button">
-                                Add Photos
-                            </ion-text>
-                        </ion-button>
-                    </ion-col>
-                </ion-row>
-            </ion-grid>
-        </div>
-        <!--photos buttons -->
 </ion-content>
