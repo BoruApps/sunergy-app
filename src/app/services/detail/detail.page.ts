@@ -121,6 +121,17 @@ export class DetailPage implements OnInit {
         if (event.target.tagName == 'ION-TEXTAREA' || event.target.tagName == 'ION-SELECT') {
             fieldvalue = event.target.value;
         }
+        if(fieldname in this.appConst.workOrder[this.serviceid]) {
+            if(this.checkJson(this.appConst.workOrder[this.serviceid][fieldname]) && event.target.tagName == 'ION-TEXTAREA' ) {
+                this.appConst.workOrder[this.serviceid][fieldname]['comments'] = fieldvalue;
+            } else {
+                this.appConst.workOrder[this.serviceid][fieldname] = fieldvalue;
+            }
+        } else {
+            this.appConst.workOrder[this.serviceid][fieldname] = fieldvalue;
+        }
+        this.appConst.workOrder[this.serviceid]['wostatus'] = 'In-Process';
+        console.log(this.appConst.workOrder);
         this.updatefields['wostatus'] = 'In-Process';
         this.updatefields[fieldname] = fieldvalue;
         console.log('adding update to queue: ', fieldname, fieldvalue);
@@ -142,6 +153,7 @@ export class DetailPage implements OnInit {
         this.servicedetail = [];
         this.arrayfields = [];
         console.log('loading details for service id:', serviceid)
+        this.serviceid = serviceid;
         var params = {
             user_id: this.userinfo.id,
             activityid: this.activityid,
@@ -179,7 +191,7 @@ export class DetailPage implements OnInit {
                                 if (key == 'Array Information'){
                                     this.arrayfields[fieldkey] = workorder[key][fieldkey].value;
                                 }else{
-                                    fieldArray.push({
+                                    var _data = {
                                         columnname: fieldkey,
                                         uitype: workorder[key][fieldkey].uitype,
                                         value: workorder[key][fieldkey].value,
@@ -187,16 +199,22 @@ export class DetailPage implements OnInit {
                                         fieldlabel: workorder[key][fieldkey].fieldlabel,
                                         json: this.checkJson(workorder[key][fieldkey].default),
                                         default: workorder[key][fieldkey].default
-                                    })
+                                    };
                                     if(this.checkJson(workorder[key][fieldkey].default)) {
                                         this.appConst.workOrder[serviceid][fieldkey] = (workorder[key][fieldkey].value !== "") ? JSON.parse(workorder[key][fieldkey].value) : JSON.parse(workorder[key][fieldkey].default);
                                     }
+
+                                    if(_data.json) {
+                                        _data.value = this.appConst.workOrder[serviceid][fieldkey]['comments']
+                                    }
+                                    fieldArray.push(_data);
                                 }
                             }
                             this.servicedetail.push({
                                 blockname: key,
                                 fields: fieldArray,
                             });
+                            console.log(this.appConst.workOrder);
                             this.blockGroups[key]={open: false};
                         }
                     }
@@ -539,16 +557,30 @@ export class DetailPage implements OnInit {
     }
 
     saveWO(worecord) {
-        var data = this.updatefields;
+        var data = this.appConst.workOrder[this.serviceid];
+        var status = true;
+        for(var column in data) {
+            console.log(data[column]);
+            if(data[column]['photos'] !== undefined) {
+                for(var index in data[column]['photos']) {
+                    if(data[column]['photos'][index]['photos'].length == 0) {
+                        status = false;
+                    }
+                }
+            }
+        }
         var data_stringified = JSON.stringify(data);
         var logged_in_uid = this.userinfo.id;
         console.log('attempting to submitting data to vtiger', worecord, data);
         var params = {
             recordid: worecord,
             updates: data_stringified,
-            logged_in_user: logged_in_uid
+            logged_in_user: logged_in_uid,
+            status: status
         }
+        console.log(params);
         console.log("params being sent", params)
+        // return false;
         if (Object.keys(data).length > 0) {
             console.log('Some data was changed, pushing ' + Object.keys(data).length + ' changes');
             var headers = new HttpHeaders();

@@ -135,8 +135,8 @@ export class ImageModalPage implements OnInit {
                 if (data['body']['success'] == true) {
                     this.presentToastPrimary('Photo uploaded and added to Work Order \n');
                     this.closeModal();
-                    this.appConst.workOrder[this.serviceid][this.columnname][this.index]['photos'].push(data['body']['data']);
-                    console.log(this.appConst.workOrder);
+                    console.log(this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]);
+                    this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'].push(data['body']['data']['image_path']);
                     // console.log('openConfirmModal', this.serviceid);
                     // this.openConfirmModal(this.serviceid,this.columnname);
                 } else {

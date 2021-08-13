@@ -114,29 +114,27 @@
                                 </ion-select>
 
                                 <!-- uitype = 7 -->
-                                <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="7" type="number"
+                                <ion-input (ionBlur)="addUpdate($event)" *ngSwitchCase="7" type="number"
                                         name="{{service.columnname}}" value="{{service.value | number}}"></ion-input>
                                 
                                 <!-- uitype = 9 -->
-                                <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="9" type="text"
+                                <ion-input (ionBlur)="addUpdate($event)" *ngSwitchCase="9" type="text"
                                         name="{{service.columnname}}" value="{{service.value | number}}"
                                         width="100%"></ion-input>
                                 <!--else-->
-                                <ion-input (ionInput)="addUpdate($event)" type="text" name="{{service.columnname}}"
+                                <ion-input (ionBlur)="addUpdate($event)" type="text" name="{{service.columnname}}"
                                         *ngSwitchDefault value="{{service.value}}"></ion-input>
 
                                 <!--uitype = 19.20-->
-                                <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
+                                <ion-textarea (ionBlur)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
                                             rows="3" *ngSwitchCase="19" value="{{service.value}}"
                                             width="100%"></ion-textarea>
-                                <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
+                                <ion-textarea (ionBlur)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
                                             rows="3" *ngSwitchCase="20" value="{{service.value}}"
                                             width="100%"></ion-textarea>
                                 
                                 <div *ngSwitchCase="21" >
-                                    <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
-                                            rows="3" value="{{service.value}}"
-                                            width="100%"></ion-textarea>
+                                    <ion-textarea (ionBlur)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}" rows="3" value="{{service.value}}" width="100%"></ion-textarea>
                                 </div>
 
                             </div>
