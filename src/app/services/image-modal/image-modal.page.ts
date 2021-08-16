@@ -138,7 +138,7 @@ export class ImageModalPage implements OnInit {
                     console.log(this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]);
                     this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'].push({
                         imgpath:data['body']['data']['image_path'],
-                        documentid:Object.keys(data['body']['data']['image_id'])[0]
+                        documentid:data['body']['data']['image_id']
                     });
                     // console.log('openConfirmModal', this.serviceid);
                     // this.openConfirmModal(this.serviceid,this.columnname);
