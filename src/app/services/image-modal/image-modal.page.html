@@ -13,22 +13,28 @@
         <ion-card-header>
             <ion-card-subtitle>Image Preview</ion-card-subtitle>
         </ion-card-header>
-         <img src="{{base64Image}}" />
+        <img *ngIf="is_delete === true" src="{{this.apiurl.replace('phoneapi/','')}}{{base64Image}}" />
+        <img *ngIf="is_delete !== true"  src="{{base64Image}}" />
         <ion-input type="text"  ng-show="false" [(ngModel)]="photo.base64Image" name="base64Image" value="{{base64Image}}"></ion-input>
-        <ion-card-header>
-            <ion-card-subtitle>
-                <ion-label position="stacked">Image Description</ion-label>
-            </ion-card-subtitle>
-        </ion-card-header>
+        <div *ngIf="is_delete !== true">
+            <ion-card-header>
+                <ion-card-subtitle>
+                    <ion-label position="stacked">Image Description</ion-label>
+                </ion-card-subtitle>
+            </ion-card-header>
 
-        <ion-card-content>
-            <ion-input type="text" oninput="" size="100" required="" [(ngModel)]="photo.title" name="notecontent" class="title-input" placeholder="Enter a description..."></ion-input>
-        </ion-card-content>
-
+            <ion-card-content>
+                <ion-input type="text" oninput="" size="100" required="" [(ngModel)]="photo.title" name="notecontent" class="title-input" placeholder="Enter a description..."></ion-input>
+            </ion-card-content>
+        </div>
     </ion-card>
     <div class="button-grouping ion-padding">
-        <ion-button size="large" expand="block" color="primary" type="submit">
+        <ion-button *ngIf="is_delete !== true" size="large" expand="block" color="primary" type="submit">
             <ion-text>Save</ion-text>
+        </ion-button>
+        <ion-input *ngIf="is_delete === true" type="text"  ng-show="false"  name="is_delete" value="YES"></ion-input>
+        <ion-button *ngIf="is_delete === true" size="large" expand="block" color="danger" type="submit">
+            <ion-text>Delete</ion-text>
         </ion-button>
     </div>
     </form>

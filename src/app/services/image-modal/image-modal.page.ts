@@ -24,6 +24,7 @@ export class ImageModalPage implements OnInit {
     user_id: any;
     dataReturned: any;
     index:any;
+    is_delete:any;
     photo = {
         title: '',
         primary_title: '',
@@ -89,6 +90,7 @@ export class ImageModalPage implements OnInit {
         this.photo.title = this.allTitlelist[this.columnname];
         this.user_id = this.navParams.data.user_id;
         this.index = this.navParams.data.columnIndex;
+        this.is_delete = this.navParams.data.is_delete;
     }
 
     async closeModal() {

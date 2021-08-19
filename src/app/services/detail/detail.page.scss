@@ -1,5 +1,5 @@
 ion-label{
-    color: grey !important;
+    font-size: 1.2rem !important;
 }
 
 ion-badge.ios.status{
@@ -38,7 +38,7 @@ ion-select{
     
 }
 ion-item > div:not(.photo-icon) {
-    width: 100% !important;
+    width: 80% !important;
 }
 
 ion-item {
@@ -46,10 +46,11 @@ ion-item {
 }
 
 .photo-icon {
-    width: 35px;
     position: absolute;
-    right: .5em;
-    font-size: 2em;
+    right: 0.5em;
+    top: 0.4em;
+    font-size: 3em;
+    display: inline-flex;
 }
 
 .section{

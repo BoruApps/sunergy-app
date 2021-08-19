@@ -204,6 +204,30 @@ export class ChecklistModalPage implements OnInit {
         return await modal.present();
     }
 
+    async openViewModal(imgpath,index){
+        const modal = await this.modalCtrl.create({
+            component: ImageModalPage,
+            componentProps: {
+                "base64Image": imgpath,
+                "paramTitle": "View Photo",
+                "serviceid": this.serviceid,
+                "columnname": this.field,
+                "user_id": this.user_id,
+                "is_delete": true,
+                "columnIndex": index
+            }
+        });
+
+        modal.onDidDismiss().then((dataReturned) => {
+            if (dataReturned !== null) {
+                this.dataReturned = dataReturned.data;
+                //alert('Modal Sent Data :'+ dataReturned);
+            }
+        });
+
+        return await modal.present();
+    }
+
     async closeModal() {
         await this.modalController.dismiss();
     }

@@ -22,18 +22,18 @@
                     <!--read only fields -->
                     <ion-item lines="none">
                         <ion-label position="stacked">Contact Name</ion-label>
-                        <ion-text>{{workorderdetail.firstname}} {{workorderdetail.lastname}}</ion-text>
+                        <ion-text style="padding-top: 5px;">{{workorderdetail.firstname}} {{workorderdetail.lastname}}</ion-text>
                     </ion-item>
                     <ion-item lines="none">
                         <ion-label position="stacked">Secondary Contact Name</ion-label>
-                        <ion-text>{{workorderdetail.secondary_contact_name}}</ion-text>
+                        <ion-text style="padding-top: 5px;">{{workorderdetail.secondary_contact_name}}</ion-text>
                     </ion-item>
                     <ion-item lines="none">
                         <ion-label position="stacked">Address Details</ion-label>
-                        <ion-text *ngIf="workorderdetail.mailingpobox">{{workorderdetail.mailingstreet}}
+                        <ion-text *ngIf="workorderdetail.mailingpobox" style="padding-top: 5px;">{{workorderdetail.mailingstreet}}
                             , {{workorderdetail.mailingpobox}}, {{workorderdetail.mailingcity}}
                             , {{workorderdetail.mailingstate}} {{workorderdetail.mailingzip}}</ion-text>
-                        <ion-text *ngIf="!workorderdetail.mailingpobox">{{workorderdetail.mailingstreet}}
+                        <ion-text *ngIf="!workorderdetail.mailingpobox" style="padding-top: 5px;">{{workorderdetail.mailingstreet}}
                             , {{workorderdetail.mailingcity}}
                             , {{workorderdetail.mailingstate}} {{workorderdetail.mailingzip}}</ion-text>
                         <ion-button target="_blank" color="secondary"
@@ -44,7 +44,7 @@
                     </ion-item>
                     <ion-item lines="none">
                         <ion-label position="stacked">Contact Mobile Phone</ion-label>
-                        <ion-text>{{workorderdetail.mobile}}</ion-text>
+                        <ion-text style="padding-top: 5px;">{{workorderdetail.mobile}}</ion-text>
                         <ion-button target="_self" color="secondary" (click)="transferee(workorderdetail.mobile)"
                                     size="default" slot="end" type="button">
                             <ion-icon name="call" size="large"></ion-icon>
@@ -52,7 +52,7 @@
                     </ion-item>
                     <ion-item lines="none">
                         <ion-label position="stacked">Secondary Contact Mobile Phone</ion-label>
-                        <ion-text>{{workorderdetail.secondary_contact_mobile}}</ion-text>
+                        <ion-text style="padding-top: 5px;">{{workorderdetail.secondary_contact_mobile}}</ion-text>
                         <ion-button target="_self" color="secondary"
                                     (click)="transferee(workorderdetail.secondary_contact_mobile)" size="default"
                                     slot="end" type="button">
@@ -75,13 +75,9 @@
                     </ion-item>
                     <div [ngClass]="{'section-active': blockGroups[blockservice.blockname].open, 'section': !blockGroups[blockservice.blockname].open}">
                         <ion-item detail="false" *ngFor="let service of blockservice.fields;">
-                            
-                            <div *ngIf="service.json && service.uitype == 21" class = "photo-icon">
-                                    <ion-icon name="camera" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)"></ion-icon>
-                            </div>
-                            <ion-label position="stacked">{{service.fieldlabel}}</ion-label>
-
-                            <div [ngSwitch]="service.uitype">
+                            <div>
+                                <ion-label style="font-size: 1.3rem !important;" position="stacked">{{service.fieldlabel}}</ion-label>
+                                <div [ngSwitch]="service.uitype" style="font-size: 14px;color: grey !important;">
                                 <!--uitype = 10-->
                                 <ion-text *ngSwitchCase="10">{{service.value}} </ion-text>
 
@@ -137,6 +133,10 @@
                                     <ion-textarea (ionBlur)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}" rows="3" value="{{service.value}}" width="100%"></ion-textarea>
                                 </div>
 
+                            </div>
+                            </div>
+                            <div *ngIf="service.json && service.uitype == 21" class = "photo-icon" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)">
+                                <ion-icon name="camera" ></ion-icon>
                             </div>
                         </ion-item>
                     </div>
