@@ -124,29 +124,45 @@ export class ImageModalPage implements OnInit {
         form.value.base64Image = this.imageData;
         form.value.serviceid = this.serviceid;
         form.value.columnname = this.columnname;
+        form.value.is_delete = this.is_delete;
         form.value.logged_in_user = this.user_id;
         form.value.index = this.index;
         form.value.mode = 'image_upload';
         console.log('adding photo for', form.value.serviceid);
         console.log('adding photo columnname', form.value.columnname);
+        console.log('need to delete image', this.is_delete);
+
         this.showLoading();
         this.httpClient.post(this.apiurl + "postPhotos.php", form.value, {headers: headers, observe: 'response'})
             .subscribe(data => {
                 this.hideLoading();
                 //console.log(data['_body']);
                 if (data['body']['success'] == true) {
-                    this.presentToastPrimary('Photo uploaded and added to Work Order \n');
-                    this.closeModal();
-                    console.log(this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]);
-                    this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'].push({
-                        imgpath:data['body']['data']['image_path'],
-                        documentid:data['body']['data']['image_id']
-                    });
+                    if (this.is_delete === true){
+                        this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'].splice(0,1);
+
+                        this.presentToastPrimary('Photo deleted successfully\n');
+                        this.closeModal();
+                    }else{
+                        this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'].push({
+                            imgpath:data['body']['data']['image_path'],
+                            documentid:data['body']['data']['image_id']
+                        });
+
+                        this.presentToastPrimary('Photo saved successfully\n');
+                        this.closeModal();
+                    }
+
                     // console.log('openConfirmModal', this.serviceid);
                     // this.openConfirmModal(this.serviceid,this.columnname);
                 } else {
-                    console.log('upload failed');
-                    this.presentToast('Upload failed! Please try again \n');
+                    if (this.is_delete === true){
+                        console.log('Delete. failed');
+                        this.presentToast('Delete failed! Please try again \n');
+                    }else{
+                        console.log('upload failed');
+                        this.presentToast('Upload failed! Please try again \n');
+                    }
                 }
             }, error => {
                 this.hideLoading();
