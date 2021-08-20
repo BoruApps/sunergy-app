@@ -62,7 +62,7 @@ export class DetailPage implements OnInit {
     updatefields: any = {};
     arrayfields: any = {};
 
-    blockGroups: any = {}
+    blockGroups: any = {};
 
     //actionSheet:any;
     constructor(

@@ -76,7 +76,7 @@
                     <div [ngClass]="{'section-active': blockGroups[blockservice.blockname].open, 'section': !blockGroups[blockservice.blockname].open}">
                         <ion-item detail="false" *ngFor="let service of blockservice.fields;">
                             <div>
-                                <ion-label style="font-size: 1.3rem !important;" position="stacked">{{service.fieldlabel}}</ion-label>
+                                <ion-label position="stacked">{{service.fieldlabel}}</ion-label>
                                 <div [ngSwitch]="service.uitype" style="font-size: 14px;color: grey !important;">
                                 <!--uitype = 10-->
                                 <ion-text *ngSwitchCase="10">{{service.value}} </ion-text>
@@ -90,21 +90,17 @@
                                 </div>
 
                                 <!--uitype = 15.16-->
-                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="16" name="{{service.columnname}}"
-                                            value="{{service.value}}">
-                                    <ion-select-option
-                                            *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
+                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="16" name="{{service.columnname}}" value="{{service.value}}">
+                                    <ion-select-option *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
                                 </ion-select>
 
-                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="15" name="{{service.columnname}}"
-                                            value="{{service.value}}">
+                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="15" name="{{service.columnname}}" value="{{service.value}}">
                                     <ion-select-option
                                             *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
                                 </ion-select>
 
                                 <!--uitype = 33-->
-                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="33" name="{{service.columnname}}"
-                                            multiple="true">
+                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="33" multiple="true" placeholder = "Select One">
                                     <ion-select-option
                                             *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
                                 </ion-select>
