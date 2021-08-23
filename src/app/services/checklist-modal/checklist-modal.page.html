@@ -9,22 +9,27 @@
         <ion-grid>
             <ion-item-group *ngFor="let service of servicedetail" style="align-items: center;margin-bottom: 25px">
                 <ion-item lines="none">
-                    {{service.fieldlabel}}  <ion-icon name="help-circle-outline" (click)="toggleHelper(service.columnname)" class="checklist-helper"></ion-icon>
-                </ion-item>
-                <ion-item *ngIf="service.helpinfo != '' && checklisthelper[service.columnname] == 1" lines="none" class="helper-text-box">
-                    {{service.helpinfo}}
-                </ion-item>
-                <ion-item lines="none" style="margin-top: 5px;">
-                    <ul style="display: contents;" *ngIf="service.images.length > 0">
+                    <ion-label position="stacked">
+                        <ion-text>
+                            {{service.fieldlabel}}  
+                            <ion-icon name="help-circle-outline" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != ''"></ion-icon>
+                        </ion-text>
+                        <ion-text class = "short-description">{{service.helpinfo.short}}</ion-text>
+                        <ion-text *ngIf="service.helpinfo.long != '' && checklisthelper[service.columnname] == 1" lines="none" class="helper-text-box">{{service.helpinfo.long}}</ion-text> 
+                    </ion-label>
+                    <ion-textarea *ngIf="!service.img"  (ionBlur)="addUpdate($event)" name = "{{service.columnname}}" value = "{{service.notes}}"></ion-textarea>
+                    <ul *ngIf="service.img">
                         <li *ngFor="let thumb of service.images" class="checklist-thumb-list">
                             <ion-thumbnail class="checklist-thumb" (click)="openViewModal(thumb.imgpath,service.columnname)"> <img src="{{this.apiurl.replace('phoneapi/','')}}{{thumb.imgpath}}"> </ion-thumbnail>
                         </li>
+                        <li class="checklist-thumb-list photo-icon" (click)="openActionSheet(service.columnname)">
+                            <ion-icon name="camera" ></ion-icon>
+                            <ion-text>Add Image</ion-text>
+                        </li>
                     </ul>
-                    <div *ngIf="service.images.length == '0'" class="photo-icon" (click)="openActionSheet(service.columnname)" class="checklist-thumb">
-                        <ion-icon name="camera" ></ion-icon>
-                    </div>
                 </ion-item>
             </ion-item-group>
         </ion-grid>
     </form>
+    <div class = "close-btn" (click)="closeModal()">Done</div>
 </ion-content>

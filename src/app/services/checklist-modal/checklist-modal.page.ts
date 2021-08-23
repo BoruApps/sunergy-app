@@ -104,13 +104,16 @@ export class ChecklistModalPage implements OnInit {
     }
     loadChecklist() {
         var dataLabel = this.appConst.workOrder[this.serviceid][this.field]["photos"];
+        console.log(dataLabel);
         for(var index = 0; index < dataLabel.length; index++) {
+            if(dataLabel[index].notes == undefined) dataLabel[index].notes = "";
             this.servicedetail.push({
                 fieldlabel: dataLabel[index].name,
                 helpinfo: dataLabel[index].description,
                 images: dataLabel[index].photos,
                 columnname: index,
-
+                img: dataLabel[index].img,
+                notes: dataLabel[index].notes
             })
         }
         console.log(this.servicedetail);
@@ -294,20 +297,13 @@ export class ChecklistModalPage implements OnInit {
         }
     }
 
-    addUpdate(event, value) {
+    addUpdate(event) {
         console.log(event);
         var fieldname = event.target.name;
         console.log(fieldname);
-        var is_checked = event.detail.checked;
-        /*  if(is_checked && value =='N/A'){
-              console.log('aaa');
-              this.checklistDetail.site_photo = false;
-              console.log(this.checklistDetail.site_photo);
-          }*/
-
-        this.updatefields[fieldname] = value;
-        console.log('adding update to queue: ', fieldname, value);
-        console.log(this.updatefields);
+        console.log(event.target.value);
+        this.appConst.workOrder[this.serviceid][this.field]["photos"][fieldname].notes = event.target.value;
+        console.log(this.appConst.workOrder[this.serviceid][this.field]["photos"]);
     }
 
     async  checkItem(columnname, value) {

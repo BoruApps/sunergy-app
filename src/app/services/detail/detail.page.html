@@ -68,13 +68,13 @@
             <div *ngIf="isCompleteWO == 0">
                 <ion-item-group *ngFor="let blockservice of servicedetail">
                     <div *ngIf="blockservice.blockname != 'Array Information'">
-                    <ion-item class="blockheader_2" lines="full">
+                    <ion-item class="blockheader_2" lines="none">
                     <ion-label class="ion-padding blockheader" (click)="toggleSection(blockservice.blockname)">{{blockservice.blockname}}</ion-label>
                     <ion-icon *ngIf="!blockGroups[blockservice.blockname].open" name="arrow-forward" slot="end"></ion-icon>
                     <ion-icon *ngIf="blockGroups[blockservice.blockname].open" name="arrow-down" slot="end"></ion-icon>
                     </ion-item>
                     <div [ngClass]="{'section-active': blockGroups[blockservice.blockname].open, 'section': !blockGroups[blockservice.blockname].open}">
-                        <ion-item detail="false" *ngFor="let service of blockservice.fields;">
+                        <ion-item detail="false" *ngFor="let service of blockservice.fields;" lines="none">
                             <div>
                                 <ion-label position="stacked">{{service.fieldlabel}}</ion-label>
                                 <div [ngSwitch]="service.uitype" style="font-size: 14px;color: grey !important;">
@@ -126,13 +126,14 @@
                                             width="100%"></ion-textarea>
                                 
                                 <div *ngSwitchCase="21" >
-                                    <ion-textarea (ionBlur)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}" rows="3" value="{{service.value}}" width="100%"></ion-textarea>
+                                    <div *ngIf="service.json" class = "photo-icon" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)">
+                                            <ion-icon name="camera" ></ion-icon>
+                                            <p>Add Images</p>
+                                    </div>
+                                    <ion-textarea *ngIf="!service.json" (ionBlur)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}" rows="3" value="{{service.value}}" width="100%"></ion-textarea>
                                 </div>
 
                             </div>
-                            </div>
-                            <div *ngIf="service.json && service.uitype == 21" class = "photo-icon" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)">
-                                <ion-icon name="camera" ></ion-icon>
                             </div>
                         </ion-item>
                     </div>
@@ -371,8 +372,6 @@
                 </ion-item>
             </div>
 
-            <!-- editable fields -->
-            <div><br><br><br><br><br></div>
         </ion-list>
     </form>
 
