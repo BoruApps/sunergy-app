@@ -107,6 +107,18 @@ export class ChecklistModalPage implements OnInit {
         console.log(dataLabel);
         for(var index = 0; index < dataLabel.length; index++) {
             if(dataLabel[index].notes == undefined) dataLabel[index].notes = "";
+            var vidimg = dataLabel[index].description.long.split(/\n/g);
+            for(var _index = 0; _index < vidimg.length; _index++) {
+                if(vidimg[_index].indexOf('video:') > -1) {
+                    vidimg[_index] = "<a target='_blank' href = '"+vidimg[_index].replace('video:','')+"'>"+vidimg[_index].replace('video:','')+"</a>";
+                } else if (vidimg[_index].indexOf('img:') > -1) {
+                    vidimg[_index] = "<img src = '"+vidimg[_index].replace('img:','')+"'>";
+                } else if (vidimg[_index].indexOf('link:') > -1) {
+                    vidimg[_index] = "<a target='_blank' href = '"+vidimg[_index].replace('link:','')+"'>"+vidimg[_index].replace('link:','')+"</a>";
+                }
+            }
+            dataLabel[index].description.long = vidimg.join('\n');
+            console.log(dataLabel[index].description.long);
             this.servicedetail.push({
                 fieldlabel: dataLabel[index].name,
                 helpinfo: dataLabel[index].description,
