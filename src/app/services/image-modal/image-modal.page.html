@@ -5,36 +5,72 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
-    <form #form="ngForm"  (ngSubmit)="uploadImage(form)">
+<ion-content padding>
+    <!-- <form #form="ngForm"  (ngSubmit)="uploadImage(form)"> -->
         <ion-input type="text" hidden ng-show="false" [(ngModel)]="photo.serviceid" name="serviceid" value="{{serviceid}}"></ion-input>
         <ion-input type="text" hidden ng-show="false" [(ngModel)]="photo.columnname" name="columnname" value="{{columnname}}"></ion-input>
-    <ion-card>
-        <ion-card-header>
-            <ion-card-subtitle>Image Preview</ion-card-subtitle>
-        </ion-card-header>
-        <img *ngIf="is_delete === true" src="{{this.apiurl.replace('phoneapi/','')}}{{base64Image}}" />
-        <img *ngIf="is_delete !== true"  src="{{base64Image}}" />
-        <ion-input type="text"  ng-show="false" [(ngModel)]="photo.base64Image" name="base64Image" value="{{base64Image}}"></ion-input>
-        <div *ngIf="is_delete !== true">
+        <ion-card>
             <ion-card-header>
-                <ion-card-subtitle>
-                    <ion-label position="stacked">Image Description</ion-label>
-                </ion-card-subtitle>
+                <ion-card-subtitle>Image Preview</ion-card-subtitle>
             </ion-card-header>
+            <img *ngIf="is_delete === true" #img src="{{this.apiurl.replace('phoneapi/','')}}{{base64Image}}" (load)="updateCanvas($event)"/>
+            <img *ngIf="is_delete !== true" #img src="{{base64Image}}" (load)="updateCanvas($event)"/>
+            <div class = "ion-canvas">
+                <canvas #canvas (touchstart)="startDrawing($event)" (touchmove)="moved($event)"></canvas>
+            </div>
+            <div class = "btn-selection-draw">
+                <button 
+                    ion-button 
+                    color="primary" 
+                    (click)="drawCircle()">
+                    <ion-icon name="radio-button-off"></ion-icon>
+                </button>
 
-            <ion-card-content>
-                <ion-input type="text" oninput="" size="100" required="" [(ngModel)]="photo.title" name="notecontent" class="title-input" placeholder="Enter a description..."></ion-input>
-            </ion-card-content>
+                <button 
+                    ion-button 
+                    color="primary" 
+                    (click)="drawSquare()">
+                    <ion-icon name="square-outline"></ion-icon>
+                </button>
+
+                <button 
+                    ion-button 
+                    color="primary" 
+                    >
+                    <ion-icon name="brush"></ion-icon>
+                </button>
+
+                <button ion-button color="primary">
+                    <ion-icon name="crop"></ion-icon>
+                </button>
+                <button ion-button color="primary">
+                    <ion-icon name="hand"></ion-icon>
+                </button>
+                <button ion-button color="primary">
+                    <ion-icon name="text"></ion-icon>
+                </button>
+            </div>
+
+            <ion-input type="text"  ng-show="false" [(ngModel)]="photo.base64Image" name="base64Image" value="{{base64Image}}"></ion-input>
+            <div *ngIf="is_delete !== true">
+                <ion-card-header>
+                    <ion-card-subtitle>
+                        <ion-label position="stacked">Image Description</ion-label>
+                    </ion-card-subtitle>
+                </ion-card-header>
+
+                <ion-card-content>
+                    <ion-input type="text" oninput="" size="100" required="" [(ngModel)]="photo.title" name="notecontent" class="title-input" placeholder="Enter a description..."></ion-input>
+                </ion-card-content>
+            </div>
+        </ion-card>
+        <div class="button-grouping ion-padding">
+            <ion-button *ngIf="is_delete !== true" size="large" expand="block" color="primary" type="submit">
+                <ion-text>Save</ion-text>
+            </ion-button>
+            <ion-button *ngIf="is_delete === true" size="large" expand="block" color="danger" type="submit">
+                <ion-text>Delete</ion-text>
+            </ion-button>
         </div>
-    </ion-card>
-    <div class="button-grouping ion-padding">
-        <ion-button *ngIf="is_delete !== true" size="large" expand="block" color="primary" type="submit">
-            <ion-text>Save</ion-text>
-        </ion-button>
-        <ion-button *ngIf="is_delete === true" size="large" expand="block" color="danger" type="submit">
-            <ion-text>Delete</ion-text>
-        </ion-button>
-    </div>
-    </form>
+    <!-- </form> -->
 </ion-content>

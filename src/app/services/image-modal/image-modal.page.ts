@@ -1,5 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {ModalController, NavParams, ToastController, PickerController} from '@ionic/angular';
+import { Component, 
+    OnInit,
+    ElementRef,
+    ViewChild
+} from '@angular/core';
+import {ModalController, NavParams, ToastController, PickerController, NavController} from '@ionic/angular';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {FileTransfer, FileUploadOptions, FileTransferObject} from '@ionic-native/file-transfer/ngx';
 import {File} from '@ionic-native/file';
@@ -9,12 +13,24 @@ import {AppConstants} from '../../providers/constant/constant';
 import {LoadingController} from '@ionic/angular';
 import {ImageConfirmModalPage} from "../image-confirm-modal/image-confirm-modal.page";
 
+
 @Component({
     selector: 'app-image-modal',
     templateUrl: './image-modal.page.html',
     styleUrls: ['./image-modal.page.scss'],
 })
 export class ImageModalPage implements OnInit {
+
+
+    private _CANVAS : any;
+    private _CONTEXT: any;
+
+    private ctx: CanvasRenderingContext2D;
+    private imgElm: HTMLImageElement;
+
+    saveX: number;
+    saveY: number;
+
     imageData: any;
     modalTitle: string;
     modelId: number;
@@ -75,12 +91,15 @@ export class ImageModalPage implements OnInit {
         public toastController: ToastController,
         public imgpov: ImageProvider,
         public appConst: AppConstants,
-        public loadingController: LoadingController
+        public loadingController: LoadingController,
+        public navCtrl: NavController
     ) {
         this.imageData = this.imgpov.getImage();
         this.apiurl = this.appConst.getApiUrl();
     }
 
+    @ViewChild('canvas',{static:false}) canvasEl: ElementRef;
+    @ViewChild('img',{static:false}) img: ElementRef;
     ngOnInit() {
         //console.table(this.navParams);
         this.modelId = this.navParams.data.paramID;
@@ -91,6 +110,92 @@ export class ImageModalPage implements OnInit {
         this.user_id = this.navParams.data.user_id;
         this.index = this.navParams.data.columnIndex;
         this.is_delete = this.navParams.data.is_delete;
+        
+    }
+
+    ngAfterViewInit() {
+        this._CANVAS = this.canvasEl.nativeElement;
+        this._CANVAS.width = 300;
+        this._CANVAS.height = 300;
+
+        this.imgElm = this.img.nativeElement;
+
+        this.ctx = this._CANVAS.getContext('2d')
+        this.initialiseCanvas();
+        this.drawCircle();
+    }
+    initialiseCanvas() {
+        if(this._CANVAS.getContext) {
+            this.setupCanvas();
+        }
+    }
+    activateClass(event) {
+        console.log(event.target.name);
+        
+    }
+    drawCircle() {
+        this._CONTEXT.beginPath();
+
+        this._CONTEXT.arc(this._CANVAS.width/2, this._CANVAS.height/2, 80, 0, 2 * Math.PI);      
+        this._CONTEXT.lineWidth   = 1;
+        this._CONTEXT.stroke();
+    }
+
+
+    drawSquare() {
+        //this.startDrawing(ev);
+        this._CONTEXT.beginPath();
+        this._CONTEXT.rect(this.saveX, this.saveY, 200, 200);
+        this._CONTEXT.lineWidth   = 1;
+        this._CONTEXT.strokeStyle = '#ffffff';
+        this._CONTEXT.stroke();
+    }
+
+    setupCanvas() {
+        this._CONTEXT = this._CANVAS.getContext('2d');
+        this._CONTEXT.fillStyle = "#3e3e3e";
+        this._CONTEXT.fillRect(0, 0, 500, 500);
+    }
+
+    clearCanvas() {
+        this._CONTEXT.clearRect(0, 0, this._CANVAS.width, this._CANVAS.height);
+        this.setupCanvas();
+    }
+
+    updateCanvas(event) {
+        this.ctx.clearRect(0,0, this._CANVAS.width, this._CANVAS.height);
+        this.ctx.drawImage(this.imgElm,0,0, this.imgElm.width, this.imgElm.height, 0, 0, this._CANVAS.width, this._CANVAS.height);
+        this.imgElm.style.display = 'none';
+    }
+
+    startDrawing(ev) {
+        var canvasPosition = this._CANVAS.getBoundingClientRect();
+
+        this.saveX = ev.touches[0].pageX - canvasPosition.x;
+        this.saveY = ev.touches[0].pageY - canvasPosition.y;
+    }
+    track(ev) {
+        var canvasPosition = this._CANVAS.getBoundingClientRect();
+        
+        let currentX = ev.touches[0].pageX - canvasPosition.x;
+        let currentY = ev.touches[0].pageY - canvasPosition.y;
+        return {x: currentX, y:currentY};
+    }
+    moved(ev) {
+        var coord = this.track(ev);
+        this._CONTEXT.lineJoin = 'round';
+        this._CONTEXT.strokeStyle = '#ff0000';//this.selectedColor;
+        this._CONTEXT.lineWidth = 5;
+        
+        this._CONTEXT.beginPath();
+        this._CONTEXT.moveTo(this.saveX, this.saveY);
+        this._CONTEXT.lineTo(coord.x, coord.y);
+        this._CONTEXT.closePath();
+        
+        this._CONTEXT.stroke();
+        
+        this.saveX = coord.x;
+        this.saveY = coord.y;
     }
 
     async closeModal() {

@@ -17,3 +17,20 @@ ion-toolbar ion-icon[name="close"]{
 .title-input{
   background-color: var(--ion-color-light-shade);
 }
+
+.ion-canvas {
+  width: 100%;
+  canvas {
+    width: 100% !important;
+  }
+}
+
+.btn-selection-draw {
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    border: 1px solid;
+    border-radius: 5px;
+  }
+}
