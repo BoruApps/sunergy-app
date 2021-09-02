@@ -23,6 +23,7 @@
     "@ionic-native/action-sheet": "^5.15.0",
     "@ionic-native/camera": "^5.17.1",
     "@ionic-native/core": "^5.0.0",
+    "@ionic-native/crop": "^5.36.0",
     "@ionic-native/file": "^5.17.1",
     "@ionic-native/file-transfer": "^5.17.1",
     "@ionic-native/google-maps": "^5.5.0",
@@ -68,6 +69,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
+    "cordova-plugin-crop": "^0.4.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^4.1.3",
@@ -118,7 +120,8 @@
         "LOCATION_ALWAYS_USAGE_DESCRIPTION": "This app wants to get your location always, even this app runs in background."
       },
       "cordova-plugin-inappbrowser": {},
-      "com-sarriaroman-photoviewer": {}
+      "com-sarriaroman-photoviewer": {},
+      "cordova-plugin-crop": {}
     },
     "platforms": [
       "browser",

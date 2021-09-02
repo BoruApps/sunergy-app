@@ -12,7 +12,7 @@ import {ImageProvider} from '../../providers/image/image';
 import {AppConstants} from '../../providers/constant/constant';
 import {LoadingController} from '@ionic/angular';
 import {ImageConfirmModalPage} from "../image-confirm-modal/image-confirm-modal.page";
-
+import { Crop } from '@ionic-native/crop/ngx';
 
 @Component({
     selector: 'app-image-modal',
@@ -92,7 +92,8 @@ export class ImageModalPage implements OnInit {
         public imgpov: ImageProvider,
         public appConst: AppConstants,
         public loadingController: LoadingController,
-        public navCtrl: NavController
+        public navCtrl: NavController,
+        private crop: Crop
     ) {
         this.imageData = this.imgpov.getImage();
         this.apiurl = this.appConst.getApiUrl();
@@ -196,6 +197,24 @@ export class ImageModalPage implements OnInit {
         
         this.saveX = coord.x;
         this.saveY = coord.y;
+    }
+
+    cropImage(){
+        var imgPath = this._CANVAS.toDataURL("image/png");
+        var block = imgPath.split(";");
+        var dataType = block[0].split(":")[1];
+        var realData = block[1].split(",")[1];
+
+
+        window['plugins'].crop.promise(realData, {
+            quality: 75
+        }).then(newPath => {
+                console.log('newPath',newPath)
+            },
+            error => {
+                console.log("CROP ERROR -> " + JSON.stringify(error));
+            }
+        );
     }
 
     async closeModal() {
