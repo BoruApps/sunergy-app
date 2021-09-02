@@ -13,10 +13,10 @@
             <ion-card-header>
                 <ion-card-subtitle>Image Preview</ion-card-subtitle>
             </ion-card-header>
-            <img *ngIf="is_delete === true" #img src="{{this.apiurl.replace('phoneapi/','')}}{{base64Image}}" (load)="updateCanvas($event)"/>
-            <img *ngIf="is_delete !== true" #img src="{{base64Image}}" (load)="updateCanvas($event)"/>
+            <img *ngIf="is_delete === true"  class = "img-load" #img src="{{this.apiurl.replace('phoneapi/','')}}{{base64Image}}" (load)="updateCanvas($event)"/>
+            <img *ngIf="is_delete !== true"  class = "img-load" #img src="{{base64Image}}" (load)="updateCanvas($event)"/>
             <div class = "ion-canvas">
-                <canvas #canvas (touchstart)="startDrawing($event)" (touchmove)="moved($event)"></canvas>
+                <canvas id = 'canvas' ></canvas>
             </div>
             <div class = "btn-selection-draw">
                 <button 
@@ -36,8 +36,37 @@
                 <button 
                     ion-button 
                     color="primary" 
+                    (click) = "zoomImg()"
                     >
+                    <ion-icon name="search"></ion-icon>
+                </button>
+                <button 
+                    ion-button 
+                    color="primary"
+                    (click) = "drawArrow()">
+                    <ion-icon name="arrow-forward"></ion-icon>
+                </button>
+                <button 
+                    ion-button 
+                    color="primary"
+                    (click) = "startDrawing()">
                     <ion-icon name="brush"></ion-icon>
+                </button>
+
+                <button 
+                    ion-button 
+                    color="primary" 
+                    (click) = "undoImg()"
+                    >
+                    <ion-icon name="undo"></ion-icon>
+                </button>
+
+                <button 
+                    ion-button 
+                    color="primary" 
+                    (click) = "redoImg()"
+                    >
+                    <ion-icon name="redo"></ion-icon>
                 </button>
 
                 <button
@@ -46,10 +75,11 @@
                         (click)="cropImage()">
                     <ion-icon name="crop"></ion-icon>
                 </button>
-                <button ion-button color="primary">
-                    <ion-icon name="hand"></ion-icon>
-                </button>
-                <button ion-button color="primary">
+                <button 
+                    ion-button 
+                    color="primary"
+                    (click)="addText()"
+                    >
                     <ion-icon name="text"></ion-icon>
                 </button>
             </div>

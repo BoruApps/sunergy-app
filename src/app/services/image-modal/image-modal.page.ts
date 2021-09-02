@@ -12,7 +12,8 @@ import {ImageProvider} from '../../providers/image/image';
 import {AppConstants} from '../../providers/constant/constant';
 import {LoadingController} from '@ionic/angular';
 import {ImageConfirmModalPage} from "../image-confirm-modal/image-confirm-modal.page";
-import { Crop } from '@ionic-native/crop/ngx';
+import { fabric } from 'fabric';
+import { Statement } from '@angular/compiler';
 
 @Component({
     selector: 'app-image-modal',
@@ -30,6 +31,8 @@ export class ImageModalPage implements OnInit {
 
     saveX: number;
     saveY: number;
+    elemList: {};
+    zoom: any;
 
     imageData: any;
     modalTitle: string;
@@ -41,6 +44,18 @@ export class ImageModalPage implements OnInit {
     dataReturned: any;
     index:any;
     is_delete:any;
+
+    btnList = {
+        "circle":"radio-button-off",
+        "square":"square-outline",
+        "search":"search",
+        "arrow":"arrow-forward",
+        "brush":"brush",
+        "undo":"undo",
+        "redo":"redo",
+        "crop":"crop",
+        "text":"text"
+    }
     photo = {
         title: '',
         primary_title: '',
@@ -79,6 +94,8 @@ export class ImageModalPage implements OnInit {
         cf_photo_checklist_27: 'Back_Door',
         cf_photo_checklist_28: 'MSP_Gnd',
     };
+    protected state;
+    protected mods;
 
     constructor(
         private modalController: ModalController,
@@ -92,11 +109,13 @@ export class ImageModalPage implements OnInit {
         public imgpov: ImageProvider,
         public appConst: AppConstants,
         public loadingController: LoadingController,
-        public navCtrl: NavController,
-        private crop: Crop
+        public navCtrl: NavController
     ) {
         this.imageData = this.imgpov.getImage();
         this.apiurl = this.appConst.getApiUrl();
+        this.zoom = false;
+        this.state = [];
+        this.mods = 0;
     }
 
     @ViewChild('canvas',{static:false}) canvasEl: ElementRef;
@@ -115,108 +134,175 @@ export class ImageModalPage implements OnInit {
     }
 
     ngAfterViewInit() {
-        this._CANVAS = this.canvasEl.nativeElement;
-        this._CANVAS.width = 300;
-        this._CANVAS.height = 300;
+        this._CANVAS = new fabric.Canvas('canvas');
 
         this.imgElm = this.img.nativeElement;
 
         this.ctx = this._CANVAS.getContext('2d')
-        this.initialiseCanvas();
-        this.drawCircle();
     }
-    initialiseCanvas() {
-        if(this._CANVAS.getContext) {
-            this.setupCanvas();
+
+    drawCircle() {
+        this._CANVAS.add(
+            new fabric.Circle({
+                left:10,
+                top:20,
+                radius: 20,
+                fill: 'transparent',
+                strokeWidth: 4,
+                stroke: '#000000'
+            })
+        );
+        this.updateModifications(true);
+    }
+
+    zoomImg() {
+        if(!this.zoom) {
+            this.zoom = true;
+            this._CANVAS.on('mouse:wheel', function(opt) {
+                var delta = opt.e.deltaY;
+                var zoom = this.getZoom();
+                zoom *= 0.999 ** delta;
+                if (zoom > 20) zoom = 20;
+                if (zoom < 0.01) zoom = 0.01;
+                this.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+                opt.e.preventDefault();
+                opt.e.stopPropagation();
+            });
+        } else {
+            this._CANVAS.setViewportTransform([1,0,0,1,0,0]); 
         }
     }
-    activateClass(event) {
-        console.log(event.target.name);
-        
+    
+    addText() {
+        var text = this._CANVAS.add(new fabric.IText('Touch here to edit Text', {
+            left: 10,
+            top: 20,
+            fill: 'black',
+            fontSize: 20
+        }));
+        this.updateModifications(true);
     }
-    drawCircle() {
-        this._CONTEXT.beginPath();
-
-        this._CONTEXT.arc(this._CANVAS.width/2, this._CANVAS.height/2, 80, 0, 2 * Math.PI);      
-        this._CONTEXT.lineWidth   = 1;
-        this._CONTEXT.stroke();
-    }
-
-
+    
     drawSquare() {
-        //this.startDrawing(ev);
-        this._CONTEXT.beginPath();
-        this._CONTEXT.rect(this.saveX, this.saveY, 200, 200);
-        this._CONTEXT.lineWidth   = 1;
-        this._CONTEXT.strokeStyle = '#ffffff';
-        this._CONTEXT.stroke();
-    }
-
-    setupCanvas() {
-        this._CONTEXT = this._CANVAS.getContext('2d');
-        this._CONTEXT.fillStyle = "#3e3e3e";
-        this._CONTEXT.fillRect(0, 0, 500, 500);
-    }
-
-    clearCanvas() {
-        this._CONTEXT.clearRect(0, 0, this._CANVAS.width, this._CANVAS.height);
-        this.setupCanvas();
+        console.log(this._CANVAS.getZoom());
+        this._CANVAS.add(
+            new fabric.Rect({
+                left:10,
+                top:20,
+                width: this._CANVAS.width/4,
+                height: this._CANVAS.width/4,
+                fill: 'transparent',
+                strokeWidth: 4,
+                stroke: '#000000'
+            })
+        );
+        this.updateModifications(true);
     }
 
     updateCanvas(event) {
-        this.ctx.clearRect(0,0, this._CANVAS.width, this._CANVAS.height);
-        this.ctx.drawImage(this.imgElm,0,0, this.imgElm.width, this.imgElm.height, 0, 0, this._CANVAS.width, this._CANVAS.height);
-        this.imgElm.style.display = 'none';
+        var url = document.querySelector('.img-load').src;
+        fabric.Image.fromURL(url, (img) => {
+            this._CANVAS.setBackgroundImage(img, this._CANVAS.renderAll.bind(this._CANVAS),{
+                scaleX: this._CANVAS.width / img.width,
+                scaleY: this._CANVAS.height / img.height
+            });
+            this.updateModifications(true);
+        });
+        document.querySelector('.img-load').style.display = "none";
+        (function(elm) {
+            elm._CANVAS.on('object:modified', function() {
+                elm.updateModifications(true);
+            }, 'object:added', function() {
+                elm.updateModifications(true);
+            });
+        })(this)
+        this._CANVAS.counter = 0;
     }
 
-    startDrawing(ev) {
-        var canvasPosition = this._CANVAS.getBoundingClientRect();
+    updateModifications(history) {
+        this._CANVAS.counter ++;
+        if(history === true) {
+            var _json = JSON.stringify(this._CANVAS);
+            this.state.push(_json);
+        }
+    }
 
-        this.saveX = ev.touches[0].pageX - canvasPosition.x;
-        this.saveY = ev.touches[0].pageY - canvasPosition.y;
+    undoImg() {
+        if(this.mods < this.state.length) {
+            let _index = this.state.length - 1 - this.mods - 1;
+            if(_index < 0 ) return;
+            this._CANVAS.clear().renderAll();
+            console.log(_index);
+            this._CANVAS.loadFromJSON(this.state[_index]);
+            this._CANVAS.renderAll();
+            //console.log("geladen " + (state.length-1-mods-1));
+            //console.log("state " + state.length);
+            this.mods += 1;
+            //console.log("mods " + mods);
+        }
     }
-    track(ev) {
-        var canvasPosition = this._CANVAS.getBoundingClientRect();
-        
-        let currentX = ev.touches[0].pageX - canvasPosition.x;
-        let currentY = ev.touches[0].pageY - canvasPosition.y;
-        return {x: currentX, y:currentY};
+
+    redoImg() {
+        if (this.mods > 0) {
+            this._CANVAS.clear().renderAll();
+            this._CANVAS.loadFromJSON(this.state[this.state.length - 1 - this.mods + 1]);
+            this._CANVAS.renderAll();
+            //console.log("geladen " + (state.length-1-this.mods+1));
+            this.mods -= 1;
+            //console.log("state " + state.length);
+            //console.log("mods " + mods);
+        }
     }
-    moved(ev) {
-        var coord = this.track(ev);
-        this._CONTEXT.lineJoin = 'round';
-        this._CONTEXT.strokeStyle = '#ff0000';//this.selectedColor;
-        this._CONTEXT.lineWidth = 5;
-        
-        this._CONTEXT.beginPath();
-        this._CONTEXT.moveTo(this.saveX, this.saveY);
-        this._CONTEXT.lineTo(coord.x, coord.y);
-        this._CONTEXT.closePath();
-        
-        this._CONTEXT.stroke();
-        
-        this.saveX = coord.x;
-        this.saveY = coord.y;
+
+    drawArrow() {
+        var triangle = new fabric.Triangle({
+            width: 10, 
+            height: 15, 
+            fill: 'red', 
+            left: 235, 
+            top: 65,
+            angle: 90
+        });
+
+        var line = new fabric.Line([50, 100, 200, 100], {
+            left: 75,
+            top: 70,
+            stroke: 'red'
+        });
+
+        var objs = [line, triangle];
+
+        var alltogetherObj = new fabric.Group(objs);
+        this._CANVAS.add(alltogetherObj);
+        this.updateModifications(true);
     }
 
     cropImage(){
-        var imgPath = this._CANVAS.toDataURL("image/png");
-        var block = imgPath.split(";");
-        var dataType = block[0].split(":")[1];
-        var realData = block[1].split(",")[1];
+        this._CANVAS.discardActiveObject().renderAll();
+        var img = document.querySelector('#canvas');
+        var dataUrl = img.toDataURL();
+        console.log(dataUrl);
+        // var block = imgPath.split(";");
+        // var dataType = block[0].split(":")[1];
+        // var realData = block[1].split(",")[1];
 
 
-        window['plugins'].crop.promise(realData, {
-            quality: 75
-        }).then(newPath => {
-                console.log('newPath',newPath)
-            },
-            error => {
-                console.log("CROP ERROR -> " + JSON.stringify(error));
-            }
-        );
+        // window['plugins'].crop.promise(realData, {
+        //     quality: 75
+        // }).then(newPath => {
+        //         console.log('newPath',newPath)
+        //     },
+        //     error => {
+        //         console.log("CROP ERROR -> " + JSON.stringify(error));
+        //     }
+        // );
     }
 
+    startDrawing() {
+        this._CANVAS.isDrawingMode = (this._CANVAS.isDrawingMode) ? false: true;
+
+        this.updateModifications(true);
+    }
     async closeModal() {
         const onClosedData: string = "Wrapped Up!";
         await this.modalController.dismiss(onClosedData);
