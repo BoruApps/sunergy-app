@@ -28,9 +28,27 @@ ion-toolbar ion-icon[name="close"]{
 .btn-selection-draw {
   display: flex;
   justify-content: space-between;
+  margin: .5em auto;
+  align-items: center;
+  font-size: 1.5em;
+  line-height: 1em;
+  flex-wrap: wrap;
 
-  button {
+  div {
     border: 1px solid;
     border-radius: 5px;
+    min-width: 28px;
+    text-align: center;
+    ion-icon {
+      vertical-align: middle;
+    }
+    svg {
+      width: 18px;
+    }
+  }
+
+  .primary {
+    background-color: #23954b;
+    color: #ffffff;
   }
 }

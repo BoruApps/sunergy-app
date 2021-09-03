@@ -45,17 +45,17 @@ export class ImageModalPage implements OnInit {
     index:any;
     is_delete:any;
 
-    btnList = {
-        "circle":"radio-button-off",
-        "square":"square-outline",
-        "search":"search",
-        "arrow":"arrow-forward",
-        "brush":"brush",
-        "undo":"undo",
-        "redo":"redo",
-        "crop":"crop",
-        "text":"text"
-    }
+    btnList = [
+        { name:"circle", class:"radio-button-off" },
+        { name:"square", class:"square-outline" },
+        { name:"search", class:"search" },
+        { name:"arrow", class:"arrow-forward" },
+        { name:"brush", class:"brush" },
+        { name:"undo", class:"undo" },
+        { name:"redo", class:"redo" },
+        { name:"crop", class:"crop" },
+        { name:"text", class:"text" }
+    ];
     photo = {
         title: '',
         primary_title: '',
@@ -94,6 +94,9 @@ export class ImageModalPage implements OnInit {
         cf_photo_checklist_27: 'Back_Door',
         cf_photo_checklist_28: 'MSP_Gnd',
     };
+    elementSelected: any;
+    touchTracker: any;
+
     protected state;
     protected mods;
 
@@ -116,6 +119,10 @@ export class ImageModalPage implements OnInit {
         this.zoom = false;
         this.state = [];
         this.mods = 0;
+        this.touchTracker = {
+            start: {},
+            end: {}
+        };
     }
 
     @ViewChild('canvas',{static:false}) canvasEl: ElementRef;
@@ -141,42 +148,68 @@ export class ImageModalPage implements OnInit {
         this.ctx = this._CANVAS.getContext('2d')
     }
 
+    drawBtnSelect(btn) {
+        if(this.elementSelected == "search") {
+            this._CANVAS.setViewportTransform([1,0,0,1,0,0]); 
+        }
+        this.elementSelected = btn;
+        if(this._CANVAS.isDrawingMode) this._CANVAS.isDrawingMode = false;
+        console.log(this.elementSelected);
+        switch(this.elementSelected) {
+            case "search":
+                this.zoomImg();
+            break;
+            case "brush":
+                this._CANVAS.isDrawingMode = (this._CANVAS.isDrawingMode) ? false: true;
+                //this.updateModifications(true);
+            break;
+            case "undo":
+                this.undoImg();
+            break;
+            case "redo":
+                this.redoImg();
+            break;
+        }
+    }
+
     drawCircle() {
+
+        let x = ((this.touchTracker.start.x - this.touchTracker.end.x) > 0) ? this.touchTracker.end.x : this.touchTracker.start.x;
+
+
+        let y = ((this.touchTracker.start.y - this.touchTracker.end.y) > 0) ? this.touchTracker.end.y : this.touchTracker.start.y;
+
         this._CANVAS.add(
             new fabric.Circle({
-                left:10,
-                top:20,
-                radius: 20,
+                left:x,
+                top:y,
+                radius: Math.abs(this.touchTracker.start.x - this.touchTracker.end.x)/2,
                 fill: 'transparent',
                 strokeWidth: 4,
                 stroke: '#000000'
             })
         );
+        
         this.updateModifications(true);
     }
 
     zoomImg() {
-        if(!this.zoom) {
-            this.zoom = true;
-            this._CANVAS.on('mouse:wheel', function(opt) {
-                var delta = opt.e.deltaY;
-                var zoom = this.getZoom();
-                zoom *= 0.999 ** delta;
-                if (zoom > 20) zoom = 20;
-                if (zoom < 0.01) zoom = 0.01;
-                this.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-                opt.e.preventDefault();
-                opt.e.stopPropagation();
-            });
-        } else {
-            this._CANVAS.setViewportTransform([1,0,0,1,0,0]); 
-        }
+        this._CANVAS.on('mouse:wheel', function(opt) {
+            var delta = opt.e.deltaY;
+            var zoom = this.getZoom();
+            zoom *= 0.999 ** delta;
+            if (zoom > 20) zoom = 20;
+            if (zoom < 0.01) zoom = 0.01;
+            this.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+            opt.e.preventDefault();
+            opt.e.stopPropagation();
+        });
     }
     
     addText() {
         var text = this._CANVAS.add(new fabric.IText('Touch here to edit Text', {
-            left: 10,
-            top: 20,
+            left: this.touchTracker.start.x,
+            top: this.touchTracker.start.y,
             fill: 'black',
             fontSize: 20
         }));
@@ -184,13 +217,17 @@ export class ImageModalPage implements OnInit {
     }
     
     drawSquare() {
-        console.log(this._CANVAS.getZoom());
+        let x = ((this.touchTracker.start.x - this.touchTracker.end.x) > 0) ? this.touchTracker.end.x : this.touchTracker.start.x;
+
+
+        let y = ((this.touchTracker.start.y - this.touchTracker.end.y) > 0) ? this.touchTracker.end.y : this.touchTracker.start.y;
+
         this._CANVAS.add(
             new fabric.Rect({
-                left:10,
-                top:20,
-                width: this._CANVAS.width/4,
-                height: this._CANVAS.width/4,
+                left:x,
+                top:y,
+                width: Math.abs(this.touchTracker.start.x - this.touchTracker.end.x),
+                height: Math.abs(this.touchTracker.start.y - this.touchTracker.end.y),
                 fill: 'transparent',
                 strokeWidth: 4,
                 stroke: '#000000'
@@ -210,10 +247,38 @@ export class ImageModalPage implements OnInit {
         });
         document.querySelector('.img-load').style.display = "none";
         (function(elm) {
-            elm._CANVAS.on('object:modified', function() {
-                elm.updateModifications(true);
-            }, 'object:added', function() {
-                elm.updateModifications(true);
+            elm._CANVAS.on({
+                'object:modified': function() {
+                    elm.updateModifications(true);
+                }, 'object:added': function() {
+                    elm.updateModifications(true);
+                }, 'mouse:down': function(ev) {
+                    if(ev.target == null) {
+                        elm.touchTracker.start = ev.pointer;
+                        elm.touchTracker.end = ev.pointer;
+                        if(elm.elementSelected == "text") {
+                            elm.addText();
+                        }
+                    } else  elm.touchTracker = { start:null};
+                }, 'mouse:up': function(ev) {
+                    if(elm.touchTracker.start === null) return;
+                    elm.touchTracker.end = ev.pointer;
+                    console.log(elm.touchTracker);
+                    switch(elm.elementSelected) {
+                        case "circle":
+                            elm.drawCircle();
+                        break;
+                        case "square":
+                            elm.drawSquare();
+                        break;
+                        case "arrow":
+                            elm.drawArrow();
+                        break;
+                        case "crop":
+                        break;
+                    }
+
+                }
             });
         })(this)
         this._CANVAS.counter = 0;
@@ -232,7 +297,7 @@ export class ImageModalPage implements OnInit {
             let _index = this.state.length - 1 - this.mods - 1;
             if(_index < 0 ) return;
             this._CANVAS.clear().renderAll();
-            console.log(_index);
+            console.log(_index, this.state);
             this._CANVAS.loadFromJSON(this.state[_index]);
             this._CANVAS.renderAll();
             //console.log("geladen " + (state.length-1-mods-1));
@@ -255,25 +320,59 @@ export class ImageModalPage implements OnInit {
     }
 
     drawArrow() {
-        var triangle = new fabric.Triangle({
-            width: 10, 
-            height: 15, 
-            fill: 'red', 
-            left: 235, 
-            top: 65,
-            angle: 90
+
+        var angle = Math.atan2(this.touchTracker.end.y - this.touchTracker.start.x, this.touchTracker.end.x - this.touchTracker.start.y);
+
+        var headlen = 15;  // arrow head size
+    
+        // bring the line end back some to account for arrow head.
+        this.touchTracker.end.x = this.touchTracker.end.x - (headlen) * Math.cos(angle);
+        this.touchTracker.end.y = this.touchTracker.end.y - (headlen) * Math.sin(angle);
+    
+        // calculate the points.
+        var points = [
+            {
+                x: this.touchTracker.start.y,  // start point
+                y: this.touchTracker.start.x
+            }, {
+                x: this.touchTracker.start.y - (headlen / 4) * Math.cos(angle - Math.PI / 2), 
+                y: this.touchTracker.start.x - (headlen / 4) * Math.sin(angle - Math.PI / 2)
+            },{
+                x: this.touchTracker.end.x - (headlen / 4) * Math.cos(angle - Math.PI / 2), 
+                y: this.touchTracker.end.y - (headlen / 4) * Math.sin(angle - Math.PI / 2)
+            }, {
+                x: this.touchTracker.end.x - (headlen) * Math.cos(angle - Math.PI / 2),
+                y: this.touchTracker.end.y - (headlen) * Math.sin(angle - Math.PI / 2)
+            },{
+                x: this.touchTracker.end.x + (headlen) * Math.cos(angle),  // tip
+                y: this.touchTracker.end.y + (headlen) * Math.sin(angle)
+            }, {
+                x: this.touchTracker.end.x - (headlen) * Math.cos(angle + Math.PI / 2),
+                y: this.touchTracker.end.y - (headlen) * Math.sin(angle + Math.PI / 2)
+            }, {
+                x: this.touchTracker.end.x - (headlen / 4) * Math.cos(angle + Math.PI / 2),
+                y: this.touchTracker.end.y - (headlen / 4) * Math.sin(angle + Math.PI / 2)
+            }, {
+                x: this.touchTracker.start.y - (headlen / 4) * Math.cos(angle + Math.PI / 2),
+                y: this.touchTracker.start.x - (headlen / 4) * Math.sin(angle + Math.PI / 2)
+            },{
+                x: this.touchTracker.start.y,
+                y: this.touchTracker.start.x
+            }
+        ];
+        
+        var pline = new fabric.Polyline(points, {
+            fill: 'white',
+            stroke: 'black',
+            opacity: 1,
+            strokeWidth: 1,
+            originX: 'left',
+            originY: 'top',
+            selectable: true
         });
+    
+        this._CANVAS.add(pline);
 
-        var line = new fabric.Line([50, 100, 200, 100], {
-            left: 75,
-            top: 70,
-            stroke: 'red'
-        });
-
-        var objs = [line, triangle];
-
-        var alltogetherObj = new fabric.Group(objs);
-        this._CANVAS.add(alltogetherObj);
         this.updateModifications(true);
     }
 
@@ -298,11 +397,7 @@ export class ImageModalPage implements OnInit {
         // );
     }
 
-    startDrawing() {
-        this._CANVAS.isDrawingMode = (this._CANVAS.isDrawingMode) ? false: true;
 
-        this.updateModifications(true);
-    }
     async closeModal() {
         const onClosedData: string = "Wrapped Up!";
         await this.modalController.dismiss(onClosedData);
