@@ -99,6 +99,7 @@ export class ImageModalPage implements OnInit {
 
     protected state;
     protected mods;
+    protected imgBackground;
 
     constructor(
         private modalController: ModalController,
@@ -123,6 +124,7 @@ export class ImageModalPage implements OnInit {
             start: {},
             end: {}
         };
+        this.imgBackground = null;
     }
 
     @ViewChild('canvas',{static:false}) canvasEl: ElementRef;
@@ -237,11 +239,12 @@ export class ImageModalPage implements OnInit {
     }
 
     updateCanvas(event) {
-        var url = document.querySelector('.img-load').src;
-        fabric.Image.fromURL(url, (img) => {
-            this._CANVAS.setBackgroundImage(img, this._CANVAS.renderAll.bind(this._CANVAS),{
+        var url = document.querySelector('.img-load');
+        fabric.Image.fromURL(url.src, (img) => {
+            this.imgBackground = this._CANVAS.setBackgroundImage(img, this._CANVAS.renderAll.bind(this._CANVAS),{
                 scaleX: this._CANVAS.width / img.width,
-                scaleY: this._CANVAS.height / img.height
+                scaleY: this._CANVAS.height / img.height,
+                crossOrigin: 'anonymous'
             });
             this.updateModifications(true);
         });
@@ -275,6 +278,7 @@ export class ImageModalPage implements OnInit {
                             elm.drawArrow();
                         break;
                         case "crop":
+                            elm.cropImage();
                         break;
                     }
 
@@ -376,11 +380,58 @@ export class ImageModalPage implements OnInit {
         this.updateModifications(true);
     }
 
-    cropImage(){
-        this._CANVAS.discardActiveObject().renderAll();
-        var img = document.querySelector('#canvas');
-        var dataUrl = img.toDataURL();
-        console.log(dataUrl);
+    cropImage() {
+        let x = this.touchTracker.start.x//((this.touchTracker.start.x - this.touchTracker.end.x) > 0) ? this.touchTracker.end.x : this.touchTracker.start.x;
+
+
+        // let y = ((this.touchTracker.start.y - this.touchTracker.end.y) > 0) ? this.touchTracker.end.y : this.touchTracker.start.y;
+        let y = Math.abs(this.touchTracker.start.y);
+        
+        let width = Math.abs(this.touchTracker.start.x - this.touchTracker.end.x);
+        let height = Math.abs(this.touchTracker.start.y - this.touchTracker.end.y);
+        console.log(x,y,width, height, this.touchTracker);
+        this.imgBackground.set({
+            left: 0,
+            top: 0,
+            selectable:true,
+            clipTo: function(ctx) {
+                ctx.rect(
+                    x,
+                    y,
+                    width,
+                    height
+                )
+            }
+        });
+        
+        console.log(this.imgBackground);
+        document.getElementsByClassName('ion-canvas')[0].innerHTML = "<canvas id='canvas'></canvas>";
+        this._CANVAS = new fabric.Canvas('canvas');
+        fabric.Image.fromURL(this.imgBackground.toDataURL(), (img) => {
+            this.imgBackground = this._CANVAS.setBackgroundImage(img, this._CANVAS.renderAll.bind(this._CANVAS),{
+                originX: "left",
+                originY: "top",
+                scaleX: width,
+                scaleY: height,
+                crossOrigin: 'anonymous'
+            });
+            this.updateModifications(true);
+        });
+        // this._CANVAS.add();
+
+        this._CANVAS.renderAll();
+        // this._CANVAS.setBackgroundImage(cropImage.toDataURL(), this._CANVAS.renderAll.bind(this._CANVAS), {
+        //     left: x,
+        //     top: y,
+        //     originX: 'left',
+        //     orginY: 'top',
+        //     crossOrigin: 'anonymous'
+        // });
+        // this._CANVAS.renderAll();
+        // this._CANVAS.discardActiveObject().renderAll();
+        // var img = document.querySelector('#canvas');
+        // var dataUrl = img.toDataURL();
+        // console.log(dataUrl);
         // var block = imgPath.split(";");
         // var dataType = block[0].split(":")[1];
         // var realData = block[1].split(",")[1];

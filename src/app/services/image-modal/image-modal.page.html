@@ -26,69 +26,6 @@
                     <ion-icon *ngIf="btn.name !== 'text'" name="{{btn.class}}"></ion-icon>
                     <svg *ngIf = "btn.name == 'text'" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="font" class="svg-inline--fa fa-font fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M432 416h-23.41L277.88 53.69A32 32 0 0 0 247.58 32h-47.16a32 32 0 0 0-30.3 21.69L39.41 416H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-19.58l23.3-64h152.56l23.3 64H304a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM176.85 272L224 142.51 271.15 272z"></path></svg>
                 </div>
-                <!-- <button 
-                    ion-button 
-                    color="primary" 
-                    (click)="drawCircle()">
-                    <ion-icon name="radio-button-off"></ion-icon>
-                </button>
-
-                <button
-                    ion-button 
-                    color="primary" 
-                    (click)="drawSquare()">
-                    <ion-icon name="square-outline"></ion-icon>
-                </button>
-
-                <button 
-                    ion-button 
-                    color="primary" 
-                    (click) = "zoomImg()"
-                    >
-                    <ion-icon name="search"></ion-icon>
-                </button>
-                <button 
-                    ion-button 
-                    color="primary"
-                    (click) = "drawArrow()">
-                    <ion-icon name="arrow-forward"></ion-icon>
-                </button>
-                <button 
-                    ion-button 
-                    color="primary"
-                    (click) = "startDrawing()">
-                    <ion-icon name="brush"></ion-icon>
-                </button>
-
-                <button 
-                    ion-button 
-                    color="primary" 
-                    (click) = "undoImg()"
-                    >
-                    <ion-icon name="undo"></ion-icon>
-                </button>
-
-                <button 
-                    ion-button 
-                    color="primary" 
-                    (click) = "redoImg()"
-                    >
-                    <ion-icon name="redo"></ion-icon>
-                </button>
-
-                <button
-                        ion-button
-                        color="primary"
-                        (click)="cropImage()">
-                    <ion-icon name="crop"></ion-icon>
-                </button>
-                <button 
-                    ion-button 
-                    color="primary"
-                    (click)="addText()"
-                    >
-                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="font" class="svg-inline--fa fa-font fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M432 416h-23.41L277.88 53.69A32 32 0 0 0 247.58 32h-47.16a32 32 0 0 0-30.3 21.69L39.41 416H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-19.58l23.3-64h152.56l23.3 64H304a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM176.85 272L224 142.51 271.15 272z"></path></svg>
-                </button> -->
             </div>
 
             <ion-input type="text"  ng-show="false" [(ngModel)]="photo.base64Image" name="base64Image" value="{{base64Image}}"></ion-input>
