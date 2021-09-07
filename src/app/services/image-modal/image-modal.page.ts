@@ -194,7 +194,7 @@ export class ImageModalPage implements OnInit {
     }
 
     zoomImg() {
-        this._CANVAS.on('mouse:wheel', function(opt) {
+        this._CANVAS.on('touch:gesture', function(opt) {
             var delta = opt.e.deltaY;
             var zoom = this.getZoom();
             zoom *= 0.999 ** delta;
