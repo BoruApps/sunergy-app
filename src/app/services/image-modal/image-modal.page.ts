@@ -204,6 +204,7 @@ export class ImageModalPage implements OnInit {
         (function(elm) {
             elm._CANVAS.on({
                 'touch:gesture': function(opt) {
+                    console.log(this);
                     if(opt.e.touches && opt.e.touches.length == 2) {
                         elm.pausePanning = true;
                         let point = new fabric.Point(opt.self.x, opt.self.y);
@@ -227,6 +228,8 @@ export class ImageModalPage implements OnInit {
                 }, 'selection:cleared': function() {
                     this.pausePanning = false;
                 }, 'touch:drag': function(opt) {
+
+                    console.log(this);
                     if (this.pausePanning == false && undefined != opt.e.layerX && undefined != opt.e.layerY) {
                         this.touchTracker.end.x = opt.e.layerX;
                         this.touchTracker.end.x = opt.e.layerY;
@@ -330,6 +333,7 @@ export class ImageModalPage implements OnInit {
     }
 
     updateModifications(history) {
+        console.log(this.state);
         this._CANVAS.counter ++;
         if(history === true) {
             var _json = JSON.stringify(this._CANVAS);
@@ -339,6 +343,7 @@ export class ImageModalPage implements OnInit {
 
     undoImg() {
         if(this.mods < this.state.length) {
+            console.log(this.state.length, this.mods);
             let _index = this.state.length - 1 - this.mods - 1;
             if(_index < 0 ) return;
             this._CANVAS.clear().renderAll();
