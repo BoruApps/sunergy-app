@@ -101,6 +101,9 @@ export class ImageModalPage implements OnInit {
     protected mods;
     protected imgBackground;
 
+    protected pausePanning;
+    protected zoomStartScale;
+
     constructor(
         private modalController: ModalController,
         public modalCtrl: ModalController,
@@ -125,6 +128,8 @@ export class ImageModalPage implements OnInit {
             end: {}
         };
         this.imgBackground = null;
+        this.pausePanning = false;
+        this.zoomStartScale = null;
     }
 
     @ViewChild('canvas',{static:false}) canvasEl: ElementRef;
@@ -196,16 +201,49 @@ export class ImageModalPage implements OnInit {
     }
 
     zoomImg() {
-        this._CANVAS.on('touch:gesture', function(opt) {
-            var delta = opt.e.deltaY;
-            var zoom = this.getZoom();
-            zoom *= 0.999 ** delta;
-            if (zoom > 20) zoom = 20;
-            if (zoom < 0.01) zoom = 0.01;
-            this.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-            opt.e.preventDefault();
-            opt.e.stopPropagation();
-        });
+        (function(elm) {
+            elm._CANVAS.on({
+                'touch:gesture': function(opt) {
+                    if(opt.e.touches && opt.e.touches.length == 2) {
+                        elm.pausePanning = true;
+                        let point = new fabric.Point(opt.self.x, opt.self.y);
+                        if(opt.self.state == "start") {
+                            elm.zoomStartScale = this.getZoom();
+                        }
+                        let delta = elm.zoomStartScale * opt.self.scale;
+                        this.zoomToPoint(point, delta);
+                        elm.pausePanning = false;
+                        // var delta = opt.e.deltaY;
+                        // var zoom = this.getZoom();
+                        // zoom *= 0.999 ** delta;
+                        // if (zoom > 20) zoom = 20;
+                        // if (zoom < 0.01) zoom = 0.01;
+                        // this.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+                        // opt.e.preventDefault();
+                        // opt.e.stopPropagation();
+                    }
+                }, 'object:selected': function() {
+                    this.pausePanning = true;
+                }, 'selection:cleared': function() {
+                    this.pausePanning = false;
+                }, 'touch:drag': function(opt) {
+                    if (this.pausePanning == false && undefined != opt.e.layerX && undefined != opt.e.layerY) {
+                        this.touchTracker.end.x = opt.e.layerX;
+                        this.touchTracker.end.x = opt.e.layerY;
+                        let xChange = this.touchTracker.end.x - this.touchTracker.start.x;
+                        let yChange = this.touchTracker.end.y - this.touchTracker.start.y;
+        
+                        if( (Math.abs(this.touchTracker.end.x - this.touchTracker.start.x) <= 50) && (Math.abs(this.touchTracker.end.y - this.touchTracker.start.y) <= 50)) {
+                            var delta = new fabric.Point(xChange, yChange);
+                            this._CANVAS.relativePan(delta);
+                        }
+        
+                        this.touchTracker.start.x = opt.e.layerX;
+                        this.touchTracker.start.y = opt.e.layerY;
+                    }
+                }
+            });
+        })(this);
     }
     
     addText() {
@@ -384,71 +422,45 @@ export class ImageModalPage implements OnInit {
     }
 
     cropImage() {
-        let x = this.touchTracker.start.x//((this.touchTracker.start.x - this.touchTracker.end.x) > 0) ? this.touchTracker.end.x : this.touchTracker.start.x;
+        let x = ((this.touchTracker.start.x - this.touchTracker.end.x) > 0) ? this.touchTracker.end.x : this.touchTracker.start.x;
 
 
-        // let y = ((this.touchTracker.start.y - this.touchTracker.end.y) > 0) ? this.touchTracker.end.y : this.touchTracker.start.y;
-        let y = Math.abs(this.touchTracker.start.y);
+        let y = ((this.touchTracker.start.y - this.touchTracker.end.y) > 0) ? this.touchTracker.end.y : this.touchTracker.start.y;
         
         let width = Math.abs(this.touchTracker.start.x - this.touchTracker.end.x);
         let height = Math.abs(this.touchTracker.start.y - this.touchTracker.end.y);
-        console.log(x,y,width, height, this.touchTracker);
-        this.imgBackground.set({
-            left: 0,
-            top: 0,
-            selectable:true,
-            clipTo: function(ctx) {
-                ctx.rect(
-                    x,
-                    y,
+
+        let tempImg = new Image();
+        let tempCanvas = document.createElement('canvas');
+        let tempctx = tempCanvas.getContext('2d');
+        tempImg.src = this._CANVAS.toDataURL();
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+        (function(elm) {
+            tempImg.onload = function() {
+                tempctx.drawImage(tempImg, 
+                    x,y,
                     width,
-                    height
-                )
+                    height,
+                    0,0,
+                    width,
+                    height);
+
+                let tempImg2 = new Image();
+                tempImg2.src = tempCanvas.toDataURL();
+
+                elm._CANVAS.clear();
+                (function(elm){
+                    tempImg2.onload = function() {
+                        elm.imgBackground = elm._CANVAS.setBackgroundImage(tempImg2.src, elm._CANVAS.renderAll.bind(elm._CANVAS),{
+                            scaleX: elm._CANVAS.width / width,
+                            scaleY: elm._CANVAS.height / height,
+                            crossOrigin: 'anonymous'
+                        });
+                    }
+                })(elm);
             }
-        });
-        
-        console.log(this.imgBackground);
-        document.getElementsByClassName('ion-canvas')[0].innerHTML = "<canvas id='canvas'></canvas>";
-        this._CANVAS = new fabric.Canvas('canvas');
-        fabric.Image.fromURL(this.imgBackground.toDataURL(), (img) => {
-            this.imgBackground = this._CANVAS.setBackgroundImage(img, this._CANVAS.renderAll.bind(this._CANVAS),{
-                originX: "left",
-                originY: "top",
-                scaleX: width,
-                scaleY: height,
-                crossOrigin: 'anonymous'
-            });
-            this.updateModifications(true);
-        });
-        // this._CANVAS.add();
-
-        this._CANVAS.renderAll();
-        // this._CANVAS.setBackgroundImage(cropImage.toDataURL(), this._CANVAS.renderAll.bind(this._CANVAS), {
-        //     left: x,
-        //     top: y,
-        //     originX: 'left',
-        //     orginY: 'top',
-        //     crossOrigin: 'anonymous'
-        // });
-        // this._CANVAS.renderAll();
-        // this._CANVAS.discardActiveObject().renderAll();
-        // var img = document.querySelector('#canvas');
-        // var dataUrl = img.toDataURL();
-        // console.log(dataUrl);
-        // var block = imgPath.split(";");
-        // var dataType = block[0].split(":")[1];
-        // var realData = block[1].split(",")[1];
-
-
-        // window['plugins'].crop.promise(realData, {
-        //     quality: 75
-        // }).then(newPath => {
-        //         console.log('newPath',newPath)
-        //     },
-        //     error => {
-        //         console.log("CROP ERROR -> " + JSON.stringify(error));
-        //     }
-        // );
+        })(this);
     }
 
 
