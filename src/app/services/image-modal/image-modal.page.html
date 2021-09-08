@@ -13,8 +13,7 @@
             <ion-card-header>
                 <ion-card-subtitle>Image Preview</ion-card-subtitle>
             </ion-card-header>
-            <img *ngIf="is_delete === true"  class = "img-load" #img src="{{this.apiurl.replace('phoneapi/','')}}{{base64Image}}" (load)="updateCanvas($event)"/>
-            <img *ngIf="is_delete !== true"  class = "img-load" #img src="{{base64Image}}" (load)="updateCanvas($event)"/>
+            <img class = "img-load" #img src="{{base64Image}}" (load)="updateCanvas($event)"/>
             <div class = "ion-canvas">
                 <canvas id = 'canvas' ></canvas>
             </div>

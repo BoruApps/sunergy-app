@@ -20,7 +20,7 @@
                     <ion-textarea *ngIf="!service.img"  (ionBlur)="addUpdate($event)" name = "{{service.columnname}}" value = "{{service.notes}}"></ion-textarea>
                     <ul *ngIf="service.img">
                         <li *ngFor="let thumb of service.images" class="checklist-thumb-list">
-                            <ion-thumbnail class="checklist-thumb" (click)="openViewModal(thumb.imgpath,service.columnname)"> <img src="{{this.apiurl.replace('phoneapi/','')}}{{thumb.imgpath}}"> </ion-thumbnail>
+                            <ion-thumbnail class="checklist-thumb" (click)="openViewModal(thumb,service.columnname)"> <img src="{{this.apiurl.replace('phoneapi/','')}}{{thumb.imgpath}}"> </ion-thumbnail>
                         </li>
                         <li class="checklist-thumb-list photo-icon" (click)="openActionSheet(service.columnname)">
                             <ion-icon name="camera" ></ion-icon>

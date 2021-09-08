@@ -219,28 +219,68 @@ export class ChecklistModalPage implements OnInit {
         return await modal.present();
     }
 
-    async openViewModal(imgpath,index){
-        const modal = await this.modalCtrl.create({
-            component: ImageModalPage,
-            componentProps: {
-                "base64Image": imgpath,
-                "paramTitle": "View Photo",
-                "serviceid": this.serviceid,
-                "columnname": this.field,
-                "user_id": this.user_id,
-                "is_delete": true,
-                "columnIndex": index
-            }
-        });
+    async openViewModal(image,index){
+        var params = {
+            documentid: image.documentid
+        }
 
-        modal.onDidDismiss().then((dataReturned) => {
-            if (dataReturned !== null) {
-                this.dataReturned = dataReturned.data;
-                //alert('Modal Sent Data :'+ dataReturned);
-            }
-        });
+        var headers = new HttpHeaders();
+        headers.append("Accept", 'application/json');
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        headers.append('Access-Control-Allow-Origin', '*');
+        this.showLoading();
+        await this.httpClient.post(this.apiurl + "getDocBase64.php", params, {headers: headers, observe: 'response'})
+            .subscribe(async data => {
+                this.hideLoading();
+                //console.log(data['body']);
+                var success = data['body']['success'];
+                if (success == true) {
+                    var modal = await this.modalCtrl.create({
+                        component: ImageModalPage,
+                        componentProps: {
+                            "base64Image": data['body']['base64'],
+                            "paramTitle": "View Photo",
+                            "serviceid": this.serviceid,
+                            "columnname": this.field,
+                            "user_id": this.user_id,
+                            "is_delete": true,
+                            "columnIndex": index
+                        }
+                    });
+                    modal.onDidDismiss().then((dataReturned) => {
+                        if (dataReturned !== null) {
+                            this.dataReturned = dataReturned.data;
+                            //alert('Modal Sent Data :'+ dataReturned);
+                        }
+                    });
 
-        return await modal.present();
+                    return await modal.present();
+                }
+            }, async error => {
+                var modal = await this.modalCtrl.create({
+                    component: ImageModalPage,
+                    componentProps: {
+                        "base64Image": image.imgpath,
+                        "paramTitle": "View Photo",
+                        "serviceid": this.serviceid,
+                        "columnname": this.field,
+                        "user_id": this.user_id,
+                        "is_delete": true,
+                        "columnIndex": index
+                    }
+                });
+                modal.onDidDismiss().then((dataReturned) => {
+                    if (dataReturned !== null) {
+                        this.dataReturned = dataReturned.data;
+                        //alert('Modal Sent Data :'+ dataReturned);
+                    }
+                });
+
+                return await modal.present();
+                this.hideLoading();
+                console.log('failed to fetch record');
+            }
+        );
     }
 
     async closeModal() {

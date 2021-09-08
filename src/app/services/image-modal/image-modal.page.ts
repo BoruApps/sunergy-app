@@ -239,16 +239,19 @@ export class ImageModalPage implements OnInit {
     }
 
     updateCanvas(event) {
-        var url = document.querySelector('.img-load');
-        fabric.Image.fromURL(url.src, (img) => {
+        var elmurl = document.querySelector<HTMLInputElement>('.img-load')!;
+        fabric.Image.fromURL(this.imgElm.src, (img) => {
             this.imgBackground = this._CANVAS.setBackgroundImage(img, this._CANVAS.renderAll.bind(this._CANVAS),{
                 scaleX: this._CANVAS.width / img.width,
                 scaleY: this._CANVAS.height / img.height,
                 crossOrigin: 'anonymous'
             });
             this.updateModifications(true);
-        });
-        document.querySelector('.img-load').style.display = "none";
+        }, { crossOrigin: 'Anonymous' });
+
+        var elmurl = document.querySelector<HTMLInputElement>('.img-load')!;
+        elmurl.style.display = "none";
+
         (function(elm) {
             elm._CANVAS.on({
                 'object:modified': function() {
