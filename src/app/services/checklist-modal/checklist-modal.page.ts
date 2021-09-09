@@ -244,6 +244,7 @@ export class ChecklistModalPage implements OnInit {
                             "columnname": this.field,
                             "user_id": this.user_id,
                             "is_delete": true,
+                            "documentid": image.documentid,
                             "columnIndex": index
                         }
                     });

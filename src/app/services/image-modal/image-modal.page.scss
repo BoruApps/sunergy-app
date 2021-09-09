@@ -18,11 +18,9 @@ ion-toolbar ion-icon[name="close"]{
   background-color: var(--ion-color-light-shade);
 }
 
-.ion-canvas {
-  width: 100%;
-  canvas {
-    width: 100% !important;
-  }
+.ion-canvas{
+  width: fit-content;
+  margin: auto;
 }
 
 .btn-selection-draw {

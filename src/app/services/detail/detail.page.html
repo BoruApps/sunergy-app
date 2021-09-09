@@ -77,7 +77,7 @@
                         <ion-item detail="false" *ngFor="let service of blockservice.fields;" lines="none">
                             <div>
                                 <ion-label position="stacked">{{service.fieldlabel}}</ion-label>
-                                <div [ngSwitch]="service.uitype" style="font-size: 14px;color: grey !important;">
+                                <div [ngSwitch]="service.uitype" style="font-size: 14px;padding: 10px;">
                                 <!--uitype = 10-->
                                 <ion-text *ngSwitchCase="10">{{service.value}} </ion-text>
 

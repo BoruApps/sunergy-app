@@ -44,6 +44,7 @@ export class ImageModalPage implements OnInit {
     dataReturned: any;
     index:any;
     is_delete:any;
+    documentid:any;
 
     btnList = [
         { name:"circle", class:"radio-button-off" },
@@ -144,7 +145,7 @@ export class ImageModalPage implements OnInit {
         this.user_id = this.navParams.data.user_id;
         this.index = this.navParams.data.columnIndex;
         this.is_delete = this.navParams.data.is_delete;
-        
+        this.documentid = this.navParams.data.documentid;
     }
 
     ngAfterViewInit() {
@@ -164,11 +165,9 @@ export class ImageModalPage implements OnInit {
         console.log(this.elementSelected);
         switch(this.elementSelected) {
             case "search":
-                this.zoomImg();
             break;
             case "brush":
                 this._CANVAS.isDrawingMode = (this._CANVAS.isDrawingMode) ? false: true;
-                //this.updateModifications(true);
             break;
             case "undo":
                 this.undoImg();
@@ -253,7 +252,12 @@ export class ImageModalPage implements OnInit {
         var text = this._CANVAS.add(new fabric.IText('Touch here to edit Text', {
             left: this.touchTracker.start.x,
             top: this.touchTracker.start.y,
-            fill: 'black',
+            fill: 'white',
+            fontFamily: 'Arial, Helvetica, sans-serif',
+            stroke: 'black',
+            fontWeight: 'bold',
+            strokeWidth: 4,
+            paintFirst: 'stroke',
             fontSize: 20
         }));
         this.updateModifications(true);
@@ -296,9 +300,15 @@ export class ImageModalPage implements OnInit {
         (function(elm) {
             elm._CANVAS.on({
                 'object:modified': function() {
-                    elm.updateModifications(true);
+                    if(elm._CANVAS.isDrawingMode){
+                        console.log('mod isDrawingMode');
+                        elm.updateModifications(true);
+                    }
                 }, 'object:added': function() {
-                    elm.updateModifications(true);
+                    if(elm._CANVAS.isDrawingMode){
+                        console.log('added isDrawingMode');
+                        elm.updateModifications(true);
+                    }
                 }, 'mouse:down': function(ev) {
                     if(ev.target == null) {
                         elm.touchTracker.start = ev.pointer;
@@ -325,92 +335,53 @@ export class ImageModalPage implements OnInit {
                             elm.cropImage();
                         break;
                     }
-
                 }
             });
         })(this)
         this._CANVAS.counter = 0;
     }
 
-    updateModifications(history) {
-        console.log(this.state);
-        this._CANVAS.counter ++;
-        if(history === true) {
-            var _json = JSON.stringify(this._CANVAS);
-            this.state.push(_json);
-        }
-    }
-
-    undoImg() {
-        if(this.mods < this.state.length) {
-            console.log(this.state.length, this.mods);
-            let _index = this.state.length - 1 - this.mods - 1;
-            if(_index < 0 ) return;
-            this._CANVAS.clear().renderAll();
-            console.log(_index, this.state);
-            this._CANVAS.loadFromJSON(this.state[_index]);
-            this._CANVAS.renderAll();
-            //console.log("geladen " + (state.length-1-mods-1));
-            //console.log("state " + state.length);
-            this.mods += 1;
-            //console.log("mods " + mods);
-        }
-    }
-
-    redoImg() {
-        if (this.mods > 0) {
-            this._CANVAS.clear().renderAll();
-            this._CANVAS.loadFromJSON(this.state[this.state.length - 1 - this.mods + 1]);
-            this._CANVAS.renderAll();
-            //console.log("geladen " + (state.length-1-this.mods+1));
-            this.mods -= 1;
-            //console.log("state " + state.length);
-            //console.log("mods " + mods);
-        }
-    }
-
     drawArrow() {
+        var fromx = this.touchTracker.start.x;
+        var fromy = this.touchTracker.start.y;
+        var tox = this.touchTracker.end.x;
+        var toy = this.touchTracker.end.y;
+        var angle = Math.atan2(toy - fromy, tox - fromx);
+        var headlen = 10;  // arrow head size
 
-        var angle = Math.atan2(this.touchTracker.end.y - this.touchTracker.start.x, this.touchTracker.end.x - this.touchTracker.start.y);
-
-        var headlen = 15;  // arrow head size
-    
-        // bring the line end back some to account for arrow head.
-        this.touchTracker.end.x = this.touchTracker.end.x - (headlen) * Math.cos(angle);
-        this.touchTracker.end.y = this.touchTracker.end.y - (headlen) * Math.sin(angle);
-    
-        // calculate the points.
+        tox = tox - (headlen) * Math.cos(angle);
+        toy = toy - (headlen) * Math.sin(angle);
         var points = [
             {
-                x: this.touchTracker.start.y,  // start point
-                y: this.touchTracker.start.x
+                x: fromx,  // start point
+                y: fromy
             }, {
-                x: this.touchTracker.start.y - (headlen / 4) * Math.cos(angle - Math.PI / 2), 
-                y: this.touchTracker.start.x - (headlen / 4) * Math.sin(angle - Math.PI / 2)
+                x: fromx - (headlen / 4) * Math.cos(angle - Math.PI / 2),
+                y: fromy - (headlen / 4) * Math.sin(angle - Math.PI / 2)
             },{
-                x: this.touchTracker.end.x - (headlen / 4) * Math.cos(angle - Math.PI / 2), 
-                y: this.touchTracker.end.y - (headlen / 4) * Math.sin(angle - Math.PI / 2)
+                x: tox - (headlen / 4) * Math.cos(angle - Math.PI / 2),
+                y: toy - (headlen / 4) * Math.sin(angle - Math.PI / 2)
             }, {
-                x: this.touchTracker.end.x - (headlen) * Math.cos(angle - Math.PI / 2),
-                y: this.touchTracker.end.y - (headlen) * Math.sin(angle - Math.PI / 2)
+                x: tox - (headlen) * Math.cos(angle - Math.PI / 2),
+                y: toy - (headlen) * Math.sin(angle - Math.PI / 2)
             },{
-                x: this.touchTracker.end.x + (headlen) * Math.cos(angle),  // tip
-                y: this.touchTracker.end.y + (headlen) * Math.sin(angle)
+                x: tox + (headlen) * Math.cos(angle),  // tip
+                y: toy + (headlen) * Math.sin(angle)
             }, {
-                x: this.touchTracker.end.x - (headlen) * Math.cos(angle + Math.PI / 2),
-                y: this.touchTracker.end.y - (headlen) * Math.sin(angle + Math.PI / 2)
+                x: tox - (headlen) * Math.cos(angle + Math.PI / 2),
+                y: toy - (headlen) * Math.sin(angle + Math.PI / 2)
             }, {
-                x: this.touchTracker.end.x - (headlen / 4) * Math.cos(angle + Math.PI / 2),
-                y: this.touchTracker.end.y - (headlen / 4) * Math.sin(angle + Math.PI / 2)
+                x: tox - (headlen / 4) * Math.cos(angle + Math.PI / 2),
+                y: toy - (headlen / 4) * Math.sin(angle + Math.PI / 2)
             }, {
-                x: this.touchTracker.start.y - (headlen / 4) * Math.cos(angle + Math.PI / 2),
-                y: this.touchTracker.start.x - (headlen / 4) * Math.sin(angle + Math.PI / 2)
+                x: fromx - (headlen / 4) * Math.cos(angle + Math.PI / 2),
+                y: fromy - (headlen / 4) * Math.sin(angle + Math.PI / 2)
             },{
-                x: this.touchTracker.start.y,
-                y: this.touchTracker.start.x
+                x: fromx,
+                y: fromy
             }
         ];
-        
+
         var pline = new fabric.Polyline(points, {
             fill: 'white',
             stroke: 'black',
@@ -420,9 +391,7 @@ export class ImageModalPage implements OnInit {
             originY: 'top',
             selectable: true
         });
-    
         this._CANVAS.add(pline);
-
         this.updateModifications(true);
     }
 
@@ -468,6 +437,35 @@ export class ImageModalPage implements OnInit {
         })(this);
     }
 
+    updateModifications(history) {
+        this._CANVAS.counter ++;
+        if(history === true) {
+            var _json = JSON.stringify(this._CANVAS);
+            this.state.push(_json);
+        }
+    }
+
+    undoImg() {
+        if(this.mods < this.state.length) {
+            console.log("undoImg",this.state.length, this.mods);
+            let _index = this.state.length - 1 - this.mods - 1;
+            if(_index < 0 ) return;
+            this._CANVAS.clear().renderAll();
+            this._CANVAS.loadFromJSON(this.state[_index]);
+            this._CANVAS.renderAll();
+            this.mods += 1;
+        }
+    }
+
+    redoImg() {
+        if (this.mods > 0) {
+            console.log("redoImg",this.state.length, this.mods);
+            this._CANVAS.clear().renderAll();
+            this._CANVAS.loadFromJSON(this.state[this.state.length - 1 - this.mods + 1]);
+            this._CANVAS.renderAll();
+            this.mods -= 1;
+        }
+    }
 
     async closeModal() {
         const onClosedData: string = "Wrapped Up!";
@@ -491,25 +489,36 @@ export class ImageModalPage implements OnInit {
         }, 1000);
     }
 
-    async uploadImage(form) {
-        console.log(this);
+    async uploadImage(data,is_delete=false) {
         var headers = new HttpHeaders();
         headers.append("Accept", 'application/json');
         headers.append('Content-Type', 'application/json');
         headers.append('Access-Control-Allow-Origin', '*');
-        form.value.base64Image = this.imageData;
-        form.value.serviceid = this.serviceid;
-        form.value.columnname = this.columnname;
-        form.value.is_delete = this.is_delete;
-        form.value.logged_in_user = this.user_id;
-        form.value.index = this.index;
-        form.value.mode = 'image_upload';
-        console.log('adding photo for', form.value.serviceid);
-        console.log('adding photo columnname', form.value.columnname);
-        console.log('need to delete image', this.is_delete);
+
+        if (this._CANVAS.toDataURL()) {
+            var bs64img = this._CANVAS.toDataURL();
+            var imageData = bs64img.split(',')[1];
+        }else{
+            var imageData = this.imageData;
+        }
+
+        var param = {
+            'base64Image':imageData,
+            'serviceid':this.serviceid,
+            'columnname':this.columnname,
+            'is_delete':is_delete,
+            'logged_in_user':this.user_id,
+            'index':this.index,
+            'documentid':this.documentid,
+            'mode':'image_upload',
+        };
+
+        console.log('adding photo for', param.serviceid);
+        console.log('adding photo columnname', param.columnname);
+        console.log('need to delete image', param.is_delete);
 
         this.showLoading();
-        this.httpClient.post(this.apiurl + "postPhotos.php", form.value, {headers: headers, observe: 'response'})
+        this.httpClient.post(this.apiurl + "postPhotos.php", param, {headers: headers, observe: 'response'})
             .subscribe(data => {
                 this.hideLoading();
                 //console.log(data['_body']);

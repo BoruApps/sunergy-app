@@ -160,10 +160,7 @@ export class TabsPage {
                         if (!(result == false)) {
                             this.userinfo = result;
                             this.refreshURCount(this.userinfo.id, 'underreview');
-                            setInterval(() => {
-                                console.log('refreshing under review count');
-                                this.refreshURCount(this.userinfo.id, 'underreview');
-                              }, 5000);
+
                             this.user_id = this.userinfo.id;
                         } else {
                             this.logout();

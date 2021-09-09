@@ -6,12 +6,11 @@
 </ion-header>
 
 <ion-content padding>
-    <!-- <form #form="ngForm"  (ngSubmit)="uploadImage(form)"> -->
         <ion-input type="text" hidden ng-show="false" [(ngModel)]="photo.serviceid" name="serviceid" value="{{serviceid}}"></ion-input>
         <ion-input type="text" hidden ng-show="false" [(ngModel)]="photo.columnname" name="columnname" value="{{columnname}}"></ion-input>
         <ion-card>
             <ion-card-header>
-                <ion-card-subtitle>Image Preview</ion-card-subtitle>
+                <ion-card-subtitle style="text-align: center;">Image Preview</ion-card-subtitle>
             </ion-card-header>
             <img class = "img-load" #img src="{{base64Image}}" (load)="updateCanvas($event)"/>
             <div class = "ion-canvas">
@@ -41,12 +40,11 @@
             </div>
         </ion-card>
         <div class="button-grouping ion-padding">
-            <ion-button *ngIf="is_delete !== true" size="large" expand="block" color="primary" type="submit">
+            <ion-button (click)="uploadImage(photo,false)" size="large" expand="block" color="primary" type="submit">
                 <ion-text>Save</ion-text>
             </ion-button>
-            <ion-button *ngIf="is_delete === true" size="large" expand="block" color="danger" type="submit">
+            <ion-button *ngIf="is_delete === true" (click)="uploadImage(photo,true)" size="large" expand="block" color="danger" type="submit">
                 <ion-text>Delete</ion-text>
             </ion-button>
         </div>
-    <!-- </form> -->
 </ion-content>

@@ -9,7 +9,7 @@
         <ion-grid>
             <ion-item-group *ngFor="let service of servicedetail" style="align-items: center;margin-bottom: 25px">
                 <ion-item lines="none">
-                    <ion-label position="stacked">
+                    <ion-label position="stacked" style="margin-bottom: 10px;">
                         <ion-text>
                             {{service.fieldlabel}}  
                             <ion-icon name="help-circle-outline" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != ''"></ion-icon>
