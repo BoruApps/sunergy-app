@@ -38,13 +38,14 @@ export class ImageModalPage implements OnInit {
     modalTitle: string;
     modelId: number;
     serviceid: any;
-    columnname: any;
+    columnname: string[];
     apiurl: any;
     user_id: any;
     dataReturned: any;
     index:any;
     is_delete:any;
     documentid:any;
+    base64Image:string[];
 
     btnList = [
         { name:"circle", class:"radio-button-off" },
@@ -63,7 +64,8 @@ export class ImageModalPage implements OnInit {
         secondary_title: '',
         tower_section: '',
         serviceid: '',
-        base64Image: ''
+        base64Image: '',
+        columnname: ''
     };
     allTitlelist = {
         cf_photo_checklist_1: 'Front_House',
@@ -141,7 +143,7 @@ export class ImageModalPage implements OnInit {
         this.serviceid = this.navParams.data.serviceid;
         this.columnname = this.navParams.data.columnname;
         this.modalTitle = this.navParams.data.paramTitle;
-        this.photo.title = this.allTitlelist[this.columnname];
+        this.photo.title = this.allTitlelist[this.navParams.data.columnname];
         this.user_id = this.navParams.data.user_id;
         this.index = this.navParams.data.columnIndex;
         this.is_delete = this.navParams.data.is_delete;
@@ -164,8 +166,6 @@ export class ImageModalPage implements OnInit {
         if(this._CANVAS.isDrawingMode) this._CANVAS.isDrawingMode = false;
         console.log(this.elementSelected);
         switch(this.elementSelected) {
-            case "search":
-            break;
             case "brush":
                 this._CANVAS.isDrawingMode = (this._CANVAS.isDrawingMode) ? false: true;
             break;
@@ -200,7 +200,7 @@ export class ImageModalPage implements OnInit {
     }
 
     zoomImg() {
-        (function(elm) {
+      /*  (function(elm) {
             elm._CANVAS.on({
                 'touch:gesture': function(opt) {
                     console.log(this);
@@ -245,7 +245,7 @@ export class ImageModalPage implements OnInit {
                     }
                 }
             });
-        })(this);
+        })(this);*/
     }
     
     addText() {
@@ -296,7 +296,7 @@ export class ImageModalPage implements OnInit {
 
         var elmurl = document.querySelector<HTMLInputElement>('.img-load')!;
         elmurl.style.display = "none";
-
+        if(this.elementSelected == 'search') return;
         (function(elm) {
             elm._CANVAS.on({
                 'object:modified': function() {
@@ -317,10 +317,24 @@ export class ImageModalPage implements OnInit {
                             elm.addText();
                         }
                     } else  elm.touchTracker = { start:null};
-                }, 'mouse:up': function(ev) {
+                }, 'touch:drag': function(ev) {
+                    console.log(ev);
+                    if(ev.e.touches != undefined) elm.touchTracker.pageY = ev.e.touches[0].pageY;
+                    // if(elm.elementSelected == 'search') {
+                    //     var delta = ev.e.deltaY;
+                    //     var zoom = elm._CANVAS.getZoom();
+                    //     zoom *= 0.999 ** delta;
+                    //     if (zoom > 20) zoom = 20;
+                    //     if (zoom < 0.01) zoom = 0.01;
+                    //     elm._CANVAS.zoomToPoint({ x: ev.e.offsetX, y: ev.e.offsetY }, zoom);
+                    //     // ev.e.preventDefault();
+                    //     // ev.e.stopPropagation();
+                    // }
+                },'mouse:up': function(ev) {
                     if(elm.touchTracker.start === null) return;
                     elm.touchTracker.end = ev.pointer;
-                    console.log(elm.touchTracker);
+                    console.log(elm._CANVAS.getZoom());
+                    console.log(ev);
                     switch(elm.elementSelected) {
                         case "circle":
                             elm.drawCircle();
@@ -333,6 +347,16 @@ export class ImageModalPage implements OnInit {
                         break;
                         case "crop":
                             elm.cropImage();
+                        break;
+                        case "search":
+
+                            var delta = elm.touchTracker.end.y - elm.touchTracker.pageY;
+                            var zoom = elm._CANVAS.getZoom();
+                            zoom *= 0.999 ** delta;
+                            if (zoom > 20) zoom = 20;
+                            if (zoom < 0.01) zoom = 0.01;
+                            console.log(zoom);
+                            elm._CANVAS.zoomToPoint({ x: ev.e.offsetX, y: ev.e.offsetY }, zoom);
                         break;
                     }
                 }
