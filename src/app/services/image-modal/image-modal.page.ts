@@ -489,7 +489,7 @@ export class ImageModalPage implements OnInit {
         }, 1000);
     }
 
-    async uploadImage(data,is_delete=false) {
+    async uploadImage(data,delete_needed=false) {
         var headers = new HttpHeaders();
         headers.append("Accept", 'application/json');
         headers.append('Content-Type', 'application/json');
@@ -506,7 +506,7 @@ export class ImageModalPage implements OnInit {
             'base64Image':imageData,
             'serviceid':this.serviceid,
             'columnname':this.columnname,
-            'is_delete':is_delete,
+            'is_delete':delete_needed,
             'logged_in_user':this.user_id,
             'index':this.index,
             'documentid':this.documentid,
@@ -523,9 +523,12 @@ export class ImageModalPage implements OnInit {
                 this.hideLoading();
                 //console.log(data['_body']);
                 if (data['body']['success'] == true) {
-                    if (this.is_delete === true){
-                        this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'].splice(0,1);
-
+                    if (delete_needed === true){
+                        for(var imgindex in this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos']) {
+                            if (this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'][imgindex]['documentid'] == this.documentid){
+                                this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'].splice(imgindex,1);
+                            }
+                        }
                         this.presentToastPrimary('Photo deleted successfully\n');
                         this.closeModal();
                     }else{
