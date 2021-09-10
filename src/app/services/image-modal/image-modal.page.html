@@ -26,7 +26,13 @@
                 </div>
             </div>
 
-            <ion-input type="text"  ng-show="false" [(ngModel)]="photo.base64Image" name="base64Image" value="{{base64Image}}"></ion-input>
+            <ion-item [ngClass]=" elementSelected === 'rotate' ? '' : 'range-display'">
+                <ion-range min="0" max="360" step="5" snaps="true" ticks="false" color="secondary" [ngModel]='rotaterange' (ngModelChange) = "rotateImage($event)"></ion-range>
+              </ion-item>
+              <ion-item [ngClass]=" elementSelected === 'search' ? '' : 'range-display'">
+                <ion-range min="1" max="10" step="1" snaps="true" ticks="false" color="secondary" [ngModel]='rotaterange' (ngModelChange) = "zoomImg($event)"></ion-range>
+              </ion-item>
+            <ion-input style = "display:none" type="text"  ng-show="false" [(ngModel)]="photo.base64Image" name="base64Image" value="{{base64Image}}"></ion-input>
             <div *ngIf="is_delete !== true">
                 <ion-card-header>
                     <ion-card-subtitle>

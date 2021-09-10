@@ -55,19 +55,7 @@ export class DetailPage implements OnInit {
     inspection_type: string;
     activityid: string;
     isCompleteWO: number = 0;
-    public workorderdetail: {
-        mailingstreet: any[],
-        mailingpobox: any[],
-        mailingcity: any[],
-        mailingstate: any[],
-        mailingzip: any[],
-        workorderid: any[],
-        firstname: any[],
-        lastname: any[],
-        secondary_contact_name: any[],
-        mobile: any[],
-        secondary_contact_mobile: any[],
-    };
+    public workorderdetail: any[] = [];
     public servicedetail: any[] = [];
     public itemgrid: any[] = [];
     public countItemList: number = 0;

@@ -21,6 +21,9 @@ ion-toolbar ion-icon[name="close"]{
 .ion-canvas{
   width: fit-content;
   margin: auto;
+  max-width: 300px;
+  max-height: 300px;
+  overflow: scroll;
 }
 
 .btn-selection-draw {
@@ -49,4 +52,8 @@ ion-toolbar ion-icon[name="close"]{
     background-color: #23954b;
     color: #ffffff;
   }
+}
+
+.range-display {
+  display: none;
 }
