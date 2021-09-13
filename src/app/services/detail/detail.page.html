@@ -129,8 +129,9 @@
 
                                     <ion-grid *ngIf="service.json">
                                         <ion-row>
-                                            <ion-col style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
-                                                <ion-text [ngClass]="{'green-text' : service.image_count == service.total_count}">{{service.image_count}} / {{service.total_count}}<br>Sections Filled</ion-text>
+                                            <ion-col tyle="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
+                                                <ion-text *ngIf="!service.task_complete" [ngClass]="{'green-text' : service.image_count == service.total_count}">{{service.image_count}} / {{service.total_count}} service<br>Sections Filled</ion-text>
+                                                <ion-text *ngIf="service.task_complete" class = "green-text">Complete</ion-text>
                                             </ion-col>
                                             <!--<div *ngIF="appConst.workOrder[serviceid][field]['complete_category'] == 'yes'">Ccmpleted</div>-->
                                             <ion-col>

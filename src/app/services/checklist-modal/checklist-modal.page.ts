@@ -369,9 +369,9 @@ export class ChecklistModalPage implements OnInit {
         this.picCompleted = event.currentTarget.checked;
         if (event.currentTarget.checked) {
             completed = 'yes';
-            this.appConst.workOrder[this.serviceid][this.field]["complete_category"] = 'yes'
+            this.appConst.workOrder[this.serviceid][this.field].complete_category = 'yes'
         }else{
-            this.appConst.workOrder[this.serviceid][this.field]["complete_category"] = 'no'
+            this.appConst.workOrder[this.serviceid][this.field].complete_category = 'no'
         }
 
         var params = {

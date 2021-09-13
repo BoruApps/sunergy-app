@@ -131,12 +131,13 @@ export class ImageModalPage implements OnInit {
         this.touchTracker = {
             start: {},
             end: {}, 
-            zoom: 0,
+            zoom: 1,
             canvasScale: 1,
             orginalImg: {
                 width: 0,
                 height: 0
-            }
+            },
+            reset: false
         };
         this.imgBackground = null;
         this.pausePanning = false;
@@ -187,17 +188,38 @@ export class ImageModalPage implements OnInit {
     }
 
     rotateImage(ev) {
+        let valRotate = ev.target.value;
         let curWidth = this._CANVAS.getWidth();
         let curHeight = this._CANVAS.getHeight();
-        if([90,180,270,360].includes(ev)) {
+        if(curWidth > curHeight) {
+
+            this._CANVAS.setWidth(curWidth);
+            this._CANVAS.setHeight(curWidth);
+        } else if(curHeight > curWidth) {
+
+            this._CANVAS.setWidth(curHeight);
+            this._CANVAS.setHeight(curHeight);
+        }
+         
+        this._CANVAS.setBackgroundImage(this.imgBackground, this._CANVAS.renderAll.bind(this._CANVAS),{
+            crossOrigin: 'anonymous',
+            originX: 'center',
+            originY: 'center',
+            top: this._CANVAS.getWidth()/2,
+            left: this._CANVAS.getWidth()/2
+        });
+        //console.log(valRotate);
+        this._CANVAS.backgroundImage.rotate(valRotate);
+        //console.log(this._CANVAS.toDataURL());
+        if([90,180,270,360].includes(valRotate)) {
+            
             this._CANVAS.setWidth(curHeight);
             this._CANVAS.setHeight(curWidth);   
         } 
-        
-        this._CANVAS.backgroundImage.rotate(ev);
+        console.log(this._CANVAS.getWidth());
         
         this._CANVAS.renderAll();
-        this.updateModifications(true);
+        //this.updateModifications(true);
     }
     drawCircle() {
 
@@ -220,12 +242,23 @@ export class ImageModalPage implements OnInit {
         this.updateModifications(true);
     }
 
-    zoomImg(ev) {
-        this.touchTracker.canvasScale =  ev * 1.15;
-        var canvasCenter = new fabric.Point(this._CANVAS.getWidth() / 2, this._CANVAS.getHeight() / 2);
+    zoomImg() {
+
+        console.log(this.touchTracker);
+        if(this.touchTracker.zoom >= 10) {
+            this.touchTracker.zoom -= 1;
+            this.touchTracker.reset = true;
+        } else if(this.touchTracker.zoom < 1) {
+            this.touchTracker.zoom += 1;
+            this.touchTracker.reset = false;
+        }
+        this.touchTracker.canvasScale =  this.touchTracker.zoom * 1.15;
+        console.log(this.touchTracker);
+        var canvasCenter = new fabric.Point(this.touchTracker.start.x, this.touchTracker.start.y);
         this._CANVAS.zoomToPoint(canvasCenter, this.touchTracker.canvasScale);
         this._CANVAS.renderAll();
-        this.updateModifications(true);
+        (!this.touchTracker.reset) ? this.touchTracker.zoom++ : this.touchTracker.zoom--;
+        //this.updateModifications(true);
     }
 
     addText() {
@@ -316,6 +349,9 @@ export class ImageModalPage implements OnInit {
                         break;
                         case "crop":
                             elm.cropImage();
+                        break;
+                        case "search":
+                            elm.zoomImg();
                         break;
                     }
                 }

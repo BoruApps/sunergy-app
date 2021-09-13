@@ -200,6 +200,7 @@ export class DetailPage implements OnInit {
                                         json: this.checkJson(workorder[key][fieldkey].default),
                                         image_count: 0,
                                         total_count: 0,
+                                        task_complete: false,
                                         default: workorder[key][fieldkey].default
                                     };
                                     if(this.checkJson(workorder[key][fieldkey].default)) {
@@ -208,9 +209,11 @@ export class DetailPage implements OnInit {
 
                                     if(_data.json) {
                                         _data.value = this.appConst.workOrder[serviceid][fieldkey]['comments']
-
+                                        _data.task_complete = (this.appConst.workOrder[this.serviceid][fieldkey]['complete_category'] == 'yes') ? true: false;
                                         var t_image_count = 0;
                                         var image_count = 0;
+                                        
+                                        console.log(this.appConst.workOrder[this.serviceid][fieldkey]);
                                         for (let photoid in this.appConst.workOrder[serviceid][fieldkey]['photos']) {
                                             if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['name'] != 'Miscellaneous') {
                                                 if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['photos'].length > 0){
