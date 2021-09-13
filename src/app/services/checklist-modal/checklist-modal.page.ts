@@ -19,6 +19,7 @@ export class ChecklistModalPage implements OnInit {
     modalTitle: string;
     modelId: number;
     serviceid: any;
+    picCompleted: boolean = false;
     inspection_type: any;
     apiurl: any;
     updatefields: any = {};
@@ -79,6 +80,7 @@ export class ChecklistModalPage implements OnInit {
         // console.table(this);
         this.modelId = this.navParams.data.paramID;
         this.serviceid = this.navParams.data.serviceid;
+        this.picCompleted = this.navParams.data.picCompleted;
         this.modalTitle = this.navParams.data.paramTitle;
         this.user_id = this.navParams.data.user_id;
         this.updatefields = this.navParams.data.current_updates;
@@ -128,8 +130,14 @@ export class ChecklistModalPage implements OnInit {
                 notes: dataLabel[index].notes
             })
         }
-        console.log(this.servicedetail);
-        
+
+        console.log('this.servicedetail',this.servicedetail);
+
+        if (this.appConst.workOrder[this.serviceid][this.field]["complete_category"] == 'yes'){
+            this.picCompleted = true;
+        } else{
+            this.picCompleted = false;
+        }
     }
 
 
@@ -245,6 +253,7 @@ export class ChecklistModalPage implements OnInit {
                             "user_id": this.user_id,
                             "is_delete": true,
                             "documentid": image.documentid,
+                            "fileName": data['body']['fileName'].split('.')[0] ,
                             "columnIndex": index
                         }
                     });
@@ -348,6 +357,47 @@ export class ChecklistModalPage implements OnInit {
             this.closeModal();
             console.log('no data modified for record', serviceid);
         }
+    }
+
+    addPicCompleted(event) {
+        var headers = new HttpHeaders();
+        headers.append("Accept", 'application/json');
+        headers.append('Content-Type', 'application/json');
+        headers.append('Access-Control-Allow-Origin', '*');
+
+        var completed = 'no';
+        this.picCompleted = event.currentTarget.checked;
+        if (event.currentTarget.checked) {
+            completed = 'yes';
+            this.appConst.workOrder[this.serviceid][this.field]["complete_category"] = 'yes'
+        }else{
+            this.appConst.workOrder[this.serviceid][this.field]["complete_category"] = 'no'
+        }
+
+        var params = {
+            serviceid: this.serviceid,
+            columnname: this.field,
+            mode: 'complete_category',
+            completed: completed,
+        };
+
+        this.httpClient.post(this.apiurl + "postPhotos.php", params, {headers: headers, observe: 'response'})
+            .subscribe(data => {
+                this.hideLoading();
+                var success = data['body']['success'];
+                if (success == true) {
+                    this.closeModal();
+                    console.log("Checklist marked as Completed");
+                } else {
+                    this.presentToast('Failed to save Checklist status');
+                    console.log('Failed to save Checklist status');
+                }
+            }, error => {
+                this.hideLoading();
+                this.presentToast('Failed to save Checklist due to an error \n' + error.message);
+                console.log('failed to save Checklist', error.message);
+            }
+        );
     }
 
     addUpdate(event) {

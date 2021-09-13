@@ -6,51 +6,70 @@
 </ion-header>
 
 <ion-content padding>
-        <ion-input type="text" hidden ng-show="false" [(ngModel)]="photo.serviceid" name="serviceid" value="{{serviceid}}"></ion-input>
-        <ion-input type="text" hidden ng-show="false" [(ngModel)]="photo.columnname" name="columnname" value="{{columnname}}"></ion-input>
-        <ion-card>
-            <ion-card-header>
-                <ion-card-subtitle style="text-align: center;">Image Preview</ion-card-subtitle>
-            </ion-card-header>
-            <img class = "img-load" #img src="{{base64Image}}" (load)="updateCanvas($event)"/>
-            <div class = "ion-canvas">
-                <canvas id = 'canvas' ></canvas>
-            </div>
-            <div class = "btn-selection-draw" >
-                <div *ngFor="let btn of btnList"
-                    (click)="drawBtnSelect(btn.name)"
-                    [ngClass]="elementSelected === btn.name ? 'primary' : 'secondary'">
-                    
-                    <ion-icon *ngIf="btn.name !== 'text'" name="{{btn.class}}"></ion-icon>
-                    <svg *ngIf = "btn.name == 'text'" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="font" class="svg-inline--fa fa-font fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M432 416h-23.41L277.88 53.69A32 32 0 0 0 247.58 32h-47.16a32 32 0 0 0-30.3 21.69L39.41 416H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-19.58l23.3-64h152.56l23.3 64H304a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM176.85 272L224 142.51 271.15 272z"></path></svg>
-                </div>
-            </div>
-
-            <ion-item [ngClass]=" elementSelected === 'rotate' ? '' : 'range-display'">
-                <ion-range min="0" max="360" step="5" snaps="true" ticks="false" color="secondary" [ngModel]='rotaterange' (ngModelChange) = "rotateImage($event)"></ion-range>
-              </ion-item>
-              <ion-item [ngClass]=" elementSelected === 'search' ? '' : 'range-display'">
-                <ion-range min="1" max="10" step="1" snaps="true" ticks="false" color="secondary" [ngModel]='rotaterange' (ngModelChange) = "zoomImg($event)"></ion-range>
-              </ion-item>
-            <ion-input style = "display:none" type="text"  ng-show="false" [(ngModel)]="photo.base64Image" name="base64Image" value="{{base64Image}}"></ion-input>
-            <div *ngIf="is_delete !== true">
-                <ion-card-header>
-                    <ion-card-subtitle>
-                        <ion-label position="stacked">Image Description</ion-label>
-                    </ion-card-subtitle>
-                </ion-card-header>
-
-                <ion-card-content>
-                    <ion-input type="text" oninput="" size="100" required="" [(ngModel)]="photo.title" name="notecontent" class="title-input" placeholder="Enter a description..."></ion-input>
-                </ion-card-content>
-            </div>
-        </ion-card>
-        <div class="button-grouping ion-padding">
-            <ion-button (click)="uploadImage(photo,false)" size="large" expand="block" color="primary" type="submit">
-                <ion-text>Save</ion-text>
-            </ion-button>
-            <ion-button *ngIf="is_delete === true" (click)="uploadImage(photo,true)" size="large" expand="block" color="danger" type="submit">
-                <ion-text>Delete</ion-text>
-            </ion-button>
+    <ion-input type="text" hidden ng-show="false" [(ngModel)]="photo.serviceid" name="serviceid"
+               value="{{serviceid}}"></ion-input>
+    <ion-input type="text" hidden ng-show="false" [(ngModel)]="photo.columnname" name="columnname"
+               value="{{columnname}}"></ion-input>
+    <ion-card>
+        <ion-card-header>
+            <ion-card-subtitle style="text-align: center;">Image Preview</ion-card-subtitle>
+        </ion-card-header>
+        <img class="img-load" #img src="{{base64Image}}" (load)="updateCanvas($event)"/>
+        <div class="ion-canvas">
+            <canvas id='canvas'></canvas>
         </div>
+        <div class="btn-selection-draw">
+            <div *ngFor="let btn of btnList"
+                 (click)="drawBtnSelect(btn.name)"
+                 [ngClass]="elementSelected === btn.name ? 'primary' : 'secondary'">
+
+                <ion-icon *ngIf="btn.name !== 'text'" name="{{btn.class}}"></ion-icon>
+                <svg *ngIf="btn.name == 'text'" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="font"
+                     class="svg-inline--fa fa-font fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 448 512">
+                    <path fill="currentColor"
+                          d="M432 416h-23.41L277.88 53.69A32 32 0 0 0 247.58 32h-47.16a32 32 0 0 0-30.3 21.69L39.41 416H16a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-19.58l23.3-64h152.56l23.3 64H304a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM176.85 272L224 142.51 271.15 272z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <ion-item [ngClass]=" elementSelected === 'rotate' ? '' : 'range-display'">
+            <ion-range min="0" max="360" step="5" snaps="true" ticks="false" color="secondary"
+                       (ionChange)="rotateImage($event)"></ion-range>
+        </ion-item>
+        <ion-item [ngClass]=" elementSelected === 'search' ? '' : 'range-display'">
+            <ion-range min="1" max="10" step="1" snaps="true" ticks="false" color="secondary"
+                       (ionChange)="zoomImg($event)"></ion-range>
+        </ion-item>
+        <ion-input style="display:none" type="text" ng-show="false" [(ngModel)]="photo.base64Image" name="base64Image"
+                   value="{{base64Image}}"></ion-input>
+        <div *ngIf="is_delete !== true">
+            <ion-card-header>
+                <ion-card-subtitle>
+                    <ion-label position="stacked">Image Description</ion-label>
+                </ion-card-subtitle>
+            </ion-card-header>
+
+            <ion-card-content>
+                <ion-input type="text" oninput="" size="100" required="" [(ngModel)]="photo.title" name="notecontent"
+                           class="title-input" placeholder="Enter a description..."></ion-input>
+            </ion-card-content>
+        </div>
+        <div *ngIf="is_delete === true">
+            <ion-card-header>
+                <ion-card-subtitle style="text-align: center;">
+                    <ion-label position="stacked">{{fileName}}</ion-label>
+                </ion-card-subtitle>
+            </ion-card-header>
+        </div>
+    </ion-card>
+    <div class="button-grouping ion-padding">
+        <ion-button (click)="uploadImage(photo,false)" size="large" expand="block" color="primary" type="submit">
+            <ion-text>Save</ion-text>
+        </ion-button>
+        <ion-button *ngIf="is_delete === true" (click)="uploadImage(photo,true)" size="large" expand="block"
+                    color="danger" type="submit">
+            <ion-text>Delete</ion-text>
+        </ion-button>
+    </div>
 </ion-content>

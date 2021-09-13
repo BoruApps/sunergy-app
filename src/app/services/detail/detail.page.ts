@@ -198,6 +198,8 @@ export class DetailPage implements OnInit {
                                         picklist: workorder[key][fieldkey].picklist,
                                         fieldlabel: workorder[key][fieldkey].fieldlabel,
                                         json: this.checkJson(workorder[key][fieldkey].default),
+                                        image_count: 0,
+                                        total_count: 0,
                                         default: workorder[key][fieldkey].default
                                     };
                                     if(this.checkJson(workorder[key][fieldkey].default)) {
@@ -206,35 +208,37 @@ export class DetailPage implements OnInit {
 
                                     if(_data.json) {
                                         _data.value = this.appConst.workOrder[serviceid][fieldkey]['comments']
+
+                                        var t_image_count = 0;
+                                        var image_count = 0;
+                                        for (let photoid in this.appConst.workOrder[serviceid][fieldkey]['photos']) {
+                                            if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['name'] != 'Miscellaneous') {
+                                                if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['photos'].length > 0){
+                                                    image_count ++;
+                                                }
+                                                t_image_count ++;
+                                            }
+                                        }
+                                        _data.image_count = image_count;
+                                        _data.total_count = t_image_count;
+                                        console.log("_data",_data)
                                     }
                                     fieldArray.push(_data);
                                 }
                             }
+
+
                             this.servicedetail.push({
                                 blockname: key,
                                 fields: fieldArray,
                             });
-                            console.log(this.appConst.workOrder);
                             this.blockGroups[key]={open: false};
                         }
                     }
 
+                    console.log('workOrder',this.appConst.workOrder[serviceid]);
                     console.log('servicedetail', this.servicedetail);
                     console.log('arrayfields', this.arrayfields);
-
-                    //load item grid 43636
-                    this.httpClient.post(this.apiurl + "getItemList.php", params, {
-                        headers: headers,
-                        observe: 'response'
-                    })
-                        .subscribe(data => {
-                            this.hideLoading();
-                            var success = data['body']['success'];
-                            if (success == true) {
-                                this.itemgrid = data['body']['data'];
-                                this.countItemList = data['body']['count'];
-                            }
-                        });
                 } else {
                     this.hideLoading();
                     console.log('failed to fetch record');

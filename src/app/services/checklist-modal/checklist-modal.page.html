@@ -5,14 +5,17 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
+
+    <ion-item style="text-align: center;">
+        <ion-checkbox checked="{{picCompleted}}"  (ionChange)="addPicCompleted($event)"></ion-checkbox>
+        <ion-label>Adding Pictures Completed</ion-label>
+    </ion-item>
+
     <form #form="ngForm"  (ngSubmit)="completeOrder(serviceid)">
-        <ion-grid>
             <ion-item-group *ngFor="let service of servicedetail" style="align-items: center;margin-bottom: 25px">
                 <ion-item lines="none">
-                    <ion-label position="stacked" style="margin-bottom: 10px;">
-                        <ion-text>
-                            {{service.fieldlabel}}  
-                            <ion-icon name="help-circle-outline" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != ''"></ion-icon>
+                    <ion-label position="stacked" style="margin: 0px 0px 10px 5px">
+                        <ion-text>{{service.fieldlabel}}<ion-icon name="help-circle-outline" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != ''"></ion-icon>
                         </ion-text>
                         <ion-text class = "short-description">{{service.helpinfo.short}}</ion-text>
                         <ion-text *ngIf="service.helpinfo.long != '' && checklisthelper[service.columnname] == 1" lines="none" class="helper-text-box" [innerHTML]="service.helpinfo.long"></ion-text> 
@@ -29,7 +32,6 @@
                     </ul>
                 </ion-item>
             </ion-item-group>
-        </ion-grid>
     </form>
     <div class = "close-btn" (click)="closeModal()">Done</div>
 </ion-content>
