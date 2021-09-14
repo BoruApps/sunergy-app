@@ -191,35 +191,17 @@ export class ImageModalPage implements OnInit {
         let valRotate = ev.target.value;
         let curWidth = this._CANVAS.getWidth();
         let curHeight = this._CANVAS.getHeight();
-        if(curWidth > curHeight) {
 
-            this._CANVAS.setWidth(curWidth);
-            this._CANVAS.setHeight(curWidth);
-        } else if(curHeight > curWidth) {
-
-            this._CANVAS.setWidth(curHeight);
-            this._CANVAS.setHeight(curHeight);
-        }
-         
-        this._CANVAS.setBackgroundImage(this.imgBackground, this._CANVAS.renderAll.bind(this._CANVAS),{
-            crossOrigin: 'anonymous',
-            originX: 'center',
-            originY: 'center',
-            top: this._CANVAS.getWidth()/2,
-            left: this._CANVAS.getWidth()/2
-        });
         //console.log(valRotate);
         this._CANVAS.backgroundImage.rotate(valRotate);
         //console.log(this._CANVAS.toDataURL());
         if([90,180,270,360].includes(valRotate)) {
-            
             this._CANVAS.setWidth(curHeight);
-            this._CANVAS.setHeight(curWidth);   
-        } 
-        console.log(this._CANVAS.getWidth());
-        
+            this._CANVAS.setHeight(curWidth);
+        }
+
         this._CANVAS.renderAll();
-        //this.updateModifications(true);
+        this.updateModifications(true);
     }
     drawCircle() {
 
@@ -454,6 +436,7 @@ export class ImageModalPage implements OnInit {
                 })(elm);
             }
         })(this);
+        this.updateModifications(true)
     }
 
     updateModifications(history) {

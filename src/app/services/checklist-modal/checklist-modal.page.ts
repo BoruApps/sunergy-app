@@ -293,8 +293,27 @@ export class ChecklistModalPage implements OnInit {
         );
     }
 
-    async closeModal() {
-        await this.modalController.dismiss();
+    async closeModal(changes='') {
+        var t_image_count = 0;
+        var image_count = 0;
+
+        for (let photoid in this.appConst.workOrder[this.serviceid][this.field]['photos']) {
+            if (this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['name'] != 'Miscellaneous') {
+                if (this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['photos'].length > 0){
+                    image_count ++;
+                }
+                t_image_count ++;
+            }
+        }
+
+        this.appConst.workOrder[this.serviceid][this.field]['image_count'] = image_count
+        this.appConst.workOrder[this.serviceid][this.field]['t_image_count'] = t_image_count;
+
+        if (changes != ''){
+            await this.modalController.dismiss({picCompleted:this.picCompleted});
+        }else{
+            await this.modalController.dismiss();
+        }
     }
 
     async presentToast(message: string) {
@@ -386,7 +405,7 @@ export class ChecklistModalPage implements OnInit {
                 this.hideLoading();
                 var success = data['body']['success'];
                 if (success == true) {
-                    this.closeModal();
+                    this.closeModal(completed);
                     console.log("Checklist marked as Completed");
                 } else {
                     this.presentToast('Failed to save Checklist status');

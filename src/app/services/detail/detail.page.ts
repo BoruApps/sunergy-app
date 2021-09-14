@@ -61,6 +61,7 @@ export class DetailPage implements OnInit {
     public countItemList: number = 0;
     updatefields: any = {};
     arrayfields: any = {};
+    completedFields: any = {};
 
     blockGroups: any = {};
 
@@ -213,7 +214,6 @@ export class DetailPage implements OnInit {
                                         var t_image_count = 0;
                                         var image_count = 0;
                                         
-                                        console.log(this.appConst.workOrder[this.serviceid][fieldkey]);
                                         for (let photoid in this.appConst.workOrder[serviceid][fieldkey]['photos']) {
                                             if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['name'] != 'Miscellaneous') {
                                                 if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['photos'].length > 0){
@@ -222,8 +222,10 @@ export class DetailPage implements OnInit {
                                                 t_image_count ++;
                                             }
                                         }
-                                        _data.image_count = image_count;
-                                        _data.total_count = t_image_count;
+                                        this.appConst.workOrder[this.serviceid][fieldkey]['image_count'] = image_count
+                                        this.appConst.workOrder[this.serviceid][fieldkey]['t_image_count'] = t_image_count;
+
+                                        this.completedFields[fieldkey] = (this.appConst.workOrder[this.serviceid][fieldkey]['complete_category'] == 'yes') ? true: false;
                                         console.log("_data",_data)
                                     }
                                     fieldArray.push(_data);
@@ -447,8 +449,11 @@ export class DetailPage implements OnInit {
 
         modal_checklist.onDidDismiss().then((dataReturned) => {
             if (dataReturned !== null) {
-                this.dataReturned = dataReturned.data;
-                //alert('Modal Sent Data :'+ dataReturned);
+                console.log("columnName",columnName)
+                console.log("dataReturned",dataReturned.data.picCompleted)
+                if (typeof dataReturned.data.picCompleted !== 'undefined'){
+                    this.completedFields[columnName] = dataReturned.data.picCompleted;
+                }
             }
         });
 
