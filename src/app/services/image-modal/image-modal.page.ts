@@ -51,7 +51,7 @@ export class ImageModalPage implements OnInit {
     btnList = [
         { name:"circle", class:"radio-button-off" },
         { name:"square", class:"square-outline" },
-        { name:"search", class:"search" },
+        { name:"search", class:"search-plus" },
         { name:"arrow", class:"arrow-forward" },
         { name:"brush", class:"brush" },
         { name:"undo", class:"undo" },
