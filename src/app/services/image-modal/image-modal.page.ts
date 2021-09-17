@@ -14,6 +14,8 @@ import {LoadingController} from '@ionic/angular';
 import {ImageConfirmModalPage} from "../image-confirm-modal/image-confirm-modal.page";
 import { fabric } from 'fabric';
 import { Statement } from '@angular/compiler';
+import { AlertController } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 
 @Component({
     selector: 'app-image-modal',
@@ -121,7 +123,9 @@ export class ImageModalPage implements OnInit {
         public imgpov: ImageProvider,
         public appConst: AppConstants,
         public loadingController: LoadingController,
-        public navCtrl: NavController
+        public navCtrl: NavController,
+        private alertController:AlertController,
+        private platform: Platform
     ) {
         this.imageData = this.imgpov.getImage();
         this.apiurl = this.appConst.getApiUrl();
@@ -280,6 +284,19 @@ export class ImageModalPage implements OnInit {
 
     updateCanvas(event) {
         var elmurl = document.querySelector<HTMLInputElement>('.img-load')!;
+        var cwidth = this.platform.width()*0.8;
+        var cheight = this.platform.height()*0.6;
+
+        if (elmurl.width < cwidth){
+            cwidth = elmurl.width;
+        }
+        if (elmurl.height < cheight){
+            cheight = elmurl.height;
+        }
+
+        this._CANVAS.setDimensions({width:cwidth, height:cheight});
+
+
         fabric.Image.fromURL(this.imgElm.src, (img) => {
             this.imgBackground = img;
             this._CANVAS.setBackgroundImage(img, this._CANVAS.renderAll.bind(this._CANVAS),{
@@ -492,6 +509,52 @@ export class ImageModalPage implements OnInit {
         }, 1000);
     }
 
+    async confirmCancelImage(){
+        const alert = await this.alertController.create({
+            cssClass: 'my-custom-class',
+            header: 'Please Confirm!',
+            message: 'Do you want to cancel any edits made to the image?',
+            buttons: [
+                {
+                    text: 'No',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: (blah) => {}
+                }, {
+                    text: 'Yes',
+                    handler: () => {
+                        this.closeModal();
+                    }
+                }
+            ]
+        });
+
+        await alert.present();
+    }
+
+    async confirmDeleteImage(photo){
+        const alert = await this.alertController.create({
+            cssClass: 'my-custom-class',
+            header: 'Please Confirm!',
+            message: 'Are you sure you want to delete this image?',
+            buttons: [
+                {
+                    text: 'No',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: (blah) => {}
+                }, {
+                    text: 'Yes',
+                    handler: () => {
+                        this.uploadImage(photo,true);
+                    }
+                }
+            ]
+        });
+
+        await alert.present();
+    }
+
     async uploadImage(data,delete_needed=false) {
         var headers = new HttpHeaders();
         headers.append("Accept", 'application/json');
@@ -500,11 +563,12 @@ export class ImageModalPage implements OnInit {
 
         await this.GetCanvasAtResoution();
 
-        if (this._CANVAS.toDataURL()) {
-            var bs64img = this._CANVAS.toDataURL();
-            var imageData = bs64img.split(',')[1];
-        }else{
-            var imageData = this.imageData;
+        var imageData = this.imageData;
+        if (delete_needed === false) {
+            if (this._CANVAS.toDataURL()) {
+                var bs64img = this._CANVAS.toDataURL();
+                imageData = bs64img.split(',')[1];
+            }
         }
 
         var param = {

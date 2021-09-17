@@ -22,7 +22,9 @@ ion-toolbar ion-icon[name="close"]{
   // max-height: 300px;
   // overflow: scroll;
 }
-
+#canvas{
+  width: 100%;
+}
 .btn-selection-draw {
   display: flex;
   justify-content: space-between;

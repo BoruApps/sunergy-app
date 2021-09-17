@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar text-center>
         <ion-title>{{modalTitle}}</ion-title>
-        <ion-icon name="close" (click)="closeModal()" size="large"></ion-icon>
+        <ion-icon name="close" (click)="confirmCancelImage()" size="large"></ion-icon>
     </ion-toolbar>
 </ion-header>
 
@@ -69,7 +69,10 @@
         <ion-button (click)="uploadImage(photo,false)" size="large" expand="block" color="primary" type="submit">
             <ion-text>Save</ion-text>
         </ion-button>
-        <ion-button *ngIf="is_delete === true" (click)="uploadImage(photo,true)" size="large" expand="block"
+        <ion-button (click)="confirmCancelImage(photo)" size="large" expand="block" color="primary" type="submit">
+            <ion-text>Cancel</ion-text>
+        </ion-button>
+        <ion-button *ngIf="is_delete === true" (click)="confirmDeleteImage(photo)" size="large" expand="block"
                     color="danger" type="submit">
             <ion-text>Delete</ion-text>
         </ion-button>
