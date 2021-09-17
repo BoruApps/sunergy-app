@@ -34,6 +34,8 @@ export class ChecklistModalPage implements OnInit {
     field: any;
 
     buttonLabels = ['Take Photo', 'Upload from Library'];
+    public subSection: number;
+    public sectionKey: number;
 
     actionOptions: ActionSheetOptions = {
         title: 'Which would you like to do?',
@@ -74,6 +76,8 @@ export class ChecklistModalPage implements OnInit {
         private actionSheet: ActionSheet
     ) {
         this.apiurl = this.appConst.getApiUrl();
+        this.subSection = 0;
+        this.sectionKey = 0;
     }
 
     ngOnInit() {
@@ -104,6 +108,7 @@ export class ChecklistModalPage implements OnInit {
             }
         }, 1000);
     }
+
     loadChecklist() {
         var dataLabel = this.appConst.workOrder[this.serviceid][this.field]["photos"];
         console.log(dataLabel);
@@ -124,7 +129,10 @@ export class ChecklistModalPage implements OnInit {
             this.servicedetail.push({
                 fieldlabel: dataLabel[index].name,
                 helpinfo: dataLabel[index].description,
-                images: dataLabel[index].photos,
+                images: (dataLabel[index].photos.length == 0) ? [[{
+                    "documentid": 146558,
+                    "imgpath": "storage/2021/September/week2/146559_144529_Utility Meters and Feeds_Close up electrical meter with meter number.png"
+                  }]] : dataLabel[index].photos,
                 columnname: index,
                 img: dataLabel[index].img,
                 notes: dataLabel[index].notes
@@ -140,7 +148,11 @@ export class ChecklistModalPage implements OnInit {
         }
     }
 
-
+    toggleGroup(index, key) {
+        
+        this.subSection = (this.subSection == index) ? null : index;
+        this.sectionKey = (this.sectionKey == key) ? null : key;
+    }
 
     previewImage(imagepath) {
         console.log('launching image viewer image =>',imagepath);
@@ -154,7 +166,7 @@ export class ChecklistModalPage implements OnInit {
     }
 
 
-    openActionSheet(index) {
+    openActionSheet(index, section) {
         console.log('launching actionsheet');
 
         this.actionSheet.show(this.actionOptions).then((buttonIndex: number) => {
@@ -166,7 +178,7 @@ export class ChecklistModalPage implements OnInit {
                     // If it's base64 (DATA_URL):
                     let base64Image = 'data:image/png;base64,' + imageData;
                     this.imgpov.setImage(imageData);
-                    this.openModal(this.serviceid, base64Image, this.field, index);
+                    this.openModal(this.serviceid, base64Image, this.field, index, section);
                     // TODO: need code to upload to server here.
                     // On success: show toast
                     //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
@@ -183,7 +195,7 @@ export class ChecklistModalPage implements OnInit {
                     // If it's base64 (DATA_URL):
                     let base64Image = 'data:image/png;base64,' + imageData;
                     this.imgpov.setImage(imageData);
-                    this.openModal(this.serviceid, base64Image, this.field,index);
+                    this.openModal(this.serviceid, base64Image, this.field,index, section);
                     // TODO: need code to upload to server here.
                     // On success: show toast
                     //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
@@ -199,12 +211,12 @@ export class ChecklistModalPage implements OnInit {
             let base64Image = 'data:image/png;base64,' + imageData;
             //console.log(err);
             this.imgpov.setImage(imageData);
-            this.openModal(this.serviceid, base64Image, this.field,index);
+            this.openModal(this.serviceid, base64Image, this.field,index, section);
             this.presentToast(`Operation failed! \n` + err);
         });
     }
 
-    async openModal(serviceid, base64Image,columnname,index) {
+    async openModal(serviceid, base64Image,columnname,index, section) {
         const modal = await this.modalCtrl.create({
             component: ImageModalPage,
             componentProps: {
@@ -213,7 +225,8 @@ export class ChecklistModalPage implements OnInit {
                 "serviceid": serviceid,
                 "columnname": columnname,
                 "user_id": this.user_id,
-                "columnIndex": index
+                "columnIndex": index,
+                "subSection": section
             }
         });
 

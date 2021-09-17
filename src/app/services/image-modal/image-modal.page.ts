@@ -108,6 +108,7 @@ export class ImageModalPage implements OnInit {
 
     protected pausePanning;
     protected zoomStartScale;
+    protected subSection;
 
     constructor(
         private modalController: ModalController,
@@ -157,6 +158,7 @@ export class ImageModalPage implements OnInit {
         this.index = this.navParams.data.columnIndex;
         this.is_delete = this.navParams.data.is_delete;
         this.documentid = this.navParams.data.documentid;
+        this.subSection = this.navParams.data.subSection;
     }
 
     ngAfterViewInit() {
@@ -538,11 +540,11 @@ export class ImageModalPage implements OnInit {
                         this.presentToastPrimary('Photo deleted successfully\n');
                         this.closeModal();
                     }else{
-                        this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'].push({
+                        this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'][this.subSection].push({
                             imgpath:data['body']['data']['image_path'],
                             documentid:data['body']['data']['image_id']
                         });
-
+                        console.log(this.appConst.workOrder);
                         this.presentToastPrimary('Photo saved successfully\n');
                         this.closeModal();
                     }

@@ -116,3 +116,33 @@ ion-content {
 form {
   margin: 0 0 2em !important;
 }
+
+.img-section-display {
+  width: 100%;
+  ul {
+    width: 100%;
+    li {
+      width: 100%;
+      .item-accordion {
+        display: none;
+
+        &.active-tab {
+          display: block;
+        }
+      }
+      &.btn-new-subsection {
+        border: 1px solid;
+        border-radius: 5px;
+        text-align: center;
+        padding: 5px 0;
+        background: #23954b;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .button-native {
+    background: #23954b;
+    color: #ffffff;
+  }
+}
