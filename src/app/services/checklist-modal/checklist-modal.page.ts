@@ -126,13 +126,11 @@ export class ChecklistModalPage implements OnInit {
             }
             dataLabel[index].description.long = vidimg.join('\n');
             console.log(dataLabel[index].description.long);
+            dataLabel[index].photos = (dataLabel[index].photos.length == 0) ? [[]] : dataLabel[index].photos
             this.servicedetail.push({
                 fieldlabel: dataLabel[index].name,
                 helpinfo: dataLabel[index].description,
-                images: (dataLabel[index].photos.length == 0) ? [[{
-                    "documentid": 146558,
-                    "imgpath": "storage/2021/September/week2/146559_144529_Utility Meters and Feeds_Close up electrical meter with meter number.png"
-                  }]] : dataLabel[index].photos,
+                images: (dataLabel[index].photos.length == 0) ? dataLabel[index].photos : dataLabel[index].photos,
                 columnname: index,
                 img: dataLabel[index].img,
                 notes: dataLabel[index].notes
@@ -148,10 +146,17 @@ export class ChecklistModalPage implements OnInit {
         }
     }
 
+    addSubsection(column) {
+        this.servicedetail[column]['images'].push([]);
+        this.subSection = this.servicedetail[column]['images'].length + 1;
+        this.sectionKey = column;
+        console.log(this.subSection, this.sectionKey);
+    }
+
     toggleGroup(index, key) {
-        
-        this.subSection = (this.subSection == index) ? null : index;
-        this.sectionKey = (this.sectionKey == key) ? null : key;
+        console.log(index, key)
+        this.subSection =  index;
+        this.sectionKey =  key;
     }
 
     previewImage(imagepath) {

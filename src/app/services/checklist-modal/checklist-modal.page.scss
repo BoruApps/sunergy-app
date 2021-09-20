@@ -11,6 +11,7 @@
   font-size: 3rem;
   width: 55px;
   height: 75px;
+  margin-right: 5px;
 }
 
 .checklist-thumb img{
@@ -123,6 +124,13 @@ form {
     width: 100%;
     li {
       width: 100%;
+
+      ion-thumbnail {
+        div {
+          margin-right: 5px;
+        }
+      }
+
       .item-accordion {
         display: none;
 

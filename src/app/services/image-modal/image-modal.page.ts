@@ -520,7 +520,6 @@ export class ImageModalPage implements OnInit {
             'notecontent':data.title,
             'mode':'image_upload',
         };
-
         console.log('adding photo for', param.serviceid);
         console.log('adding photo columnname', param.columnname);
         console.log('need to delete image', param.is_delete);
@@ -532,18 +531,38 @@ export class ImageModalPage implements OnInit {
                 //console.log(data['_body']);
                 if (data['body']['success'] == true) {
                     if (delete_needed === true){
-                        for(var imgindex in this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos']) {
-                            if (this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'][imgindex]['documentid'] == this.documentid){
-                                this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'].splice(imgindex,1);
-                            }
+                        let imgLoc = this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'];
+                        let position = -1;
+                        for(var index = 0; index < imgLoc.length; index++) {
+                            console.log(this.documentid);
+                            (function(elm) {
+                                position = imgLoc[index].findIndex(function(obj, key) {
+                                    return (obj.documentid === elm.documentid);
+                                });
+
+                                if(position > -1) {
+                                    console.log(index, position);
+                                    elm.appConst.workOrder[elm.serviceid][elm.columnname]['photos'][elm.index]['photos'][index].splice(position,1);
+                                }
+                            })(this);
                         }
                         this.presentToastPrimary('Photo deleted successfully\n');
                         this.closeModal();
                     }else{
-                        this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'][this.subSection].push({
-                            imgpath:data['body']['data']['image_path'],
-                            documentid:data['body']['data']['image_id']
-                        });
+                        if(this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'][this.subSection] == undefined) {
+                                this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'][this.subSection] = [
+                                    {
+                                        imgpath:data['body']['data']['image_path'],
+                                        documentid:data['body']['data']['image_id']
+                                    }
+                                ];
+                        }
+                        else {
+                            this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'][this.subSection].push({
+                                imgpath:data['body']['data']['image_path'],
+                                documentid:data['body']['data']['image_id']
+                            });
+                        }
                         console.log(this.appConst.workOrder);
                         this.presentToastPrimary('Photo saved successfully\n');
                         this.closeModal();
