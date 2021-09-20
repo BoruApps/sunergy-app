@@ -12,7 +12,7 @@
     </ion-item>
 
     <form #form="ngForm"  (ngSubmit)="completeOrder(serviceid)">
-            <ion-item-group *ngFor="let service of servicedetail" style="align-items: center;margin-bottom: 25px">
+            <ion-item-group *ngFor="let service of servicedetail; let key=index" style="align-items: center;margin-bottom: 25px">
                 <ion-item lines="none">
                     <ion-label position="stacked" style="margin: 0px 0px 10px 5px">
                         <ion-text>{{service.fieldlabel}}<ion-icon name="help-circle-outline" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != ''"></ion-icon>
@@ -21,15 +21,34 @@
                         <ion-text *ngIf="service.helpinfo.long != '' && checklisthelper[service.columnname] == 1" lines="none" class="helper-text-box" [innerHTML]="service.helpinfo.long"></ion-text> 
                     </ion-label>
                     <ion-textarea *ngIf="!service.img"  (ionBlur)="addUpdate($event)" name = "{{service.columnname}}" value = "{{service.notes}}"></ion-textarea>
-                    <ul *ngIf="service.img">
-                        <li *ngFor="let thumb of service.images" class="checklist-thumb-list">
-                            <ion-thumbnail class="checklist-thumb" (click)="openViewModal(thumb,service.columnname)"> <img src="{{this.apiurl.replace('phoneapi/','')}}{{thumb.imgpath}}"> </ion-thumbnail>
-                        </li>
-                        <li class="checklist-thumb-list photo-icon" (click)="openActionSheet(service.columnname)">
-                            <ion-icon name="camera" ></ion-icon>
-                            <ion-text>Add Image</ion-text>
-                        </li>
-                    </ul>
+                    <ion-list class = "img-section-display" lines="none">
+                        <ul *ngIf="service.img">
+                            <li *ngFor="let thumb of service.images; let _index=index" class="checklist-thumb-list">
+                                <ion-item (click)="toggleGroup(_index,key)"> 
+                                    <ion-icon [name]="subSection === _index && sectionKey === key ? 'remove' : 'add'"></ion-icon>
+                                    {{service.fieldlabel}} ( {{_index+1}} )
+                                </ion-item>
+                                <ion-item class="item-accordion"
+                                    [ngClass]="subSection === _index && sectionKey === key ? 'active-tab' : ''">
+                                    <div *ngFor="let _img of thumb">
+                                        <ion-thumbnail class="checklist-thumb" (click)="openViewModal(_img,service.columnname)"> <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}"> </ion-thumbnail>
+                                    </div>
+                                    <ion-button (click)="openActionSheet(service.columnname, _index)">
+                                        <ion-icon name="camera" ></ion-icon>
+                                        <ion-text>Add Image</ion-text>
+                                    </ion-button>
+                                </ion-item>
+                            </li>
+                            <li class = "btn-new-subsection" (click)="addSubsection(key)"> 
+                                Add New {{service.fieldlabel}} Sub-Section
+                            </li>
+
+                            <!-- <li class="checklist-thumb-list photo-icon" (click)="openActionSheet(service.columnname)">
+                                <ion-icon name="camera" ></ion-icon>
+                                <ion-text>Add Image</ion-text>
+                            </li> -->
+                        </ul>
+                    </ion-list>
                 </ion-item>
             </ion-item-group>
     </form>
