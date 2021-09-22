@@ -209,6 +209,7 @@ export class ImageModalPage implements OnInit {
         this._CANVAS.renderAll();
         this.updateModifications(true);
     }
+
     drawCircle() {
 
         let x = ((this.touchTracker.start.x - this.touchTracker.end.x) > 0) ? this.touchTracker.end.x : this.touchTracker.start.x;
@@ -285,18 +286,15 @@ export class ImageModalPage implements OnInit {
     }
 
     updateCanvas(event) {
-        var elmurl = document.querySelector<HTMLInputElement>('.img-load')!;
+        var elmurl = document.querySelector<HTMLInputElement>('.img-load');
+        var imgWidth = elmurl.width;
+        var imgHeight = elmurl.height;
+
         var cwidth = this.platform.width()*0.8;
         var cheight = this.platform.height()*0.6;
-
-        if (elmurl.width < cwidth){
-            cwidth = elmurl.width;
-        }
-        if (elmurl.height < cheight){
-            cheight = elmurl.height;
-        }
-
-        this._CANVAS.setDimensions({width:cwidth, height:cheight});
+        let ratio = Math.min((cheight/imgHeight), (cwidth/imgWidth));
+       
+        this._CANVAS.setDimensions({width:imgWidth * ratio, height:imgHeight * ratio});
 
 
         fabric.Image.fromURL(this.imgElm.src, (img) => {
@@ -333,6 +331,7 @@ export class ImageModalPage implements OnInit {
                         elm.touchTracker.end = ev.pointer;
                         if(elm.elementSelected == "text") {
                             elm.addText();
+                            elm.elementSelected = "";
                         }
                     } else  elm.touchTracker = { start:null};
                 },'mouse:up': function(ev) {
