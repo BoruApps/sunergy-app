@@ -1,6 +1,3 @@
-ion-card-header{
-  padding-bottom: 0px !important;
-}
 ion-card-content{
   padding-top: 10px !important;
 }
@@ -16,4 +13,46 @@ ion-toolbar ion-icon[name="close"]{
 
 .title-input{
   background-color: var(--ion-color-light-shade);
+}
+
+.ion-canvas{
+  width: fit-content;
+  margin: auto;
+  // max-width: 300px;
+  // max-height: 300px;
+  // overflow: scroll;
+}
+#canvas{
+  width: 100%;
+}
+.btn-selection-draw {
+  display: flex;
+  justify-content: space-between;
+  margin: .5em auto;
+  align-items: center;
+  font-size: 1.5em;
+  line-height: 1em;
+  flex-wrap: wrap;
+
+  div {
+    border: 1px solid;
+    border-radius: 5px;
+    min-width: 28px;
+    text-align: center;
+    ion-icon {
+      vertical-align: middle;
+    }
+    svg {
+      width: 18px;
+    }
+  }
+
+  .primary {
+    background-color: #23954b;
+    color: #ffffff;
+  }
+}
+
+.range-display {
+  display: none;
 }

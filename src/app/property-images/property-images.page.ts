@@ -10,7 +10,20 @@ import * as pi from '../../assets/js/sampledata/properties-images.json';
 })
 export class PropertyImagesPage implements OnInit {
   propertyInfo: any;
-  imagecounts: Object;
+  imagecounts:  {
+    bedroom: {
+      images: string[]
+    },
+    livingroom: {
+      images: string[]
+    },
+    kitchen:  {
+      images: string[]
+    },
+    masterbedroom: {
+      images: string[]
+    }
+  };
   userinfo: any;
   propertyimages = pi.propertiesimages;
 

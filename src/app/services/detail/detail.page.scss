@@ -1,7 +1,3 @@
-ion-label{
-    color: grey !important;
-}
-
 ion-badge.ios.status{
     padding: 10px;
     border-radius: 50px;
@@ -12,9 +8,7 @@ ion-text.status-text{
     color: white !important;
 }
 
-.button-grouping{
- 
-}
+
 ion-input > input {
     width: 100% !important;
 }
@@ -34,11 +28,54 @@ ion-select{
     max-width: none;
 }
 
-.readonly-fields{
-    
+
+ion-item {
+    &>div:not(.photo-icon) {
+        width: 100% !important;
+    }
+
+    ion-textarea,
+    ion-input {
+        border: 1px solid;
+        width: 100%;
+        border-radius: .5em;
+        padding: 0 0.5em !important;
+        margin-top: 1em;
+    }
+
+    ion-select {
+        padding: .5em !important;
+        border: 1px solid;
+        width: 100%;
+        border-radius: .5em;
+        margin-top: 1em;
+    }
 }
-ion-item > div {
-    width: 100% !important;
+
+ion-item {
+    position: relative;
+    margin-bottom: .7em;
+}
+
+.green-text{
+    color: #23954b;
+}
+
+.photo-icon {
+    border: 1px solid;
+    width: 80%;
+    border-radius: .2em;
+    text-align: center;
+    background: #23954b;
+    color: #ffffff;
+    ion-icon {
+        margin: auto;
+        font-size: 3em;
+    }
+
+    p {
+        margin: 0 0 1em;
+    }
 }
 
 .section{

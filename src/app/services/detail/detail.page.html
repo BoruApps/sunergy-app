@@ -22,18 +22,18 @@
                     <!--read only fields -->
                     <ion-item lines="none">
                         <ion-label position="stacked">Contact Name</ion-label>
-                        <ion-text>{{workorderdetail.firstname}} {{workorderdetail.lastname}}</ion-text>
+                        <ion-text style="padding-top: 5px;">{{workorderdetail.firstname}} {{workorderdetail.lastname}}</ion-text>
                     </ion-item>
                     <ion-item lines="none">
                         <ion-label position="stacked">Secondary Contact Name</ion-label>
-                        <ion-text>{{workorderdetail.secondary_contact_name}}</ion-text>
+                        <ion-text style="padding-top: 5px;">{{workorderdetail.secondary_contact_name}}</ion-text>
                     </ion-item>
                     <ion-item lines="none">
                         <ion-label position="stacked">Address Details</ion-label>
-                        <ion-text *ngIf="workorderdetail.mailingpobox">{{workorderdetail.mailingstreet}}
+                        <ion-text *ngIf="workorderdetail.mailingpobox" style="padding-top: 5px;">{{workorderdetail.mailingstreet}}
                             , {{workorderdetail.mailingpobox}}, {{workorderdetail.mailingcity}}
                             , {{workorderdetail.mailingstate}} {{workorderdetail.mailingzip}}</ion-text>
-                        <ion-text *ngIf="!workorderdetail.mailingpobox">{{workorderdetail.mailingstreet}}
+                        <ion-text *ngIf="!workorderdetail.mailingpobox" style="padding-top: 5px;">{{workorderdetail.mailingstreet}}
                             , {{workorderdetail.mailingcity}}
                             , {{workorderdetail.mailingstate}} {{workorderdetail.mailingzip}}</ion-text>
                         <ion-button target="_blank" color="secondary"
@@ -44,7 +44,7 @@
                     </ion-item>
                     <ion-item lines="none">
                         <ion-label position="stacked">Contact Mobile Phone</ion-label>
-                        <ion-text>{{workorderdetail.mobile}}</ion-text>
+                        <ion-text style="padding-top: 5px;">{{workorderdetail.mobile}}</ion-text>
                         <ion-button target="_self" color="secondary" (click)="transferee(workorderdetail.mobile)"
                                     size="default" slot="end" type="button">
                             <ion-icon name="call" size="large"></ion-icon>
@@ -52,7 +52,7 @@
                     </ion-item>
                     <ion-item lines="none">
                         <ion-label position="stacked">Secondary Contact Mobile Phone</ion-label>
-                        <ion-text>{{workorderdetail.secondary_contact_mobile}}</ion-text>
+                        <ion-text style="padding-top: 5px;">{{workorderdetail.secondary_contact_mobile}}</ion-text>
                         <ion-button target="_self" color="secondary"
                                     (click)="transferee(workorderdetail.secondary_contact_mobile)" size="default"
                                     slot="end" type="button">
@@ -60,27 +60,6 @@
                         </ion-button>
                     </ion-item>
                 </ion-item-group>
-
-                <br><br>
-                <!--
-                <ion-item lines="none">
-                    <ion-label>Equipment List</ion-label>
-                </ion-item>
-                <div *ngIf="countItemList > 0">
-                    <ion-grid class="ion-padding">
-                        <ion-row class="ion-align-items-center ion-justify-content-center"
-                                 *ngFor="let item of itemgrid">
-                            <ion-col class="padding-left-none" size="9">
-                                {{item.itemname}}
-                            </ion-col>
-                            <ion-col size="3" align-self-center class="text-align-center">
-                                <ion-text> {{item.quantity}}</ion-text>
-                            </ion-col>
-                        </ion-row>
-                    </ion-grid>
-                </div>
-                <p class="ion-padding" *ngIf="countItemList == 0">No Equipment Available</p>
-                -->
             </div>
             <!-- read only fields -->
 
@@ -89,16 +68,16 @@
             <div *ngIf="isCompleteWO == 0">
                 <ion-item-group *ngFor="let blockservice of servicedetail">
                     <div *ngIf="blockservice.blockname != 'Array Information'">
-                    <ion-item class="blockheader_2" lines="full">
+                    <ion-item class="blockheader_2" lines="none">
                     <ion-label class="ion-padding blockheader" (click)="toggleSection(blockservice.blockname)">{{blockservice.blockname}}</ion-label>
                     <ion-icon *ngIf="!blockGroups[blockservice.blockname].open" name="arrow-forward" slot="end"></ion-icon>
                     <ion-icon *ngIf="blockGroups[blockservice.blockname].open" name="arrow-down" slot="end"></ion-icon>
                     </ion-item>
                     <div [ngClass]="{'section-active': blockGroups[blockservice.blockname].open, 'section': !blockGroups[blockservice.blockname].open}">
-                        <ion-item detail="false" *ngFor="let service of blockservice.fields;">
-                            <ion-label position="stacked">{{service.fieldlabel}}</ion-label>
-
-                            <div [ngSwitch]="service.uitype">
+                        <ion-item detail="false" *ngFor="let service of blockservice.fields;" lines="none">
+                            <div>
+                                <ion-label position="stacked">{{service.fieldlabel}}</ion-label>
+                                <div [ngSwitch]="service.uitype" style="font-size: 14px;padding: 10px;">
                                 <!--uitype = 10-->
                                 <ion-text *ngSwitchCase="10">{{service.value}} </ion-text>
 
@@ -111,41 +90,66 @@
                                 </div>
 
                                 <!--uitype = 15.16-->
-                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="16" name="{{service.columnname}}"
-                                            value="{{service.value}}">
+                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="16" name="{{service.columnname}}" value="{{service.value}}">
+                                    <ion-select-option *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
+                                </ion-select>
+
+                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="15" name="{{service.columnname}}" value="{{service.value}}">
                                     <ion-select-option
                                             *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
                                 </ion-select>
-                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="15" name="{{service.columnname}}"
-                                            value="{{service.value}}">
-                                    <ion-select-option
-                                            *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
-                                </ion-select>
+
                                 <!--uitype = 33-->
-                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="33" name="{{service.columnname}}"
-                                            multiple="true">
+                                <ion-select (ionChange)="addUpdate($event)" *ngSwitchCase="33" multiple="true" placeholder = "Select One">
                                     <ion-select-option
                                             *ngFor="let picklist of service.picklist">{{picklist}}</ion-select-option>
                                 </ion-select>
+
                                 <!-- uitype = 7 -->
-                                <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="7" type="number"
+                                <ion-input (ionBlur)="addUpdate($event)" *ngSwitchCase="7" type="number"
                                         name="{{service.columnname}}" value="{{service.value | number}}"></ion-input>
+                                
                                 <!-- uitype = 9 -->
-                                <ion-input (ionInput)="addUpdate($event)" *ngSwitchCase="9" type="text"
+                                <ion-input (ionBlur)="addUpdate($event)" *ngSwitchCase="9" type="text"
                                         name="{{service.columnname}}" value="{{service.value | number}}"
                                         width="100%"></ion-input>
                                 <!--else-->
-                                <ion-input (ionInput)="addUpdate($event)" type="text" name="{{service.columnname}}"
+                                <ion-input (ionBlur)="addUpdate($event)" type="text" name="{{service.columnname}}"
                                         *ngSwitchDefault value="{{service.value}}"></ion-input>
 
                                 <!--uitype = 19.20-->
-                                <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
+                                <ion-textarea (ionBlur)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
                                             rows="3" *ngSwitchCase="19" value="{{service.value}}"
                                             width="100%"></ion-textarea>
-                                <ion-textarea (ionInput)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
+                                <ion-textarea (ionBlur)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}"
                                             rows="3" *ngSwitchCase="20" value="{{service.value}}"
                                             width="100%"></ion-textarea>
+                                
+                                <div *ngSwitchCase="21" >
 
+                                    <ion-grid *ngIf="service.json">
+                                        <ion-row>
+                                            <ion-col *ngIf="completedFields[service.columnname] === false" style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
+                                                <ion-text *ngIf="!service.task_complete" [ngClass]="{'green-text' : appConst.workOrder[serviceid][service.columnname]['image_count'] == appConst.workOrder[serviceid][service.columnname]['t_image_count']}">{{appConst.workOrder[serviceid][service.columnname]['image_count']}} / {{appConst.workOrder[serviceid][service.columnname]['t_image_count']}} service<br>Sections Filled</ion-text>
+                                            </ion-col>
+
+                                            <ion-col *ngIf="completedFields[service.columnname] === true" style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
+                                                <ion-text  class = "green-text">Marked Complete</ion-text>
+                                            </ion-col>
+
+                                            <ion-col>
+                                                <div  class = "photo-icon" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)">
+                                                    <ion-icon name="camera" ></ion-icon>
+                                                    <p>Add Images</p>
+                                                </div>
+                                            </ion-col>
+                                        </ion-row>
+                                    </ion-grid>
+
+                                    <ion-textarea *ngIf="!service.json" (ionBlur)="addUpdate($event)" auto-grow="true" name="{{service.columnname}}" rows="3" value="{{service.value}}" width="100%"></ion-textarea>
+                                </div>
+
+                            </div>
                             </div>
                         </ion-item>
                     </div>
@@ -365,7 +369,7 @@
                 <br>
 
                 <div class="button-grouping ion-padding">
-                    <ion-button (click)="saveWO(workorderdetail.workorderid)" expand="full"  expand="block" color="secondary" >I Confirm the Site Survey is Complete
+                    <ion-button (click)="saveWO(workorderdetail.workorderid)" expand="full"  expand="block" color="secondary" >I CONFIRM {{inspection_type}} IS COMPLETE.
                     </ion-button>
                 </div>
             </div>
@@ -384,35 +388,7 @@
                 </ion-item>
             </div>
 
-            <!-- editable fields -->
-            <div><br><br><br><br><br></div>
         </ion-list>
     </form>
 
-    <!--photos buttons -->
-        <div *ngIf="isCompleteWO == 0" class="button-grouping ion-padding anchor-bottom">
-            <ion-grid class="ion-no-padding">
-                <ion-row class="ion-align-items-center ion-justify-content-center">
-                    <ion-col class="padding-left-none" size="12">
-                        <ion-button expand="full" size="large" expand="block" color="secondary"
-                                    (click)="openChecklist(workorderdetail.workorderid)">
-                            <ion-icon name="camera"></ion-icon>
-                            <ion-text class="add-photo-button">
-                                Add Photos
-                            </ion-text>
-                        </ion-button>
-                    </ion-col>
-                    
-                    <!--
-                    <ion-col size="3">
-                        <ion-button size="large" expand="block" color="secondary"
-                                    (click)="openLibrary(workorderdetail.workorderid)">
-                            <ion-icon name="folder-open"></ion-icon>
-                        </ion-button>
-                    </ion-col>
-                    -->
-                </ion-row>
-            </ion-grid>
-        </div>
-        <!--photos buttons -->
 </ion-content>

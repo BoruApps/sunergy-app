@@ -52,6 +52,8 @@ export class DetailPage implements OnInit {
     serviceid: any;
     apiurl: any;
     serviceName: string;
+    inspection_type: string;
+    activityid: string;
     isCompleteWO: number = 0;
     public workorderdetail: any[] = [];
     public servicedetail: any[] = [];
@@ -59,24 +61,9 @@ export class DetailPage implements OnInit {
     public countItemList: number = 0;
     updatefields: any = {};
     arrayfields: any = {};
+    completedFields: any = {};
 
-    blockGroups: any = {
-        'Visit Details': {
-            open: false
-        },
-        'Customer Questions': {
-            open: false
-        },
-        'Structural and Roof Details': {
-            open: false
-        },
-        'Main Service Panel': {
-            open: false
-        },
-        'System': {
-            open: false
-        },
-    }
+    blockGroups: any = {};
 
     //actionSheet:any;
     constructor(
@@ -99,12 +86,10 @@ export class DetailPage implements OnInit {
         @Inject(LOCALE_ID) private locale: string,
         public loadingController: LoadingController
     ) {
-        this.blockGroups['Visit Details'].open = false;
-        this.blockGroups['Customer Questions'].open = false;
-        this.blockGroups['Structural and Roof Details'].open = false;
-        this.blockGroups['Main Service Panel'].open = false;
-        this.blockGroups['System'].open = false;
         this.apiurl = this.appConst.getApiUrl();
+        if (this.router.getCurrentNavigation().extras.state){
+            this.activityid = this.router.getCurrentNavigation().extras.state.activityid;
+        }
     }
 
     loading: any;
@@ -137,6 +122,17 @@ export class DetailPage implements OnInit {
         if (event.target.tagName == 'ION-TEXTAREA' || event.target.tagName == 'ION-SELECT') {
             fieldvalue = event.target.value;
         }
+        if(fieldname in this.appConst.workOrder[this.serviceid]) {
+            if(this.checkJson(this.appConst.workOrder[this.serviceid][fieldname]) && event.target.tagName == 'ION-TEXTAREA' ) {
+                this.appConst.workOrder[this.serviceid][fieldname]['comments'] = fieldvalue;
+            } else {
+                this.appConst.workOrder[this.serviceid][fieldname] = fieldvalue;
+            }
+        } else {
+            this.appConst.workOrder[this.serviceid][fieldname] = fieldvalue;
+        }
+        this.appConst.workOrder[this.serviceid]['wostatus'] = 'In-Process';
+        console.log(this.appConst.workOrder);
         this.updatefields['wostatus'] = 'In-Process';
         this.updatefields[fieldname] = fieldvalue;
         console.log('adding update to queue: ', fieldname, fieldvalue);
@@ -158,9 +154,13 @@ export class DetailPage implements OnInit {
         this.servicedetail = [];
         this.arrayfields = [];
         console.log('loading details for service id:', serviceid)
+        this.serviceid = serviceid;
         var params = {
-            record_id: serviceid
+            user_id: this.userinfo.id,
+            activityid: this.activityid,
+            record_id: serviceid,
         }
+        if(!(serviceid in this.appConst.workOrder)) this.appConst.workOrder[serviceid] = {};
         var headers = new HttpHeaders();
         headers.append("Accept", 'application/json');
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
@@ -174,6 +174,7 @@ export class DetailPage implements OnInit {
                 console.log('getWorkOrderDetail response was', success);
                 if (success == true) {
                     var workorder = data['body']['data'];
+                    this.inspection_type = data['body']['inspection_type'];
                     var allfields = data['body']['allfields'];
                     allfields.description.replace(/\n/g, "<br>");
                     var longitude = this.decodeHTML(allfields.cf_longtitude);
@@ -191,38 +192,58 @@ export class DetailPage implements OnInit {
                                 if (key == 'Array Information'){
                                     this.arrayfields[fieldkey] = workorder[key][fieldkey].value;
                                 }else{
-                                    fieldArray.push({
+                                    var _data = {
                                         columnname: fieldkey,
                                         uitype: workorder[key][fieldkey].uitype,
                                         value: workorder[key][fieldkey].value,
                                         picklist: workorder[key][fieldkey].picklist,
                                         fieldlabel: workorder[key][fieldkey].fieldlabel,
-                                    })
+                                        json: this.checkJson(workorder[key][fieldkey].default),
+                                        image_count: 0,
+                                        total_count: 0,
+                                        task_complete: false,
+                                        default: workorder[key][fieldkey].default
+                                    };
+                                    if(this.checkJson(workorder[key][fieldkey].default)) {
+                                        this.appConst.workOrder[serviceid][fieldkey] = (workorder[key][fieldkey].value !== "") ? JSON.parse(workorder[key][fieldkey].value) : JSON.parse(workorder[key][fieldkey].default);
+                                    }
+
+                                    if(_data.json) {
+                                        _data.value = this.appConst.workOrder[serviceid][fieldkey]['comments']
+                                        _data.task_complete = (this.appConst.workOrder[this.serviceid][fieldkey]['complete_category'] == 'yes') ? true: false;
+                                        var t_image_count = 0;
+                                        var image_count = 0;
+                                        
+                                        for (let photoid in this.appConst.workOrder[serviceid][fieldkey]['photos']) {
+                                            if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['name'] != 'Miscellaneous') {
+                                                if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['photos'].length > 0){
+                                                    image_count ++;
+                                                }
+                                                t_image_count ++;
+                                            }
+                                        }
+                                        this.appConst.workOrder[this.serviceid][fieldkey]['image_count'] = image_count
+                                        this.appConst.workOrder[this.serviceid][fieldkey]['t_image_count'] = t_image_count;
+
+                                        this.completedFields[fieldkey] = (this.appConst.workOrder[this.serviceid][fieldkey]['complete_category'] == 'yes') ? true: false;
+                                        console.log("_data",_data)
+                                    }
+                                    fieldArray.push(_data);
                                 }
                             }
+
+
                             this.servicedetail.push({
                                 blockname: key,
                                 fields: fieldArray,
                             });
+                            this.blockGroups[key]={open: false};
                         }
                     }
 
+                    console.log('workOrder',this.appConst.workOrder[serviceid]);
                     console.log('servicedetail', this.servicedetail);
                     console.log('arrayfields', this.arrayfields);
-
-                    //load item grid 43636
-                    this.httpClient.post(this.apiurl + "getItemList.php", params, {
-                        headers: headers,
-                        observe: 'response'
-                    })
-                        .subscribe(data => {
-                            this.hideLoading();
-                            var success = data['body']['success'];
-                            if (success == true) {
-                                this.itemgrid = data['body']['data'];
-                                this.countItemList = data['body']['count'];
-                            }
-                        });
                 } else {
                     this.hideLoading();
                     console.log('failed to fetch record');
@@ -234,6 +255,21 @@ export class DetailPage implements OnInit {
             });
     }
 
+    checkJson(data) {
+        data = typeof data !== "string" ? JSON.stringify(data) : data;
+
+        try {
+            data = JSON.parse(data);
+        } catch (e) {
+            return false;
+        }
+
+        if(typeof data === "object" && data !== null) {
+            return true;
+        }
+        return false;
+    }
+    
     logout() {
         console.log('logout clicked');
         this.storage.set("userdata", null);
@@ -395,22 +431,29 @@ export class DetailPage implements OnInit {
         });
     }
 
-    async openChecklist(record_id) {
+    async openChecklist(record_id,inspection_type, defaultContent, currentValue, title, columnName) {
         console.log('opening checklist for record', record_id);
         const modal_checklist = await this.modalCtrl.create({
             component: ChecklistModalPage,
             componentProps: {
-                "paramTitle": "Photos Checklist",
+                "paramTitle": title,
                 "serviceid": record_id,
+                "inspection_type": inspection_type,
                 "current_updates": this.updatefields,
                 "user_id": this.userinfo.id,
+                "defaultContent": defaultContent,
+                "value" : currentValue,
+                "field": columnName
             }
         });
 
         modal_checklist.onDidDismiss().then((dataReturned) => {
             if (dataReturned !== null) {
-                this.dataReturned = dataReturned.data;
-                //alert('Modal Sent Data :'+ dataReturned);
+                console.log("columnName",columnName)
+                console.log("dataReturned",dataReturned.data.picCompleted)
+                if (typeof dataReturned.data.picCompleted !== 'undefined'){
+                    this.completedFields[columnName] = dataReturned.data.picCompleted;
+                }
             }
         });
 
@@ -526,16 +569,30 @@ export class DetailPage implements OnInit {
     }
 
     saveWO(worecord) {
-        var data = this.updatefields;
+        var data = this.appConst.workOrder[this.serviceid];
+        var status = true;
+        for(var column in data) {
+            console.log(data[column]);
+            if(data[column]['photos'] !== undefined) {
+                for(var index in data[column]['photos']) {
+                    if(data[column]['photos'][index]['photos'].length == 0) {
+                        status = false;
+                    }
+                }
+            }
+        }
         var data_stringified = JSON.stringify(data);
         var logged_in_uid = this.userinfo.id;
         console.log('attempting to submitting data to vtiger', worecord, data);
         var params = {
             recordid: worecord,
             updates: data_stringified,
-            logged_in_user: logged_in_uid
+            logged_in_user: logged_in_uid,
+            status: status
         }
+        console.log(params);
         console.log("params being sent", params)
+        // return false;
         if (Object.keys(data).length > 0) {
             console.log('Some data was changed, pushing ' + Object.keys(data).length + ' changes');
             var headers = new HttpHeaders();

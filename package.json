@@ -9,7 +9,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "cd node_modules/fabric && node build.js modules=ALL requirejs exclude=accessors,erasing"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +24,7 @@
     "@ionic-native/action-sheet": "^5.15.0",
     "@ionic-native/camera": "^5.17.1",
     "@ionic-native/core": "^5.0.0",
+    "@ionic-native/crop": "^5.36.0",
     "@ionic-native/file": "^5.17.1",
     "@ionic-native/file-transfer": "^5.17.1",
     "@ionic-native/google-maps": "^5.5.0",
@@ -33,6 +35,7 @@
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^4.7.1",
     "@ionic/storage": "^2.2.0",
+    "@types/fabric": "^4.5.3",
     "com-sarriaroman-photoviewer": "^1.2.5",
     "cordova-android": "8.1.0",
     "cordova-browser": "^6.0.0",
@@ -46,6 +49,7 @@
     "cordova-plugin-ionic": "^5.4.5",
     "core-js": "^2.5.4",
     "cors": "^2.8.5",
+    "fabric": "^4.6.0",
     "file-system": "^2.2.2",
     "ionic2-calendar": "^0.5.7",
     "rxjs": "~6.5.1",
@@ -68,6 +72,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
+    "cordova-plugin-crop": "^0.4.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^4.1.3",
@@ -118,7 +123,8 @@
         "LOCATION_ALWAYS_USAGE_DESCRIPTION": "This app wants to get your location always, even this app runs in background."
       },
       "cordova-plugin-inappbrowser": {},
-      "com-sarriaroman-photoviewer": {}
+      "com-sarriaroman-photoviewer": {},
+      "cordova-plugin-crop": {}
     },
     "platforms": [
       "browser",
