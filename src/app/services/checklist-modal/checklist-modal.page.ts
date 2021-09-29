@@ -117,11 +117,11 @@ export class ChecklistModalPage implements OnInit {
             var vidimg = dataLabel[index].description.long.split(/\n/g);
             for(var _index = 0; _index < vidimg.length; _index++) {
                 if(vidimg[_index].indexOf('video:') > -1) {
-                    vidimg[_index] = "<a target='_blank' href = '"+vidimg[_index].replace('video:','')+"'>"+vidimg[_index].replace('video:','')+"</a>";
+                    vidimg[_index] = "<a target='_blank' href = '"+vidimg[_index].replace('video:[','').replace(']','')+"'>"+vidimg[_index].replace('video:','')+"</a>";
                 } else if (vidimg[_index].indexOf('img:') > -1) {
-                    vidimg[_index] = "<img src = '"+vidimg[_index].replace('img:','')+"'>";
+                    vidimg[_index] = "<img src = '"+vidimg[_index].replace('img:[','').replace(']','')+"'>";
                 } else if (vidimg[_index].indexOf('link:') > -1) {
-                    vidimg[_index] = "<a target='_blank' href = '"+vidimg[_index].replace('link:','')+"'>"+vidimg[_index].replace('link:','')+"</a>";
+                    vidimg[_index] = "<a target='_blank' href = '"+vidimg[_index].replace('link:[','').replace(']','')+"'>"+vidimg[_index].replace('link:','')+"</a>";
                 }
             }
             dataLabel[index].description.long = vidimg.join('\n');
@@ -317,20 +317,22 @@ export class ChecklistModalPage implements OnInit {
 
         for (let photoid in this.appConst.workOrder[this.serviceid][this.field]['photos']) {
             if (this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['name'] != 'Miscellaneous') {
-                if (this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['photos'].length > 0){
-                    image_count ++;
+                for (let subphotoid in this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['photos']) {
+                    if (this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['photos'][subphotoid].length > 0){
+                        image_count ++;
+                    }
+                    t_image_count ++;
                 }
-                t_image_count ++;
             }
         }
 
         this.appConst.workOrder[this.serviceid][this.field]['image_count'] = image_count
         this.appConst.workOrder[this.serviceid][this.field]['t_image_count'] = t_image_count;
-
+        
         if (changes != ''){
             await this.modalController.dismiss({picCompleted:this.picCompleted});
         }else{
-            await this.modalController.dismiss();
+            await this.modalController.dismiss({picCompleted:this.picCompleted});
         }
     }
 

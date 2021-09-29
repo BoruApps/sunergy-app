@@ -6,6 +6,19 @@
 .checklist-thumb-list{
   display: inline-block;
   margin: 0px 5px;
+  .dropdown-arrow {
+    background: #F4782B;
+    color: #ffffff;
+    width: 100%;
+    padding: .4em .5em;
+    position: relative;
+    font-size: .9em;
+    
+    item-icon {
+      position: absolute;
+      right: .5em;
+    }
+  }
 }
 
 .checklist-thumb{
@@ -64,7 +77,7 @@ ion-item {
       display: block;
 
       &.helper-text-box{
-        font-size: 15px;
+        font-size: 14px;
         color: #606060;
         border-top: 1px solid #dbdbdb;
         border-bottom: 1px solid #dbdbdb;
@@ -73,7 +86,7 @@ ion-item {
 
     ion-text.short-description {
       font-style: italic;
-      font-size: .8em;
+      font-size: 14px
     }
   }
 
@@ -102,7 +115,6 @@ ion-content {
     border: 1px solid;
     width: 80%;
     margin: auto;
-    position: fixed;
     bottom: .5em;
     left: 0;
     right: 0;
@@ -137,6 +149,7 @@ form {
 
         &.active-tab {
           display: block;
+          margin-top: 1em;
         }
       }
       &.btn-new-subsection {

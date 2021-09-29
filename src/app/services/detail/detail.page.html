@@ -130,7 +130,7 @@
                                     <ion-grid *ngIf="service.json">
                                         <ion-row>
                                             <ion-col *ngIf="completedFields[service.columnname] === false" style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
-                                                <ion-text *ngIf="!service.task_complete" [ngClass]="{'green-text' : appConst.workOrder[serviceid][service.columnname]['image_count'] == appConst.workOrder[serviceid][service.columnname]['t_image_count']}">{{appConst.workOrder[serviceid][service.columnname]['image_count']}} / {{appConst.workOrder[serviceid][service.columnname]['t_image_count']}} service<br>Sections Filled</ion-text>
+                                                <ion-text *ngIf="!service.task_complete" [ngClass]="{'green-text' : appConst.workOrder[serviceid][service.columnname]['image_count'] == appConst.workOrder[serviceid][service.columnname]['t_image_count']}">{{appConst.workOrder[serviceid][service.columnname]['image_count']}}/{{appConst.workOrder[serviceid][service.columnname]['t_image_count']}} Sections Filled</ion-text>
                                             </ion-col>
 
                                             <ion-col *ngIf="completedFields[service.columnname] === true" style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
