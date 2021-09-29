@@ -55,7 +55,7 @@ export class DetailPage implements OnInit {
     inspection_type: string;
     activityid: string;
     isCompleteWO: number = 0;
-    public workorderdetail: any[] = [];
+    public workorderdetail: any = {'workorderid':0};
     public servicedetail: any[] = [];
     public itemgrid: any[] = [];
     public countItemList: number = 0;
@@ -216,10 +216,12 @@ export class DetailPage implements OnInit {
                                         
                                         for (let photoid in this.appConst.workOrder[serviceid][fieldkey]['photos']) {
                                             if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['name'] != 'Miscellaneous') {
-                                                if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['photos'].length > 0){
-                                                    image_count ++;
+                                                for (let subphotoid in this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['photos']) {
+                                                    if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['photos'][subphotoid].length > 0){
+                                                        image_count ++;
+                                                    }
+                                                    t_image_count ++;
                                                 }
-                                                t_image_count ++;
                                             }
                                         }
                                         this.appConst.workOrder[this.serviceid][fieldkey]['image_count'] = image_count
@@ -451,10 +453,12 @@ export class DetailPage implements OnInit {
             if (dataReturned !== null) {
                 console.log("columnName",columnName)
                 console.log("dataReturned",dataReturned.data.picCompleted)
+                this.saveWO(this.workorderdetail.workorderid);
                 if (typeof dataReturned.data.picCompleted !== 'undefined'){
                     this.completedFields[columnName] = dataReturned.data.picCompleted;
                 }
             }
+
         });
 
         return await modal_checklist.present();

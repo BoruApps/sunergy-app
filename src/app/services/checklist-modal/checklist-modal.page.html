@@ -6,41 +6,44 @@
 </ion-header>
 <ion-content class="ion-padding">
 
-    <ion-item style="text-align: center;">
-        <ion-checkbox checked="{{picCompleted}}"  (ionChange)="addPicCompleted($event)"></ion-checkbox>
-        <ion-label>Adding Pictures Completed</ion-label>
+    <ion-item style="font-size: 14px;">
+        <ion-checkbox style="width: 14px;height: 14px;" checked="{{picCompleted}}"  (ionChange)="addPicCompleted($event)"></ion-checkbox>
+        <ion-label style="margin-left: 10px;">Adding Pictures Completed</ion-label>
     </ion-item>
 
     <form #form="ngForm"  (ngSubmit)="completeOrder(serviceid)">
             <ion-item-group *ngFor="let service of servicedetail; let key=index" style="align-items: center;margin-bottom: 25px">
-                <ion-item lines="none">
-                    <ion-label position="stacked" style="margin: 0px 0px 10px 5px">
-                        <ion-text>{{service.fieldlabel}}<ion-icon name="help-circle-outline" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != ''"></ion-icon>
+                <ion-item>
+                    <ion-label position="stacked" style="margin: 0px 0px 10px 5px;display: contents;">
+                        <ion-text style="font-size: 16px;margin-top: 10px;display: inline-flex;">{{service.fieldlabel}}&nbsp;&nbsp;<ion-icon name="help-circle-outline" size="small" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != ''"></ion-icon>
                         </ion-text>
                         <ion-text class = "short-description">{{service.helpinfo.short}}</ion-text>
-                        <ion-text *ngIf="service.helpinfo.long != '' && checklisthelper[service.columnname] == 1" lines="none" class="helper-text-box" [innerHTML]="service.helpinfo.long"></ion-text> 
+                        <ion-text *ngIf="service.helpinfo.long != '' && checklisthelper[service.columnname] == 1" lines="none" class="helper-text-box" [innerHTML]="service.helpinfo.long"></ion-text>
                     </ion-label>
                     <ion-textarea *ngIf="!service.img"  (ionBlur)="addUpdate($event)" name = "{{service.columnname}}" value = "{{service.notes}}"></ion-textarea>
                     <ion-list class = "img-section-display" lines="none">
                         <ul *ngIf="service.img">
                             <li *ngFor="let thumb of service.images; let _index=index" class="checklist-thumb-list">
-                                <ion-item (click)="toggleGroup(_index,key)"> 
-                                    <ion-icon [name]="subSection === _index && sectionKey === key ? 'remove' : 'add'"></ion-icon>
-                                    {{service.fieldlabel}} ( {{_index+1}} )
+                                <ion-item (click)="toggleGroup(_index,key)">
+                                    <div class = "dropdown-arrow" style="display: flex;align-items: center;">
+                                        <ion-icon name="image" size="small" style="padding-right: 5px;vertical-align: middle;" *ngIf="thumb.length > 0 "></ion-icon>
+                                        <ion-text>{{service.fieldlabel}} #{{_index+1}}</ion-text>
+                                        <ion-icon style="width: 30px;margin-left: auto;" [name]="subSection === _index && sectionKey === key ? 'arrow-down' : 'arrow-forward'"></ion-icon>
+                                    </div>
                                 </ion-item>
                                 <ion-item class="item-accordion"
                                     [ngClass]="subSection === _index && sectionKey === key ? 'active-tab' : ''">
                                     <div *ngFor="let _img of thumb">
                                         <ion-thumbnail class="checklist-thumb" (click)="openViewModal(_img,service.columnname)"> <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}"> </ion-thumbnail>
                                     </div>
-                                    <ion-button (click)="openActionSheet(service.columnname, _index)">
+                                    <ion-button type="button" color="secondary" (click)="openActionSheet(service.columnname, _index)">
                                         <ion-icon name="camera" ></ion-icon>
                                         <ion-text>Add Image</ion-text>
                                     </ion-button>
                                 </ion-item>
                             </li>
                             <li class = "btn-new-subsection" (click)="addSubsection(key)"> 
-                                Add New {{service.fieldlabel}} Sub-Section
+                                Add another {{service.fieldlabel}}?
                             </li>
 
                             <!-- <li class="checklist-thumb-list photo-icon" (click)="openActionSheet(service.columnname)">
