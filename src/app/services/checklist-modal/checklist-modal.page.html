@@ -17,7 +17,7 @@
                     <ion-label position="stacked" style="margin: 0px 0px 10px 5px;display: contents;">
                         <ion-text style="font-size: 16px;margin-top: 10px;display: inline-flex;">{{service.fieldlabel}}&nbsp;&nbsp;<ion-icon name="help-circle-outline" size="small" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != ''"></ion-icon>
                         </ion-text>
-                        <ion-text class = "short-description">&#8226; {{service.helpinfo.short}}</ion-text>
+                        <ion-text *ngIf="service.helpinfo.short != '' " class = "short-description">&#8226; {{service.helpinfo.short}}</ion-text>
                         <ion-text *ngIf="service.helpinfo.long != '' && checklisthelper[service.columnname] == 1" lines="none" class="helper-text-box" [innerHTML]="service.helpinfo.long"></ion-text>
                     </ion-label>
                     <ion-textarea *ngIf="!service.img"  (ionBlur)="addUpdate($event)" name = "{{service.columnname}}" value = "{{service.notes}}"></ion-textarea>
