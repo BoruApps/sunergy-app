@@ -616,7 +616,8 @@ export class ImageModalPage implements OnInit {
                                 this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'][this.subSection] = [
                                     {
                                         imgpath:data['body']['data']['image_path'],
-                                        documentid:data['body']['data']['image_id']
+                                        documentid:data['body']['data']['image_id'],
+                                        userid: this.user_id
                                     }
                                 ];
                         }

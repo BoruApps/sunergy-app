@@ -592,6 +592,7 @@ export class DetailPage implements OnInit {
             recordid: worecord,
             updates: data_stringified,
             logged_in_user: logged_in_uid,
+            activityid: this.activityid,
             status: status
         }
         console.log(params);
