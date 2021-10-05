@@ -5,10 +5,10 @@
             <ion-back-button type="submit" defaultHref="/tabs/services" text="Back"
                              (click)="saveWO(workorderdetail.workorderid)"></ion-back-button>
         </ion-buttons>
-        <ion-title>{{serviceName}}</ion-title>
+        <ion-title style="padding-right: 100px;">{{serviceName}}</ion-title>
         <ion-buttons slot="primary">
-            <ion-button type="button" text="View Photos" (click)="goToGallery(workorderdetail.workorderid)">View
-                Photos
+            <ion-button type="button" text="View Photos" (click)="goToGallery(workorderdetail.workorderid)">
+                View Photos
             </ion-button>
         </ion-buttons>
     </ion-toolbar>
@@ -21,19 +21,19 @@
                 <ion-item-group>
                     <!--read only fields -->
                     <ion-item lines="none">
-                        <ion-label position="stacked">Contact Name</ion-label>
-                        <ion-text style="padding-top: 5px;">{{workorderdetail.firstname}} {{workorderdetail.lastname}}</ion-text>
+                        <ion-label class="label-text" position="stacked">Contact Name</ion-label>
+                        <ion-text class="value-text" style="padding-top: 5px;">{{workorderdetail.firstname}} {{workorderdetail.lastname}}</ion-text>
                     </ion-item>
                     <ion-item lines="none">
-                        <ion-label position="stacked">Secondary Contact Name</ion-label>
-                        <ion-text style="padding-top: 5px;">{{workorderdetail.secondary_contact_name}}</ion-text>
+                        <ion-label class="label-text" position="stacked">Secondary Contact Name</ion-label>
+                        <ion-text class="value-text" style="padding-top: 5px;">{{workorderdetail.secondary_contact_name}}</ion-text>
                     </ion-item>
                     <ion-item lines="none">
-                        <ion-label position="stacked">Address Details</ion-label>
-                        <ion-text *ngIf="workorderdetail.mailingpobox" style="padding-top: 5px;">{{workorderdetail.mailingstreet}}
+                        <ion-label class="label-text" position="stacked">Address Details</ion-label>
+                        <ion-text *ngIf="workorderdetail.mailingpobox" class="value-text" style="padding-top: 5px;">{{workorderdetail.mailingstreet}}
                             , {{workorderdetail.mailingpobox}}, {{workorderdetail.mailingcity}}
                             , {{workorderdetail.mailingstate}} {{workorderdetail.mailingzip}}</ion-text>
-                        <ion-text *ngIf="!workorderdetail.mailingpobox" style="padding-top: 5px;">{{workorderdetail.mailingstreet}}
+                        <ion-text *ngIf="!workorderdetail.mailingpobox" class="value-text" style="padding-top: 5px;">{{workorderdetail.mailingstreet}}
                             , {{workorderdetail.mailingcity}}
                             , {{workorderdetail.mailingstate}} {{workorderdetail.mailingzip}}</ion-text>
                         <ion-button target="_blank" color="secondary"
@@ -43,16 +43,16 @@
                         </ion-button>
                     </ion-item>
                     <ion-item lines="none">
-                        <ion-label position="stacked">Contact Mobile Phone</ion-label>
-                        <ion-text style="padding-top: 5px;">{{workorderdetail.mobile}}</ion-text>
+                        <ion-label class="label-text" position="stacked">Contact Mobile Phone</ion-label>
+                        <ion-text style="padding-top: 5px;" class="value-text">{{workorderdetail.mobile}}</ion-text>
                         <ion-button target="_self" color="secondary" (click)="transferee(workorderdetail.mobile)"
                                     size="default" slot="end" type="button">
                             <ion-icon name="call" size="large"></ion-icon>
                         </ion-button>
                     </ion-item>
                     <ion-item lines="none">
-                        <ion-label position="stacked">Secondary Contact Mobile Phone</ion-label>
-                        <ion-text style="padding-top: 5px;">{{workorderdetail.secondary_contact_mobile}}</ion-text>
+                        <ion-label class="label-text" position="stacked">Secondary Contact Mobile Phone</ion-label>
+                        <ion-text style="padding-top: 5px;" class="value-text">{{workorderdetail.secondary_contact_mobile}}</ion-text>
                         <ion-button target="_self" color="secondary"
                                     (click)="transferee(workorderdetail.secondary_contact_mobile)" size="default"
                                     slot="end" type="button">
@@ -69,7 +69,7 @@
                 <ion-item-group *ngFor="let blockservice of servicedetail">
                     <div *ngIf="blockservice.blockname != 'Array Information'">
                     <ion-item class="blockheader_2" lines="none">
-                    <ion-label class="ion-padding blockheader" (click)="toggleSection(blockservice.blockname)">{{blockservice.blockname}}</ion-label>
+                    <ion-label style="font-size: 19px;" class="ion-padding blockheader" (click)="toggleSection(blockservice.blockname)">{{blockservice.blockname}}</ion-label>
                     <ion-icon *ngIf="!blockGroups[blockservice.blockname].open" name="arrow-forward" slot="end"></ion-icon>
                     <ion-icon *ngIf="blockGroups[blockservice.blockname].open" name="arrow-down" slot="end"></ion-icon>
                     </ion-item>
