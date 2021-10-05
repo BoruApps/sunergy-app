@@ -13,7 +13,8 @@
     padding: .4em .5em;
     position: relative;
     font-size: .9em;
-    
+    border-radius: 5px;
+
     item-icon {
       position: absolute;
       right: .5em;
@@ -85,8 +86,7 @@ ion-item {
     }
 
     ion-text.short-description {
-      font-style: italic;
-      font-size: 14px
+      font-size: 12px
     }
   }
 
@@ -124,6 +124,28 @@ ion-content {
     font-weight: 600;
     background: #23954b;
     color: #ffffff;
+  }
+  .picklist-drowpdown {
+    width: 100%;
+    border: 1px solid;
+    border-radius: 1em;
+    margin-top: .5em;
+    ion-select {
+      max-width: 100%;
+    }
+  }
+  .checkbox-group {
+    display: flex;
+
+    ion-item:first-child {
+      border: 1px solid;
+      border-radius: 10px 0 0 10px;
+    }
+
+    ion-item:last-child {
+      border: 1px solid;
+      border-radius: 0 10px 10px 0;
+    }
   }
 }
 

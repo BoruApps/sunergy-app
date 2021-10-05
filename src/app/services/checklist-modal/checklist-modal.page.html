@@ -6,23 +6,43 @@
 </ion-header>
 <ion-content class="ion-padding">
 
-    <ion-item style="font-size: 14px;">
+    <ion-item style="font-size: 13px;">
         <ion-checkbox style="width: 14px;height: 14px;" checked="{{picCompleted}}"  (ionChange)="addPicCompleted($event)"></ion-checkbox>
-        <ion-label style="margin-left: 10px;">Adding Pictures Completed</ion-label>
+        <ion-label>&nbsp;Adding Pictures Completed</ion-label>
     </ion-item>
 
     <form #form="ngForm"  (ngSubmit)="completeOrder(serviceid)">
             <ion-item-group *ngFor="let service of servicedetail; let key=index" style="align-items: center;margin-bottom: 25px">
-                <ion-item>
+                <ion-item lines="none">
                     <ion-label position="stacked" style="margin: 0px 0px 10px 5px;display: contents;">
                         <ion-text style="font-size: 16px;margin-top: 10px;display: inline-flex;">{{service.fieldlabel}}&nbsp;&nbsp;<ion-icon name="help-circle-outline" size="small" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != ''"></ion-icon>
                         </ion-text>
-                        <ion-text class = "short-description">{{service.helpinfo.short}}</ion-text>
+                        <ion-text *ngIf="service.helpinfo.short != '' " style="display: inline-flex;" class = "short-description">&#8226; <ion-text>{{service.helpinfo.short}}</ion-text></ion-text>
                         <ion-text *ngIf="service.helpinfo.long != '' && checklisthelper[service.columnname] == 1" lines="none" class="helper-text-box" [innerHTML]="service.helpinfo.long"></ion-text>
                     </ion-label>
-                    <ion-textarea *ngIf="!service.img"  (ionBlur)="addUpdate($event)" name = "{{service.columnname}}" value = "{{service.notes}}"></ion-textarea>
-                    <ion-list class = "img-section-display" lines="none">
-                        <ul *ngIf="service.img">
+                    <ion-textarea *ngIf="service.img.type == 'Text' || service.img == false"  (ionBlur)="addUpdate($event)" name = "{{service.columnname}}" value = "{{service.notes}}"></ion-textarea>
+                    <ion-card *ngIf="service.img.type == 'Checkbox'" lines="none">
+                        <ion-radio-group lines="none" class = "checkbox-group" (ionBlur)="addUpdate($event)"  value="{{service.picklist}}">
+                            <ion-item lines="none">
+                                <ion-label>Yes</ion-label>
+                                <ion-radio name = "{{service.columnname}}" value="Yes"></ion-radio>
+                            </ion-item>
+                      
+                            <ion-item lines="none">
+                                <ion-label>No</ion-label>
+                                <ion-radio name = "{{service.columnname}}" value="No"></ion-radio>
+                            </ion-item>
+                        </ion-radio-group>
+                    </ion-card>
+
+                    <div class = "picklist-drowpdown" *ngIf="service.img.type == 'Picklist'" lines="none">
+                        <ion-select lines="none" (ionChange)="addUpdate($event)" name = "{{service.columnname}}" value="{{service.picklist}}">
+                            <ion-select-option *ngFor="let picklist of service.img.picklist.split(',')">{{picklist}}</ion-select-option>
+                        </ion-select>
+                                
+                    </div>
+                    <ion-list class = "img-section-display" lines="none"  *ngIf="service.img== true || (service.img.type !== undefined && service.img.type.indexOf('Section') > -1 || service.img.type == 'Photos')">
+                        <ul>
                             <li *ngFor="let thumb of service.images; let _index=index" class="checklist-thumb-list">
                                 <ion-item (click)="toggleGroup(_index,key)">
                                     <div class = "dropdown-arrow" style="display: flex;align-items: center;">
@@ -36,13 +56,13 @@
                                     <div *ngFor="let _img of thumb">
                                         <ion-thumbnail class="checklist-thumb" (click)="openViewModal(_img,service.columnname)"> <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}"> </ion-thumbnail>
                                     </div>
-                                    <ion-button type="button" color="secondary" (click)="openActionSheet(service.columnname, _index)">
-                                        <ion-icon name="camera" ></ion-icon>
-                                        <ion-text>Add Image</ion-text>
+                                    <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionSheet(service.columnname, _index)">
+                                        <ion-icon style="padding: 0px;" size="large" name="add" ></ion-icon>
+                                        <ion-icon style="padding: 0px;" size="large" name="camera" ></ion-icon>
                                     </ion-button>
                                 </ion-item>
                             </li>
-                            <li class = "btn-new-subsection" (click)="addSubsection(key)"> 
+                            <li class = "btn-new-subsection" (click)="addSubsection(key)" *ngIf="service.img.type == 'Sub-Sections'"> 
                                 Add another {{service.fieldlabel}}?
                             </li>
 

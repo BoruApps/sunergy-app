@@ -133,7 +133,8 @@ export class ChecklistModalPage implements OnInit {
                 images: (dataLabel[index].photos.length == 0) ? dataLabel[index].photos : dataLabel[index].photos,
                 columnname: index,
                 img: dataLabel[index].img,
-                notes: dataLabel[index].notes
+                notes: dataLabel[index].notes,
+                picklist: dataLabel[index].picklist
             })
         }
 
@@ -444,7 +445,17 @@ export class ChecklistModalPage implements OnInit {
         var fieldname = event.target.name;
         console.log(fieldname);
         console.log(event.target.value);
-        this.appConst.workOrder[this.serviceid][this.field]["photos"][fieldname].notes = event.target.value;
+        let section = this.appConst.workOrder[this.serviceid][this.field]["photos"][fieldname].img.type;
+        switch(section) {
+            case "Text": 
+                this.appConst.workOrder[this.serviceid][this.field]["photos"][fieldname].notes = event.target.value;
+            break;
+
+            case "Picklist":
+            case "Checkbox":
+                this.appConst.workOrder[this.serviceid][this.field]["photos"][fieldname].picklist = event.target.value;
+            break;
+        }
         console.log(this.appConst.workOrder[this.serviceid][this.field]["photos"]);
     }
 
