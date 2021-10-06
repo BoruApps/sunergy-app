@@ -67,29 +67,31 @@
   }
 }
 
-ion-item {
+
+
+ion-list {
   ion-label {
     white-space: break-spaces;
     width: 100%;
     max-width: 100% !important;
+    min-height: 16px;
+    
+  }
+  ion-text {
+    width: 100%;
+    display: block;
 
-    ion-text {
-      width: 100%;
-      display: block;
-
-      &.helper-text-box{
-        font-size: 14px;
-        color: #606060;
-        border-top: 1px solid #dbdbdb;
-        border-bottom: 1px solid #dbdbdb;
-      }
-    }
-
-    ion-text.short-description {
-      font-size: 12px
+    &.helper-text-box{
+      font-size: 14px;
+      color: #606060;
+      border-top: 1px solid #dbdbdb;
+      border-bottom: 1px solid #dbdbdb;
     }
   }
 
+  ion-text.short-description {
+    font-size: 12px
+  }
   ion-textarea {
     border: 1px solid;
     border-radius: .5em;
@@ -111,6 +113,9 @@ ion-item {
 }
 
 ion-content {
+  ion-list {
+    margin-bottom: 0 !important;
+  }
   .close-btn {
     border: 1px solid;
     width: 80%;
