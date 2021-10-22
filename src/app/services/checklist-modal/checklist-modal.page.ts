@@ -330,7 +330,7 @@ export class ChecklistModalPage implements OnInit {
             if (this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['name'] != 'Miscellaneous') {
                 for (let subphotoid in this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['photos']) {
                     if (this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['photos'][subphotoid].length > 0){
-                        image_count ++;
+                        image_count = image_count + this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['photos'][subphotoid].length;
                     }
                     t_image_count ++;
                 }

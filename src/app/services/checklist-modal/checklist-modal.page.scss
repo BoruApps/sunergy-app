@@ -134,7 +134,7 @@ ion-content {
     width: 100%;
     border: 1px solid;
     border-radius: 1em;
-    margin-top: .5em;
+    margin: .5em 0px;
     ion-select {
       max-width: 100%;
     }
@@ -194,4 +194,15 @@ form {
     background: #23954b;
     color: #ffffff;
   }
+}
+.item-background-color{
+  --ion-item-background: #f1f1f1;
+  border: 1px solid #767676;
+  border-radius: 5px;
+  align-items: center;
+  margin-bottom: 25px;
+}
+.disabled-field{
+  pointer-events: none;
+  display: none;
 }

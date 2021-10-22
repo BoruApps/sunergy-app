@@ -76,7 +76,7 @@
                     <div [ngClass]="{'section-active': blockGroups[blockservice.blockname].open, 'section': !blockGroups[blockservice.blockname].open}">
                         <ion-item detail="false" *ngFor="let service of blockservice.fields;" lines="none">
                             <div>
-                                <ion-label position="stacked">{{service.fieldlabel}}</ion-label>
+                                <ion-label class="ft-18" position="stacked">{{service.fieldlabel}}</ion-label>
                                 <div [ngSwitch]="service.uitype" style="font-size: 14px;padding: 10px;">
                                 <!--uitype = 10-->
                                 <ion-text *ngSwitchCase="10">{{service.value}} </ion-text>
@@ -129,12 +129,11 @@
 
                                     <ion-grid *ngIf="service.json">
                                         <ion-row>
-                                            <ion-col *ngIf="completedFields[service.columnname] === false" style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
-                                                <ion-text *ngIf="!service.task_complete" [ngClass]="{'green-text' : appConst.workOrder[serviceid][service.columnname]['image_count'] == appConst.workOrder[serviceid][service.columnname]['t_image_count']}">{{appConst.workOrder[serviceid][service.columnname]['image_count']}}/{{appConst.workOrder[serviceid][service.columnname]['t_image_count']}} Sections Filled</ion-text>
-                                            </ion-col>
-
-                                            <ion-col *ngIf="completedFields[service.columnname] === true" style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
-                                                <ion-text  class = "green-text">Marked Complete</ion-text>
+                                            <ion-col  style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
+                                                <ion-text [ngClass]="{'green-text' : completedFields[service.columnname] === true}">
+                                                    {{appConst.workOrder[serviceid][service.columnname]['image_count']}} Photos Added
+                                                    <div *ngIf="completedFields[service.columnname] === true"  class = "green-text">Section Completed</div>
+                                                </ion-text>
                                             </ion-col>
 
                                             <ion-col>
@@ -369,7 +368,7 @@
                 <br>
 
                 <div class="button-grouping ion-padding">
-                    <ion-button (click)="saveWO(workorderdetail.workorderid)" expand="full"  expand="block" color="secondary" >I CONFIRM {{inspection_type}} IS COMPLETE.
+                    <ion-button (click)="saveWO(workorderdetail.workorderid)" expand="full"  expand="block" color="secondary" disabled={{confirmButtonDisabled}}>Confirm Solar Project Is Complete.
                     </ion-button>
                 </div>
             </div>
