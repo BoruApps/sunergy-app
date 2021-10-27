@@ -51,6 +51,8 @@ export class DetailPage implements OnInit {
     userinfo: any;
     serviceid: any;
     apiurl: any;
+    confirmButtonDisabled: any;
+    optionalFieldId: any;
     serviceName: string;
     inspection_type: string;
     activityid: string;
@@ -87,6 +89,8 @@ export class DetailPage implements OnInit {
         public loadingController: LoadingController
     ) {
         this.apiurl = this.appConst.getApiUrl();
+        this.confirmButtonDisabled = false;
+        this.optionalFieldId = '';
         if (this.router.getCurrentNavigation().extras.state){
             this.activityid = this.router.getCurrentNavigation().extras.state.activityid;
         }
@@ -218,7 +222,7 @@ export class DetailPage implements OnInit {
                                             if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['name'] != 'Miscellaneous') {
                                                 for (let subphotoid in this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['photos']) {
                                                     if (this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['photos'][subphotoid].length > 0){
-                                                        image_count ++;
+                                                        image_count = image_count + this.appConst.workOrder[serviceid][fieldkey]['photos'][photoid]['photos'][subphotoid].length;
                                                     }
                                                     t_image_count ++;
                                                 }
@@ -228,7 +232,14 @@ export class DetailPage implements OnInit {
                                         this.appConst.workOrder[this.serviceid][fieldkey]['t_image_count'] = t_image_count;
 
                                         this.completedFields[fieldkey] = (this.appConst.workOrder[this.serviceid][fieldkey]['complete_category'] == 'yes') ? true: false;
-                                        console.log("_data",_data)
+
+                                        if (workorder[key][fieldkey].fieldlabel == 'Optional Miscellaneous'){
+                                            this.optionalFieldId = fieldkey;
+                                        }
+
+                                        if (workorder[key][fieldkey].fieldlabel != 'Optional Miscellaneous' && this.completedFields[fieldkey] === false){
+                                            this.confirmButtonDisabled = true;
+                                        }
                                     }
                                     fieldArray.push(_data);
                                 }
@@ -456,6 +467,23 @@ export class DetailPage implements OnInit {
                 this.saveWO(this.workorderdetail.workorderid);
                 if (typeof dataReturned.data.picCompleted !== 'undefined'){
                     this.completedFields[columnName] = dataReturned.data.picCompleted;
+
+                    if (title != 'Optional Miscellaneous'){
+                        if(columnName != this.optionalFieldId && dataReturned.data.picCompleted === false){
+                            this.confirmButtonDisabled = true;
+                        }else{
+                            this.confirmButtonDisabled = false;
+                            for (let cfield in this.completedFields){
+                                console.log('cfield',cfield)
+                                console.log('optionalFieldId',this.optionalFieldId)
+                                console.log('this.completedFields[cfield]',this.completedFields[cfield])
+                                if (cfield != this.optionalFieldId && this.completedFields[cfield] === false){
+                                    this.confirmButtonDisabled = true;
+                                }
+                                console.log('confirmButtonDisabled',this.confirmButtonDisabled)
+                            }
+                        }
+                    }
                 }
             }
 

@@ -9,6 +9,7 @@ import {ImageProvider} from "../../providers/image/image";
 import {ImageModalPage} from "../image-modal/image-modal.page";
 import {ActionSheet, ActionSheetOptions} from '@ionic-native/action-sheet/ngx';
 import {ActivatedRoute, Router} from "@angular/router";
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
     selector: 'app-checklist-modal',
@@ -73,11 +74,13 @@ export class ChecklistModalPage implements OnInit {
         public appConst: AppConstants,
         private router: Router,
         public loadingController: LoadingController,
-        private actionSheet: ActionSheet
+        private actionSheet: ActionSheet,
+        private sanitizer: DomSanitizer
     ) {
         this.apiurl = this.appConst.getApiUrl();
         this.subSection = 0;
         this.sectionKey = 0;
+        this.sanitizer = sanitizer;
     }
 
     ngOnInit() {
@@ -109,22 +112,29 @@ export class ChecklistModalPage implements OnInit {
         }, 1000);
     }
 
+    urlSanitize(url) {
+        console.log(url);
+        url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        console.log(url);
+        return url;
+    }
     loadChecklist() {
         var dataLabel = this.appConst.workOrder[this.serviceid][this.field]["photos"];
         console.log(dataLabel);
         for(var index = 0; index < dataLabel.length; index++) {
             if(dataLabel[index].notes == undefined) dataLabel[index].notes = "";
-            var vidimg = dataLabel[index].description.long.split(/\n/g);
-            for(var _index = 0; _index < vidimg.length; _index++) {
-                if(vidimg[_index].indexOf('video:') > -1) {
-                    vidimg[_index] = "<a target='_blank' href = '"+vidimg[_index].replace('video:[','').replace(']','')+"'>"+vidimg[_index].replace('video:','')+"</a>";
-                } else if (vidimg[_index].indexOf('img:') > -1) {
-                    vidimg[_index] = "<img src = '"+vidimg[_index].replace('img:[','').replace(']','')+"'>";
-                } else if (vidimg[_index].indexOf('link:') > -1) {
-                    vidimg[_index] = "<a target='_blank' href = '"+vidimg[_index].replace('link:[','').replace(']','')+"'>"+vidimg[_index].replace('link:','')+"</a>";
-                }
-            }
-            dataLabel[index].description.long = vidimg.join('\n');
+            // var vidimg = dataLabel[index].description.long.split(/\n/g);
+            // for(var _index = 0; _index < vidimg.length; _index++) {
+            //     if(vidimg[_index].indexOf('video:') > -1) {
+            //         vidimg[_index] = "<a target='_blank' href = '"+vidimg[_index].replace('video:[','').replace(']','')+"'>"+vidimg[_index].replace('video:','')+"</a>";
+            //     } else if (vidimg[_index].indexOf('img:') > -1) {
+            //         vidimg[_index] = "<img src = '"+vidimg[_index].replace('img:[','').replace(']','')+"'>";
+            //     } else if (vidimg[_index].indexOf('link:') > -1) {
+            //         vidimg[_index] = "<a target='_blank' href = '"+vidimg[_index].replace('link:[','').replace(']','')+"'>"+vidimg[_index].replace('link:','')+"</a>";
+            //     }
+            // }
+            // dataLabel[index].description.long = vidimg.join('\n');
+            dataLabel[index].description.long = dataLabel[index].description.long.replace('https://www.youtube.com/watch?v=','https://www.youtube.com/embed/');
             console.log(dataLabel[index].description.long);
             dataLabel[index].photos = (dataLabel[index].photos.length == 0) ? [[]] : dataLabel[index].photos
             this.servicedetail.push({
@@ -133,7 +143,8 @@ export class ChecklistModalPage implements OnInit {
                 images: (dataLabel[index].photos.length == 0) ? dataLabel[index].photos : dataLabel[index].photos,
                 columnname: index,
                 img: dataLabel[index].img,
-                notes: dataLabel[index].notes
+                notes: dataLabel[index].notes,
+                picklist: dataLabel[index].picklist
             })
         }
 
@@ -319,7 +330,7 @@ export class ChecklistModalPage implements OnInit {
             if (this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['name'] != 'Miscellaneous') {
                 for (let subphotoid in this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['photos']) {
                     if (this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['photos'][subphotoid].length > 0){
-                        image_count ++;
+                        image_count = image_count + this.appConst.workOrder[this.serviceid][this.field]['photos'][photoid]['photos'][subphotoid].length;
                     }
                     t_image_count ++;
                 }
@@ -444,7 +455,17 @@ export class ChecklistModalPage implements OnInit {
         var fieldname = event.target.name;
         console.log(fieldname);
         console.log(event.target.value);
-        this.appConst.workOrder[this.serviceid][this.field]["photos"][fieldname].notes = event.target.value;
+        let section = this.appConst.workOrder[this.serviceid][this.field]["photos"][fieldname].img.type;
+        switch(section) {
+            case "Text":
+                this.appConst.workOrder[this.serviceid][this.field]["photos"][fieldname].notes = event.target.value;
+            break;
+
+            case "Picklist":
+            case "Checkbox":
+                this.appConst.workOrder[this.serviceid][this.field]["photos"][fieldname].picklist = event.target.value;
+            break;
+        }
         console.log(this.appConst.workOrder[this.serviceid][this.field]["photos"]);
     }
 
