@@ -568,27 +568,25 @@ export class ImageModalPage implements OnInit {
         if (delete_needed === false) {
             if (this._CANVAS.toDataURL()) {
                 var bs64img = this._CANVAS.toDataURL();
-                imageData = bs64img.split(',')[1];
+                var blob = this.dataURLtoBlob(bs64img);
             }
         }
 
-        var param = {
-            'base64Image':imageData,
-            'serviceid':this.serviceid,
-            'columnname':this.columnname,
-            'is_delete':delete_needed,
-            'logged_in_user':this.user_id,
-            'index':this.index,
-            'documentid':this.documentid,
-            'notecontent':data.title,
-            'mode':'image_upload',
-        };
-        console.log('adding photo for', param.serviceid);
-        console.log('adding photo columnname', param.columnname);
-        console.log('need to delete image', param.is_delete);
+        const formData: FormData = new FormData();
+        formData.append("blob", blob);
+        formData.append("serviceid", this.serviceid);
+        formData.append("columnname", this.columnname+'');
+        formData.append("is_delete", this.user_id);
+        formData.append("logged_in_user", this.user_id);
+        formData.append("index", this.index);
+        formData.append("documentid", this.documentid);
+        formData.append("notecontent", data.title);
+        formData.append("mode", 'image_upload');
+
+        console.log('adding formData', formData);
 
         this.showLoading();
-        this.httpClient.post(this.apiurl + "postPhotos.php", param, {headers: headers, observe: 'response'})
+        this.httpClient.post(this.apiurl + "postPhotos.php", formData, {headers: headers, observe: 'response'})
             .subscribe(data => {
                 this.hideLoading();
                 //console.log(data['_body']);
@@ -650,6 +648,15 @@ export class ImageModalPage implements OnInit {
                 //console.error(error.message);
                 this.presentToast("Upload failed! Please try again \n" + error.message);
             });
+    }
+
+    dataURLtoBlob(dataurl) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {type: mime});
     }
 
     GetCanvasAtResoution ()

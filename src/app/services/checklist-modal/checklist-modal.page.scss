@@ -141,15 +141,12 @@ ion-content {
   }
   .checkbox-group {
     display: flex;
+    border: 1px solid #767676;
+    border-radius: 10px;
+    overflow: hidden;
 
     ion-item:first-child {
-      border: 1px solid;
-      border-radius: 10px 0 0 10px;
-    }
-
-    ion-item:last-child {
-      border: 1px solid;
-      border-radius: 0 10px 10px 0;
+      border-right: 1px solid #767676;
     }
   }
 }
@@ -198,7 +195,8 @@ form {
 .item-background-color{
   --ion-item-background: #f1f1f1;
   border: 1px solid #767676;
-  border-radius: 5px;
+  border-radius: 10px;
+  overflow: hidden;
   align-items: center;
   margin-bottom: 25px;
 }

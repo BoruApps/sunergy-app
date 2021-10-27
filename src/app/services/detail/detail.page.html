@@ -5,7 +5,7 @@
             <ion-back-button type="submit" defaultHref="/tabs/services" text="Back"
                              (click)="saveWO(workorderdetail.workorderid)"></ion-back-button>
         </ion-buttons>
-        <ion-title style="padding-right: 100px;">{{serviceName}}</ion-title>
+        <ion-title >{{serviceName}}</ion-title>
         <ion-buttons slot="primary">
             <ion-button type="button" text="View Photos" (click)="goToGallery(workorderdetail.workorderid)">
                 View Photos
@@ -76,7 +76,7 @@
                     <div [ngClass]="{'section-active': blockGroups[blockservice.blockname].open, 'section': !blockGroups[blockservice.blockname].open}">
                         <ion-item detail="false" *ngFor="let service of blockservice.fields;" lines="none">
                             <div>
-                                <ion-label class="ft-18" position="stacked">{{service.fieldlabel}}</ion-label>
+                                <ion-label class="ft-18" style="font-size: 24px;" position="stacked">{{service.fieldlabel}}</ion-label>
                                 <div [ngSwitch]="service.uitype" style="font-size: 14px;padding: 10px;">
                                 <!--uitype = 10-->
                                 <ion-text *ngSwitchCase="10">{{service.value}} </ion-text>
