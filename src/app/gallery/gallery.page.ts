@@ -9,7 +9,6 @@ import { Storage } from '@ionic/storage';
 import { present } from '@ionic/core/dist/types/utils/overlays';
 import { AppConstants } from '../providers/constant/constant';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import {ImageModalPage} from "../services/image-modal/image-modal.page";
 
 @Component({
   selector: 'app-gallery',
@@ -148,68 +147,6 @@ export class GalleryPage implements OnInit {
         this.hideLoading();
         console.log('fetch errored out', error);
       })
-  }
-
-  async openViewModal(image){
-    var params = {
-      documentid: image.documentid
-    }
-
-    var headers = new HttpHeaders();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/x-www-form-urlencoded');
-    headers.append('Access-Control-Allow-Origin', '*');
-    this.showLoading();
-    await this.httpClient.post(this.apiurl + "getDocBase64.php", params, {headers: headers, observe: 'response'})
-        .subscribe(async data => {
-              this.hideLoading();
-              //console.log(data['body']);
-              var success = data['body']['success'];
-              if (success == true) {
-                var modal = await this.modalCtrl.create({
-                  component: ImageModalPage,
-                  componentProps: {
-                    "base64Image": data['body']['base64'],
-                    "paramTitle": "View Photo",
-                    "serviceid": this.serviceid,
-                    "columnname": '',
-                    "is_delete": true,
-                    "documentid": image.documentid,
-                    "fileName": data['body']['fileName'].split('.')[0]
-                  }
-                });
-                modal.onDidDismiss().then((dataReturned) => {
-                  if (dataReturned !== null) {
-                    // this.dataReturned = dataReturned.data;
-                    //alert('Modal Sent Data :'+ dataReturned);
-                  }
-                });
-
-                return await modal.present();
-              }
-            }, async error => {
-              var modal = await this.modalCtrl.create({
-                component: ImageModalPage,
-                componentProps: {
-                  "base64Image": image.imgpath,
-                  "paramTitle": "View Photo",
-                  "serviceid": this.serviceid,
-                  "columnname": '',
-                  "is_delete": true
-                }
-              });
-              modal.onDidDismiss().then((dataReturned) => {
-                if (dataReturned !== null) {
-                  // this.dataReturned = dataReturned.data;
-                  //alert('Modal Sent Data :'+ dataReturned);
-                }
-              });
-
-              return await modal.present();
-              this.hideLoading();
-              console.log('failed to fetch record');
-            }
-        );
   }
 
   async presentToast(message: string) {
