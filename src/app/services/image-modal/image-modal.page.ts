@@ -572,16 +572,31 @@ export class ImageModalPage implements OnInit {
             }
         }
 
-        const formData: FormData = new FormData();
-        formData.append("blob", blob);
-        formData.append("serviceid", this.serviceid);
-        formData.append("columnname", this.columnname+'');
-        formData.append("is_delete", delete_needed);
-        formData.append("logged_in_user", this.user_id);
-        formData.append("index", this.index);
-        formData.append("documentid", this.documentid);
-        formData.append("notecontent", data.title);
-        formData.append("mode", 'image_upload');
+
+        if(delete_needed === true){
+            var formData = {
+                'serviceid':this.serviceid,
+                'columnname':this.columnname,
+                'is_delete':delete_needed,
+                'logged_in_user':this.user_id,
+                'index':this.index,
+                'documentid':this.documentid,
+                'notecontent':data.title,
+                'mode':'image_upload',
+            };
+        }else{
+            const formData: FormData = new FormData();
+            formData.append("blob", blob);
+            formData.append("serviceid", this.serviceid);
+            formData.append("columnname", this.columnname+'');
+            formData.append("is_delete", 'true');
+            formData.append("logged_in_user", this.user_id);
+            formData.append("index", this.index);
+            formData.append("documentid", this.documentid);
+            formData.append("notecontent", data.title);
+            formData.append("mode", 'image_upload');
+        }
+        
 
         console.log('adding formData', formData);
 
@@ -591,7 +606,7 @@ export class ImageModalPage implements OnInit {
                 this.hideLoading();
                 //console.log(data['_body']);
                 if (data['body']['success'] == true) {
-                    if(this.columnname != undefined && this.columnname != ''){
+                    if(this.columnname != undefined && this.columnname+'' !== ''){
                         if (delete_needed === true){
                             let imgLoc = this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'];
                             let position = -1;
