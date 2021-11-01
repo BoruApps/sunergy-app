@@ -131,5 +131,5 @@
         <splash src="resources/windows/splash/Splash.png" target="SplashScreen" />
     </platform>
     <allow-navigation href="http://localhost:8100" sessionid="47a16fd0" />
-    <allow-navigation href="https://*youtube.com/*"/>
+    <allow-navigation href="https://*youtube.com/*" />
 </widget>
