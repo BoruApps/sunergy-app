@@ -135,6 +135,8 @@ ion-content {
     border: 1px solid;
     border-radius: 1em;
     margin: .5em 0px;
+    background: white;
+    overflow: hidden;
     ion-select {
       max-width: 100%;
     }
@@ -152,7 +154,8 @@ ion-content {
 }
 
 form {
-  margin: 0 0 2em !important;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
 }
 
 .img-section-display {
@@ -193,7 +196,7 @@ form {
   }
 }
 .item-background-color{
-  --ion-item-background: #f1f1f1;
+  --ion-item-background: #EBEBEB;
   border: 1px solid #767676;
   border-radius: 10px;
   overflow: hidden;

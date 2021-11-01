@@ -3,12 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { PhotoLibrary } from '@ionic-native/photo-library/ngx';
 import { ActionSheet, ActionSheetOptions } from '@ionic-native/action-sheet/ngx';
-import { AlertController, ToastController, NavController, LoadingController } from '@ionic/angular';
+import { ModalController, AlertController, ToastController, NavController, LoadingController } from '@ionic/angular';
 import * as pi from '../../assets/js/sampledata/properties-images.json';
 import { Storage } from '@ionic/storage';
 import { present } from '@ionic/core/dist/types/utils/overlays';
 import { AppConstants } from '../providers/constant/constant';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import {ImageModalPage} from "../services/image-modal/image-modal.page";
 
 @Component({
   selector: 'app-gallery',
@@ -18,7 +19,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 export class GalleryPage implements OnInit {
   roomdata: any;
   propertyimages: any;
-  propertypics: any;
+  allImages: any = {};
   current_mode: any = "view";
   userinfo: any;
   serviceName: any;
@@ -55,7 +56,8 @@ export class GalleryPage implements OnInit {
     public storage: Storage, 
     public toastController: ToastController, 
     public alertController: AlertController, 
-    private activatedRoute: ActivatedRoute, 
+    private activatedRoute: ActivatedRoute,
+    public modalCtrl: ModalController,
     private router: Router, 
     private camera: Camera, 
     private actionSheet: ActionSheet, 
@@ -113,20 +115,12 @@ export class GalleryPage implements OnInit {
    }
 
    loadTheme(theme){
-    document.body.classList.toggle(theme, true);
+      document.body.classList.toggle(theme, true);
    }
 
   /* Default Auth Guard and Theme Loader */
 
   loadImages(recordid,columnname){
-    /* this.propertyimages = pi.propertiesimages;
-    console.log('loading images for', room, recordid);
-    var images = this.propertyimages.filter(object => {
-      return object.recordid == recordid;
-    });
-    console.log(images[0].rooms[room].images);
-    var pics = images[0].rooms[room].images;
-    this.propertypics = pics; */
     var params = {
       recordid: recordid,
       columnname: columnname
@@ -143,7 +137,8 @@ export class GalleryPage implements OnInit {
         var success = data['body']['success'];
         console.log('fetching photos response was', success);
         if(success == true){
-          this.propertypics = data['body']['data'];
+          this.allImages = data['body']['data'];
+          console.log('this.allImages',this.allImages)
         }else{
           console.log('fetch photos failed');
           this.hideLoading();
@@ -155,91 +150,66 @@ export class GalleryPage implements OnInit {
       })
   }
 
-  launchCamera(){
-    console.log('launching actionsheet');
-    this.actionSheet.show(this.actionOptions).then((buttonIndex: number) => {
-      console.log('Option pressed', buttonIndex);
-      if(buttonIndex == 1){
-        console.log('launching camera');
-        this.camera.getPicture(this.options).then((imageData) => {
-          // imageData is either a base64 encoded string or a file URI
-          // If it's base64 (DATA_URL):
-          let base64Image = 'data:image/jpeg;base64,' + imageData;
-          console.log(base64Image);
-          // TODO: need code to upload to server here.
-          // On success: show toast
-          this.presentToastPrimary('Photo uploaded and added! \n' + imageData);          
-        }, (err) => {
-          // Handle error
-          console.error(err);
-          // On Fail: show toast
-          this.presentToast(`Upload failed! Please try again \n` + err);
-        }); 
-      }else if(buttonIndex == 2){
-        console.log('launching gallery');
-        this.camera.getPicture(this.libraryOptions).then((imageData) => {
-          // imageData is either a base64 encoded string or a file URI
-          // If it's base64 (DATA_URL):
-          let base64Image = 'data:image/jpeg;base64,' + imageData;
-          console.log(base64Image);
-          // TODO: need code to upload to server here.
-          // On success: show toast
-          this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
-        }, (err) => {
-          // Handle error
-          console.error(err);
-          // On Fail: show toast
-          this.presentToast(`Upload failed! Please try again \n` + err);
-        }); 
-      }
-    }).catch((err) => {
-      console.log(err);
-      this.presentToast(`Operation failed! \n` + err);
-    });
-  }
-
-  editPhotos(){
-    if(this.current_mode == 'view'){
-      console.log('entering photo edit mode');
-      this.current_mode = 'edit';
-      //display X icon top right of each photo div
-    }else{
-      console.log('returning to view mode');
-      this.current_mode = 'view'; //safety for mode
+  async openViewModal(image){
+    var params = {
+      documentid: image.documentid
     }
-    
-  }
 
-  async deletePhoto(recordid){
-      const alert = await this.alertController.create({
-        header: 'Deleting Photo',
-        message: 'Are you sure you want to delete this photo?',
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {
-              console.log('user cancelled request to delete', recordid);
+    var headers = new HttpHeaders();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    headers.append('Access-Control-Allow-Origin', '*');
+    this.showLoading();
+    await this.httpClient.post(this.apiurl + "getDocBase64.php", params, {headers: headers, observe: 'response'})
+        .subscribe(async data => {
+              this.hideLoading();
+              //console.log(data['body']);
+              var success = data['body']['success'];
+              if (success == true) {
+                var modal = await this.modalCtrl.create({
+                  component: ImageModalPage,
+                  componentProps: {
+                    "base64Image": data['body']['base64'],
+                    "paramTitle": "View Photo",
+                    "serviceid": this.serviceid,
+                    "columnname": '',
+                    "is_delete": true,
+                    "documentid": image.documentid,
+                    "fileName": data['body']['fileName'].split('.')[0]
+                  }
+                });
+                modal.onDidDismiss().then((dataReturned) => {
+                  if (dataReturned !== null) {
+                    // this.dataReturned = dataReturned.data;
+                    //alert('Modal Sent Data :'+ dataReturned);
+                  }
+                });
+
+                return await modal.present();
+              }
+            }, async error => {
+              var modal = await this.modalCtrl.create({
+                component: ImageModalPage,
+                componentProps: {
+                  "base64Image": image.imgpath,
+                  "paramTitle": "View Photo",
+                  "serviceid": this.serviceid,
+                  "columnname": '',
+                  "is_delete": true
+                }
+              });
+              modal.onDidDismiss().then((dataReturned) => {
+                if (dataReturned !== null) {
+                  // this.dataReturned = dataReturned.data;
+                  //alert('Modal Sent Data :'+ dataReturned);
+                }
+              });
+
+              return await modal.present();
+              this.hideLoading();
+              console.log('failed to fetch record');
             }
-          }, {
-            text: 'Delete',
-            handler: () => {
-              console.log('deleting photo');
-              document.getElementById(recordid).style.display = "none";
-              //some js to deletephoto function
-              //on delete success: 
-              console.log('photo deleted', recordid);
-              this.presentToast(`Photo deleted!`);
-              //this.presentToast(`Photo deleted! ${recordid}`); //If we want to show asset link
-              //on fail:
-              //console.log('Photo delete failed with error', err);
-              //this.presentToast(`Photo delete failed with error ${err}`);
-            }
-          }
-        ]
-      });
-      await alert.present();
+        );
   }
 
   async presentToast(message: string) {
@@ -298,5 +268,4 @@ export class GalleryPage implements OnInit {
       }
     });
   }
-
 }

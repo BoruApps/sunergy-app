@@ -1,33 +1,28 @@
 <ion-header>
-  
-  <ion-toolbar>
-    <ion-buttons slot="secondary">
-      <ion-back-button type="button" defaultHref="/services" text="Back" (click)="goToDetail(serviceid)"></ion-back-button>
-    </ion-buttons>
-    <ion-buttons slot="primary">
-      <!-- <ion-button type="button" text="Edit Photos" (click)="editPhotos()">
-        <ion-text id="editphotos-button" *ngIf="current_mode=='view'">Edit Photos</ion-text>
-        <ion-text id="editphotos-button" *ngIf="current_mode=='edit'">Done Editing</ion-text>
-      </ion-button> -->
-    </ion-buttons>
-    <ion-title>{{serviceName}}'s Photos</ion-title>
-  </ion-toolbar>
 
+    <ion-toolbar>
+        <ion-buttons slot="secondary">
+            <ion-back-button type="button" defaultHref="/services" text="Back"
+                             (click)="goToDetail(serviceid)"></ion-back-button>
+        </ion-buttons>
+        <ion-buttons slot="primary">
+        </ion-buttons>
+        <ion-title>{{serviceName}}'s Photos</ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <!-- <ion-button expand="block" (click)="launchCamera()" text="Add Photos"><ion-icon name="add"></ion-icon><ion-text>Add Photos</ion-text></ion-button> -->
-  <div class="gallery" *ngIf="propertypics?.length > 0">    
-    <ion-card class="galleryimage" *ngFor="let image of propertypics" [id]="image">
-      <ion-img [src]="image" width="150px"></ion-img>
-      <ion-fab vertical="top" horizontal="end" size="small" *ngIf="current_mode=='edit'">
-        <ion-fab-button type="button" size="small" color="danger" (click)="deletePhoto(image)" style="height: 30px; width: 30px;">
-          <ion-icon name="close-circle" role="img" aria-label="close"></ion-icon>
-        </ion-fab-button>
-      </ion-fab>
-    </ion-card>
-  </div>
-  <div class="not-available" *ngIf="propertypics?.length == 0">
-      <ion-title class="na">There are currently no images for this service</ion-title>
-  </div>
+    <div *ngIf="allImages.length > 0">
+        <ion-item-group *ngFor="let imagesList of allImages | keyvalue">
+            <ion-text class="galleryimage-label" position="stacked">{{imagesList.value.label}}</ion-text>
+            <ion-img class="galleryimage" *ngFor="let image of imagesList.value.images"
+                     (click)="openViewModal(image)"
+                     src="{{this.apiurl.replace('phoneapi/','')}}{{image.imgpath}}"
+                     width="150px"></ion-img>
+            <ion-item lines="none"></ion-item>
+        </ion-item-group>
+    </div>
+    <div class="not-available" *ngIf="allImages.length == 0">
+        <ion-title class="na">There are currently no images for this service</ion-title>
+    </div>
 </ion-content>
