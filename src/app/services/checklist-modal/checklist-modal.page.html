@@ -30,7 +30,7 @@
                 <ion-item lines="none">
                     <ion-textarea *ngIf="service.img.type == 'Text' || service.img == false"  (ionBlur)="addUpdate($event)" name = "{{service.columnname}}" value = "{{service.notes}}" placeholder="Press Here To Type"></ion-textarea>
                     <ion-card *ngIf="service.img.type == 'Checkbox'" style="border-radius: 10px;" lines="none">
-                        <ion-radio-group lines="none" class = "checkbox-group" (ionBlur)="addUpdate($event)"  value="{{service.picklist}}">
+                        <ion-radio-group style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (ionBlur)="addUpdate($event)"  value="{{service.picklist}}">
                             <ion-item lines="none">
                                 <ion-label>Yes</ion-label>
                                 <ion-radio name = "{{service.columnname}}" value="Yes"></ion-radio>
@@ -44,7 +44,7 @@
                     </ion-card>
 
                     <div class = "picklist-drowpdown"  *ngIf="service.img.type == 'Picklist'" lines="none">
-                        <ion-select style="color: white;background: white;" lines="none" (ionChange)="addUpdate($event)" name = "{{service.columnname}}" value="{{service.picklist}}">
+                        <ion-select style="color: black;background: white;" lines="none" (ionChange)="addUpdate($event)" name = "{{service.columnname}}" value="{{service.picklist}}">
                             <ion-select-option value="">Choose An Option</ion-select-option>
                             <div *ngFor="let picklist of service.img.picklist.split(',')">
                                 <ion-select-option *ngIf="picklist != ''">{{picklist}}</ion-select-option>
