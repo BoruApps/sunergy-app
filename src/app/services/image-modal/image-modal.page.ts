@@ -565,19 +565,12 @@ export class ImageModalPage implements OnInit {
         await this.GetCanvasAtResoution();
 
         var imageData = this.imageData;
-        if (delete_needed === false) {
-            if (this._CANVAS.toDataURL()) {
-                var bs64img = this._CANVAS.toDataURL();
-                var blob = this.dataURLtoBlob(bs64img);
-            }
-        }
-
 
         if(delete_needed === true){
-            var formData = {
+            var formDataD = {
                 'serviceid':this.serviceid,
                 'columnname':this.columnname,
-                'is_delete':delete_needed,
+                'is_delete':'true',
                 'logged_in_user':this.user_id,
                 'index':this.index,
                 'documentid':this.documentid,
@@ -585,23 +578,29 @@ export class ImageModalPage implements OnInit {
                 'mode':'image_upload',
             };
         }else{
-            const formData: FormData = new FormData();
+            if (this._CANVAS.toDataURL()) {
+                var bs64img = this._CANVAS.toDataURL();
+                var blob = this.dataURLtoBlob(bs64img);
+            }
+
+            var formData = new FormData();
             formData.append("blob", blob);
             formData.append("serviceid", this.serviceid);
             formData.append("columnname", this.columnname+'');
-            formData.append("is_delete", 'true');
+            formData.append("is_delete", 'false');
             formData.append("logged_in_user", this.user_id);
             formData.append("index", this.index);
             formData.append("documentid", this.documentid);
             formData.append("notecontent", data.title);
             formData.append("mode", 'image_upload');
         }
-        
 
-        console.log('adding formData', formData);
+        var postParam = (delete_needed === true) ? formDataD : formData;
+
+        console.log('adding formData', postParam);
 
         this.showLoading();
-        this.httpClient.post(this.apiurl + "postPhotos.php", formData, {headers: headers, observe: 'response'})
+        this.httpClient.post(this.apiurl + "postPhotos.php", postParam, {headers: headers, observe: 'response'})
             .subscribe(data => {
                 this.hideLoading();
                 //console.log(data['_body']);
