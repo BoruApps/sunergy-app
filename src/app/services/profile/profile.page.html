@@ -1,7 +1,11 @@
 <ion-header>
     <ion-toolbar text-center>
-        <ion-title>Profile</ion-title>
-        <ion-icon name="close" (click)="closeModal()" size="large"></ion-icon>
+        <ion-buttons slot="primary">
+            <ion-button type="button" name="close" class="ion-close-center" size="large" (click)="closeModal()">
+                <ion-icon name="close" size="large"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title text-center>Profile</ion-title>
     </ion-toolbar>
 </ion-header>
 

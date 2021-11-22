@@ -15,9 +15,11 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { Camera } from '@ionic-native/camera/ngx';
 import { ImageModalPage } from '../image-modal/image-modal.page';
+import { imagePreview } from "../image-preview/image-preview.page";
 import { ChecklistModalPage } from '../checklist-modal/checklist-modal.page';
 import {ImageConfirmModalPage} from "../image-confirm-modal/image-confirm-modal.page";
 import { ImageGallery } from "../image-gallery/image-gallery.page";
+import { ImageSlider } from "../image-slider/image-slider.page";
 
 const routes: Routes = [
   {
@@ -33,8 +35,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DetailPage, ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery  ],
-    entryComponents: [ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery  ],
+  declarations: [DetailPage, ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery,ImageSlider,imagePreview ],
+    entryComponents: [ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery,ImageSlider,imagePreview ],
     providers: [
         StatusBar,
         SplashScreen,

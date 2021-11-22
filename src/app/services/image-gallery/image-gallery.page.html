@@ -1,7 +1,11 @@
 <ion-header>
-    <ion-toolbar >
-        <ion-title text-center>{{serviceName}}'s Photos</ion-title>
-        <ion-icon name="close" (click)="closeModal()" size="large"></ion-icon>
+    <ion-toolbar text-center>
+        <ion-buttons slot="primary">
+            <ion-button type="button" name="close" class="ion-close-center" size="large" (click)="closeModal()">
+                <ion-icon name="close" size="large"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>{{serviceName}}'s Photos</ion-title>
     </ion-toolbar>
 </ion-header>
 

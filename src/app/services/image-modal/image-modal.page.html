@@ -1,7 +1,13 @@
 <ion-header>
     <ion-toolbar text-center>
-        <ion-title>{{modalTitle}}</ion-title>
-        <ion-icon name="close" (click)="confirmCancelImage()" size="large"></ion-icon>
+        <ion-buttons slot="primary">
+            <ion-button type="button" name="close" class="ion-close-center" size="large" (click)="confirmCancelImage()">
+                <ion-icon name="close" size="large"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>
+            <ion-label class="label-text viewedit-title" position="stacked" >Edit Photo</ion-label>
+        </ion-title>
     </ion-toolbar>
 </ion-header>
 
@@ -10,11 +16,6 @@
                value="{{serviceid}}"></ion-input>
     <ion-input type="text" hidden ng-show="false" [(ngModel)]="photo.columnname" name="columnname"
                value="{{columnname}}"></ion-input>
-    <ion-card>
-        <ion-card-header>
-            <ion-card-subtitle style="text-align: center;">Image Preview</ion-card-subtitle>
-        </ion-card-header>
-    </ion-card>
     <img class="img-load" #img src="{{base64Image}}" (load)="updateCanvas($event)"/>
     <div class="ion-canvas">
         <canvas id='canvas'></canvas>

@@ -10,6 +10,8 @@ import {ImageModalPage} from "../image-modal/image-modal.page";
 import {ActionSheet, ActionSheetOptions} from '@ionic-native/action-sheet/ngx';
 import {ActivatedRoute, Router} from "@angular/router";
 import {DomSanitizer} from '@angular/platform-browser';
+import {ImageSlider} from "../image-slider/image-slider.page";
+import { imagePreview } from "../image-preview/image-preview.page";
 
 @Component({
     selector: 'app-checklist-modal',
@@ -322,6 +324,29 @@ export class ChecklistModalPage implements OnInit {
         );
     }
 
+    async openSliderModal(image,sliderImages){
+
+        var modal = await this.modalCtrl.create({
+            component: ImageSlider,
+            componentProps: {
+                "sliderImages": sliderImages,
+                "paramTitle": "View Photo",
+                "serviceid": this.serviceid,
+                "currentImage": image,
+                "user_id": this.user_id
+            }
+        });
+
+        modal.onDidDismiss().then((dataReturned) => {
+            if (dataReturned !== null) {
+                this.dataReturned = dataReturned.data;
+                //alert('Modal Sent Data :'+ dataReturned);
+            }
+        });
+
+        return await modal.present();
+    }
+
     async closeModal(changes='') {
         var t_image_count = 0;
         var image_count = 0;
@@ -479,5 +504,23 @@ export class ChecklistModalPage implements OnInit {
 
     toggleHelper(columnname){
         this.checklisthelper[columnname] = (this.checklisthelper[columnname] == 1) ? 0 : 1;
+    }
+
+    async imagepreview(imagepath){
+        console.log('welocme to imagepreview', imagepath);
+        var modal = await this.modalCtrl.create({
+            component: imagePreview,
+            componentProps: {
+                "imageFullpath": imagepath,
+                "paramTitle": "View Photo",
+                "user_id": this.user_id,
+            }
+        });
+        modal.onDidDismiss().then((dataReturned) => {
+            if (dataReturned !== null) {
+                this.dataReturned = dataReturned.data;
+            }
+        });
+        return await modal.present();
     }
 }
