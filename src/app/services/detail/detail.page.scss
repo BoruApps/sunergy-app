@@ -64,10 +64,13 @@ ion-item {
 .photo-icon {
     border: 1px solid;
     width: 80%;
-    border-radius: .2em;
+    border-radius: 0.4em;
     text-align: center;
     background: #23954b;
     color: #ffffff;
+    padding: 8px;
+    font-size: 20px;
+    font-weight: bolder;
     ion-icon {
         margin: auto;
         font-size: 3em;
