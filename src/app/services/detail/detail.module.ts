@@ -20,7 +20,7 @@ import { ChecklistModalPage } from '../checklist-modal/checklist-modal.page';
 import {ImageConfirmModalPage} from "../image-confirm-modal/image-confirm-modal.page";
 import { ImageGallery } from "../image-gallery/image-gallery.page";
 import { ImageSlider } from "../image-slider/image-slider.page";
-
+import { InstallationForm } from "../Installation-Form/Installation-Form.page";
 const routes: Routes = [
   {
     path: '',
@@ -35,8 +35,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DetailPage, ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery,ImageSlider,imagePreview ],
-    entryComponents: [ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery,ImageSlider,imagePreview ],
+  declarations: [DetailPage, ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery,ImageSlider,imagePreview,InstallationForm ],
+    entryComponents: [ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery,ImageSlider,imagePreview,InstallationForm ],
     providers: [
         StatusBar,
         SplashScreen,

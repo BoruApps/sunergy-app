@@ -25,6 +25,7 @@ import { ImageGallery } from "../image-gallery/image-gallery.page";
 
 // @ts-ignore
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
+import { InstallationForm } from "../Installation-Form/Installation-Form.page";
 
 @Component({
   selector: "app-detail",
@@ -66,6 +67,7 @@ export class DetailPage implements OnInit {
   inspection_type: string;
   activityid: string;
   isCompleteWO: number = 0;
+  ISInstallationForm: number = 0;
   public workorderdetail: any = { workorderid: 0 };
   public servicedetail: any[] = [];
   public itemgrid: any[] = [];
@@ -318,7 +320,10 @@ export class DetailPage implements OnInit {
                     fieldArray.push(_data);
                   }
                 }
-
+                
+                if(key.includes('Ginlong') || key.includes('Tesla') || key.includes('Enphase') || key.includes('SolarEdge') || key.includes('Delta')){
+                  this.ISInstallationForm = 1;
+                }
                 this.servicedetail.push({
                   blockname: key,
                   fields: fieldArray,
@@ -341,7 +346,21 @@ export class DetailPage implements OnInit {
         }
       );
   }
-
+  async openInstallationForm(){
+    console.log('serviceid == ', this.serviceid);
+    const modal_InstallationForm = await this.modalCtrl.create({
+      component: InstallationForm,
+      componentProps: {
+        paramTitle: 'Solar Install Completion Form',
+        logged_in_user: this.userinfo.id,
+        serviceid: this.serviceid,
+      },
+    });
+    modal_InstallationForm.onDidDismiss().then((dataReturned) => {
+      console.log('dataReturned', dataReturned);
+    });
+    return await modal_InstallationForm.present();
+  }
   checkJson(data) {
     data = typeof data !== "string" ? JSON.stringify(data) : data;
 

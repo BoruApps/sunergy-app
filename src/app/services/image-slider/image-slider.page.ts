@@ -116,6 +116,7 @@ async openViewModal() {
                 base64Image: data["body"]["base64"],
                 paramTitle: "View Photo",
                 serviceid: this.serviceid,
+                user_id: this.user_id,
                 columnname: "",
                 is_delete: false,
                 documentid: this.allSliderImages[image].documentid,

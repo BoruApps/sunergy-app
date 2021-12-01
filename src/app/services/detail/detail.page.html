@@ -65,6 +65,13 @@
 
 
             <!-- editable fields -->
+            <div *ngIf="ISInstallationForm == 1" class="text-align-center">
+                <ion-button color="secondary" (click)="openInstallationForm()"
+                                    size="large" type="button">
+                                    Installation Form
+                </ion-button>
+            </div>
+            <!-- editable fields -->
             <div *ngIf="isCompleteWO == 0">
                 <ion-item-group *ngFor="let blockservice of servicedetail">
                     <div *ngIf="blockservice.blockname != 'Array Information'">

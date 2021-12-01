@@ -53,6 +53,7 @@
     "file-system": "^2.2.2",
     "ionic2-calendar": "^0.5.7",
     "rxjs": "~6.5.1",
+    "signature_pad": "^4.0.0",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
   },
