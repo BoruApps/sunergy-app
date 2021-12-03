@@ -669,6 +669,7 @@ export class ImageModalPage implements OnInit {
                                 this.presentToast('Upload failed! Please try again \n');
                             }
                         }
+                        this.closeModal();
                     }
                 }else {
                     if (this.is_delete === true){
@@ -678,6 +679,7 @@ export class ImageModalPage implements OnInit {
                         console.log('upload failed');
                         this.presentToast('Upload failed! Please try again \n');
                     }
+                    this.closeModal();
                 }
             }, error => {
                 this.hideLoading();
@@ -685,6 +687,7 @@ export class ImageModalPage implements OnInit {
                 //console.log(error.message);
                 //console.error(error.message);
                 this.presentToast("Upload failed! Please try again \n" + error.message);
+                this.closeModal();
             });
     }
 

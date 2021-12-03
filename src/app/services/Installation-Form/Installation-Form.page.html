@@ -15,50 +15,45 @@
                     <ion-text>
                         {{fieldDetail.label}} <span class="redColor">*</span>
                     </ion-text>
-                    <ion-input *ngIf="fieldDetail.uitype == '1'" type="text" name="{{fieldDetail.fieldname}}" placeholder="Press Here To Type" (ionChange)="addUpdate($event)">
+                    <ion-input *ngIf="fieldDetail.uitype == '1'" type="text" name="{{fieldDetail.fieldname}}" placeholder="Press Here To Type" (ionChange)="addUpdate($event)" value="{{fieldDetail.value}}">
                     </ion-input>
-                    <ion-input *ngIf="fieldDetail.uitype == '111'" type="number" name="{{fieldDetail.fieldname}}" placeholder="Press Here To Type" (ionChange)="addUpdate($event)">
+                    <ion-input *ngIf="fieldDetail.uitype == '111'" type="number" name="{{fieldDetail.fieldname}}" placeholder="Press Here To Type" (ionChange)="addUpdate($event)" value="{{fieldDetail.value}}">
                     </ion-input>
                     <div *ngIf="fieldDetail.uitype == '2'">
                         <ion-item>
                             <ion-label position="floating">hh:mm A</ion-label>
-                            <ion-datetime name="{{fieldDetail.fieldname}}" displayFormat="hh:mm A" min="1994-03-14" max="2052-12-09"  (ionChange)="addUpdate($event,'time')"></ion-datetime>
+                            <ion-datetime name="{{fieldDetail.fieldname}}" displayFormat="hh:mm A" min="1994-03-14" max="2052-12-09"  (ionChange)="addUpdate($event,'time')" value="{{fieldDetail.value}}"></ion-datetime>
                         </ion-item>
                     </div>
                     <div *ngIf="fieldDetail.uitype == '5'">
                         <ion-item>
                           <ion-label position="floating">MM/DD/YYYY</ion-label>
-                          <ion-datetime name="{{fieldDetail.fieldname}}" displayFormat="MM/DD/YYYY" min="1994-03-14" max="2052-12-09"  (ionChange)="addUpdate($event,'date')"></ion-datetime>
+                          <ion-datetime name="{{fieldDetail.fieldname}}" displayFormat="MM/DD/YYYY" min="1994-03-14" max="2052-12-09"  (ionChange)="addUpdate($event,'date')" value="{{fieldDetail.value}}"></ion-datetime>
                         </ion-item>
                     </div>
                     
-                    <ion-card *ngIf="fieldDetail.uitype == '555'" style="border-radius: 10px;width: fit-content;" lines="none">
+                    <ion-card *ngIf="fieldDetail.uitype == '555' || fieldDetail.uitype == '33'" style="border-radius: 10px;width: fit-content;" lines="none">
                         <ion-radio-group style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (ionBlur)="addUpdate($event)">
                             <ion-item lines="none">
                                 <ion-label>Yes</ion-label>
-                                <ion-radio name="{{fieldDetail.fieldname}}" value="Yes"></ion-radio>
+                                <ion-radio [checked]="fieldDetail.value==='Yes'" name="{{fieldDetail.fieldname}}" value="Yes"></ion-radio>
                             </ion-item>
 
                             <ion-item lines="none">
                                 <ion-label>No</ion-label>
-                                <ion-radio name="{{fieldDetail.fieldname}}" value="No"></ion-radio>
+                                <ion-radio [checked]="fieldDetail.value==='No'" name="{{fieldDetail.fieldname}}" value="No"></ion-radio>
                             </ion-item>
                         </ion-radio-group>
                     </ion-card>
                     <div *ngIf="fieldDetail.uitype == '15'" class="picklist-drowpdown">
-                        <ion-select style="color: black;background: white;" lines="none" (ionChange)="addUpdate($event)" name="{{fieldDetail.fieldname}}">
+                        <ion-select style="color: black;background: white;" lines="none" (ionChange)="addUpdate($event)" name="{{fieldDetail.fieldname}}" value="{{fieldDetail.value}}">
                             <ion-select-option value="" selected="selected">Choose An Option</ion-select-option>
                             <div *ngFor="let picklist of fieldDetail.picklistvalues">
                                 <ion-select-option value="{{picklist}}">{{picklist}}</ion-select-option>
                             </div>
                         </ion-select>
                     </div>
-                    <ion-textarea *ngIf="fieldDetail.uitype == '19'"  (ionBlur)="addUpdate($event)" name = "{{fieldDetail.fieldname}}" value = "" placeholder="Press Here To Type"></ion-textarea>
-                    <div *ngIf="fieldDetail.uitype == '33'">
-                        <div *ngFor="let picklist of fieldDetail.picklistvalues">
-                            <input type="checkbox" name="{{fieldDetail.fieldname}}" value="{{picklist}}" (change)="updateCheckedOptions(picklist, $event)"> {{picklist}}
-                        </div>
-                    </div>
+                    <ion-textarea *ngIf="fieldDetail.uitype == '19'"  (ionBlur)="addUpdate($event)" name = "{{fieldDetail.fieldname}}" value = "{{fieldDetail.value}}" placeholder="Press Here To Type"></ion-textarea>
                     <div *ngIf="fieldDetail.uitype == '999'">
                         <ion-content class="ion-padding" style="height: 190px;overflow: hidden;">
                           <div>
