@@ -26,6 +26,7 @@ export class InstallationForm implements OnInit {
     user_id: any;
     apiurl: any;
     dataReturned: any;
+    localInstallform: any;
     cf_install_date: any;
     InstallfieldList: any[] = [];
     btnsubmitInstallform: number;
