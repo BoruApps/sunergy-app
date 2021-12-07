@@ -22,6 +22,7 @@ export class ImageSlider implements OnInit {
   dataReturned: any;
   defaultContent: any;
   currentImage: any;
+  randomNumber: number = 0;
   allSliderImages: any = {};
 
   constructor(
@@ -50,7 +51,7 @@ async ngOnInit() {
     this.serviceid = this.navParams.data.serviceid;
     this.allSliderImages = this.navParams.data.sliderImages;
     this.currentImage = this.navParams.data.currentImage;
-
+    this.randomNumber=this.randomNumberGenerate();
     this.sliderRef.update();
     var currentImageId = this.currentImage['documentid'];
     var position = this.allSliderImages.findIndex(
@@ -87,7 +88,9 @@ urlSanitize(url) {
     console.log(url);
     return url;
 }
-
+randomNumberGenerate(){
+    return Math.floor(Math.random()*(9999999999-99999+1)+99999);
+}
 async openViewModal() {
     var image = await this.sliderRef.getActiveIndex();
     var params = {
@@ -125,6 +128,7 @@ async openViewModal() {
         });
             modal.onDidDismiss().then((dataReturned) => {
               if (dataReturned !== null) {
+                this.randomNumber=this.randomNumberGenerate();
                 // this.dataReturned = dataReturned.data;
                 //alert('Modal Sent Data :'+ dataReturned);
             }
