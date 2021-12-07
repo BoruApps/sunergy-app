@@ -69,7 +69,7 @@
                                 <ion-item class="item-accordion"
                                     [ngClass]="subSection === _index && sectionKey === key ? 'active-tab' : ''">
 
-                                    <ion-thumbnail *ngFor="let _img of thumb" class="checklist-thumb" (click)="openSliderModal(_img,thumb)"> <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}"> </ion-thumbnail>
+                                    <ion-thumbnail *ngFor="let _img of thumb" class="checklist-thumb" (click)="openSliderModal(_img,thumb)"> <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}?{{randomNumber}}"> </ion-thumbnail>
                                     <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionSheet(service.columnname, _index)">
                                         <ion-icon style="padding: 0px;" size="large" name="add" ></ion-icon>
                                         <ion-icon style="padding: 0px;" size="large" name="camera" ></ion-icon>

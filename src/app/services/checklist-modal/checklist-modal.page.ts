@@ -35,6 +35,7 @@ export class ChecklistModalPage implements OnInit {
     defaultContent: any;
     value: any;
     field: any;
+    randomNumber: number = 0;
 
     buttonLabels = ['Take Photo', 'Upload from Library'];
     public subSection: number;
@@ -93,6 +94,7 @@ export class ChecklistModalPage implements OnInit {
         this.modalTitle = this.navParams.data.paramTitle;
         this.user_id = this.navParams.data.user_id;
         this.updatefields = this.navParams.data.current_updates;
+        this.randomNumber=this.randomNumberGenerate();
         this.loadChecklist();
 
     }
@@ -113,7 +115,9 @@ export class ChecklistModalPage implements OnInit {
             }
         }, 1000);
     }
-
+    randomNumberGenerate(){
+        return Math.floor(Math.random()*(9999999999-99999+1)+99999);
+    }
     urlSanitize(url) {
         console.log(url);
         url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
@@ -340,6 +344,7 @@ export class ChecklistModalPage implements OnInit {
         modal.onDidDismiss().then((dataReturned) => {
             if (dataReturned !== null) {
                 this.dataReturned = dataReturned.data;
+                this.randomNumber=this.randomNumberGenerate();
                 //alert('Modal Sent Data :'+ dataReturned);
             }
         });
