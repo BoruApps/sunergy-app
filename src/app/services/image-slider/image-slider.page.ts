@@ -52,17 +52,18 @@ async ngOnInit() {
     this.allSliderImages = this.navParams.data.sliderImages;
     this.currentImage = this.navParams.data.currentImage;
     this.randomNumber=this.randomNumberGenerate();
+
+    this.showLoading();
     this.sliderRef.update();
     var currentImageId = this.currentImage['documentid'];
-    var position = this.allSliderImages.findIndex(
+    var position = await this.allSliderImages.findIndex(
         function (obj, key) {
           return obj.documentid === currentImageId;
       }
       );
 
-    if (position > -1) {
-      this.sliderRef.slideTo(position)
-  }
+    if (position > -1) await this.sliderRef.slideTo(position);
+    this.hideLoading();
 }
 
 loading: any;
@@ -93,6 +94,11 @@ randomNumberGenerate(){
 }
 async openViewModal() {
     var image = await this.sliderRef.getActiveIndex();
+    this.sliderRef.getActiveIndex().then(
+     (index)=>{
+       var image = index;
+    });
+    console.log('image == ',image);
     var params = {
       documentid: this.allSliderImages[image].documentid,
   };
