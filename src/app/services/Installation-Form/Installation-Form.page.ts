@@ -27,6 +27,8 @@ export class InstallationForm implements OnInit {
     apiurl: any;
     dataReturned: any;
     localInstallform: any;
+    currentdate: any;
+    localInstallformdate: any;
     cf_install_date: any;
     InstallfieldList: any[] = [];
     btnsubmitInstallform: number;
@@ -84,12 +86,15 @@ export class InstallationForm implements OnInit {
         this.serviceid = this.navParams.data.serviceid;
         this.user_id = this.navParams.data.logged_in_user;
         this.modalTitle = this.navParams.data.paramTitle;
+        this.currentdate = this.navParams.data.currentdate;
         this.InstallfieldList = [];
         this.btnsubmitInstallform = 1;
         this.localInstallform = 'InstallfieldList-'+this.serviceid;
+        this.localInstallformdate = 'Installformdate-'+this.serviceid;
         console.log('localInstallform = ',this.localInstallform);
         var storedNames = JSON.parse(localStorage.getItem(this.localInstallform));
-        if(storedNames){
+        var formsubmitdate = localStorage.getItem(this.localInstallformdate);
+        if(storedNames && formsubmitdate == this.currentdate){
             this.InstallfieldList = storedNames;
             console.log('InstallfieldList === ',this.InstallfieldList);
         }else{
@@ -306,6 +311,12 @@ export class InstallationForm implements OnInit {
                 typeofdata : 'V~O',
                 picklistvalues : ['1', '2'],
             },{ 
+                label : 'Was there a Ufer on site?',
+                fieldname : 'cf_wasufersite',
+                uitype : 33,
+                typeofdata : 'V~O',
+                picklistvalues : ['Yes', 'No'],
+            },{ 
                 label : 'Correct PV Breaker Installed (Take Photos)?',
                 fieldname : 'cf_correct_pv_breaker',
                 uitype : 555,
@@ -380,7 +391,7 @@ export class InstallationForm implements OnInit {
                 fieldname : 'cf_installation_status',
                 uitype : 15,
                 typeofdata : 'V~O',
-                picklistvalues : ['Install Ready For inspection','Install incomplete (1 More Day)','Install incomplete (Weather)','Install Incomplete (needs Service)','Pending MPU Install','Pending Battery Install'],
+                picklistvalues : ['Install Ready For inspection','Incomplete (1 More Day)','Incomplete (Weather)','Incomplete (needs Service)','Pending MPU Install','Pending Battery Install'],
             },{ 
                 label : 'Comments',
                 fieldname : 'cf_comments',
@@ -415,8 +426,9 @@ export class InstallationForm implements OnInit {
     }
     async closeModal(changes='') {
         localStorage.setItem(this.localInstallform, JSON.stringify(this.InstallfieldList));
+        localStorage.setItem(this.localInstallformdate, this.currentdate);
         console.log('closeModal == ',localStorage.getItem(this.localInstallform))
-        await this.modalController.dismiss({});
+        await this.modalController.dismiss({'formsubmitted':false});
     }
     async presentToast(message: string) {
         var toast = await this.toastController.create({
@@ -435,13 +447,16 @@ export class InstallationForm implements OnInit {
             if(this.InstallfieldList[i]["value"] != '' && this.InstallfieldList[i]["value"] != undefined){
                 flag++;
             }else{
-                fieldlist.push(this.InstallfieldList[i]["label"]);
+                fieldlist.push(this.InstallfieldList[i]["fieldname"]);
                 fieldlistmassge += 'This field is Required '+this.InstallfieldList[i]["label"] +'\n';
             }
         }
         if(flag == this.InstallfieldList.length){
             return true;
         }else{
+            var input = document.getElementById(fieldlist[0]);
+            console.log('input == ',input);
+            input.scrollIntoView({ behavior: "instant" })
             this.presentToast(
                 fieldlistmassge
             );
@@ -480,8 +495,11 @@ export class InstallationForm implements OnInit {
                 console.log(data["body"]);
                 if (success == true) {
                     console.log("Saved and updated data for workorder");
-                    localStorage.removeItem(this.localInstallform);
-                    this.modalController.dismiss({});
+                    //localStorage.removeItem(this.localInstallform);
+                    this.clearPad();
+                    localStorage.setItem(this.localInstallform, JSON.stringify(this.InstallfieldList));
+                    localStorage.setItem(this.localInstallformdate, this.currentdate);
+                    this.modalController.dismiss({'formsubmitted':true});
                 } else {
                   this.presentToast("Failed to save due to an error");
                   console.log("failed to save record, response was false");

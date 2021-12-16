@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams, ToastController, PickerController, NavController } from '@ionic/angular';
+import { ModalController, NavParams, ToastController, PickerController, NavController, Platform } from '@ionic/angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AppConstants } from '../../providers/constant/constant';
 import { LoadingController } from '@ionic/angular';
@@ -23,6 +23,7 @@ export class ChecklistModalPage implements OnInit {
     modelId: number;
     serviceid: any;
     picCompleted: boolean = false;
+    isinspection: boolean = false;
     inspection_type: any;
     apiurl: any;
     updatefields: any = {};
@@ -78,7 +79,8 @@ export class ChecklistModalPage implements OnInit {
         private router: Router,
         public loadingController: LoadingController,
         private actionSheet: ActionSheet,
-        private sanitizer: DomSanitizer
+        private sanitizer: DomSanitizer,
+        private platform: Platform
     ) {
         this.apiurl = this.appConst.getApiUrl();
         this.subSection = 0;
@@ -94,6 +96,7 @@ export class ChecklistModalPage implements OnInit {
         this.modalTitle = this.navParams.data.paramTitle;
         this.user_id = this.navParams.data.user_id;
         this.updatefields = this.navParams.data.current_updates;
+        this.isinspection = this.navParams.data.isinspection;
         this.randomNumber=this.randomNumberGenerate();
         this.loadChecklist();
 
@@ -123,6 +126,18 @@ export class ChecklistModalPage implements OnInit {
         url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
         console.log(url);
         return url;
+    }
+    async openConDocViewPDF(pdf){
+        if (pdf.imgpath != ''){
+            var url = this.apiurl.replace('phoneapi/','')+pdf.imgpath;
+            if (this.platform.is('android')) {
+                url = 'https://docs.google.com/viewer?url=' + encodeURIComponent(url);
+            }
+            console.log('opening pdf -> ',this.apiurl.replace('phoneapi/','')+pdf.imgpath)
+            var ref = window.open(url, '_blank', 'location=no');
+        }else{
+            console.log('No path to open pdf')
+        }
     }
     loadChecklist() {
         var dataLabel = this.appConst.workOrder[this.serviceid][this.field]["photos"];

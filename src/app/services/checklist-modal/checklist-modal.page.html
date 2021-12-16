@@ -20,9 +20,9 @@
                 <ion-list lines="none" style="padding: 5px;">
                     <ion-text position="stacked" style="font-size: 16px;display: flex;align-items: center;">
                         {{service.fieldlabel}}&nbsp;&nbsp;
-                        <ion-icon name="help-circle-outline" size="medium" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != ''"></ion-icon>
+                        <ion-icon name="help-circle-outline" size="medium" (click)="toggleHelper(service.columnname)" class="checklist-helper" *ngIf="service.helpinfo.long != '' && modalTitle != 'Submitted In-Process Inspections' && modalTitle != 'Submitted Final Inspections'"></ion-icon>
                     </ion-text>
-                    <ion-text *ngIf="service.helpinfo.short != '' " style="display: inline-flex;" class = "short-description">&#8226; <ion-text>{{service.helpinfo.short}}</ion-text></ion-text>
+                    <ion-text *ngIf="service.helpinfo.short != '' && modalTitle != 'Submitted In-Process Inspections' && modalTitle != 'Submitted Final Inspections'" style="display: inline-flex;" class = "short-description">&#8226; <ion-text>{{service.helpinfo.short}}</ion-text></ion-text>
                 </ion-list>
                 <ion-list lines="none" style="padding: 5px;" *ngIf="service.helpinfo.long != '' && checklisthelper[service.columnname] == 1">
                     <ion-item *ngFor="let line of service.helpinfo.long.split('\n')" class="ion-no-padding">
@@ -69,14 +69,21 @@
                                 <ion-item class="item-accordion"
                                     [ngClass]="subSection === _index && sectionKey === key ? 'active-tab' : ''">
 
-                                    <ion-thumbnail *ngFor="let _img of thumb" class="checklist-thumb" (click)="openSliderModal(_img,thumb)"> <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}?{{randomNumber}}"> </ion-thumbnail>
-                                    <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionSheet(service.columnname, _index)">
+                                    <div *ngFor="let _img of thumb">
+                                        <!-- <ion-thumbnail class="checklist-thumb" (click)="openSliderModal(_img,thumb)">
+                                            <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}?{{randomNumber}}">
+                                        </ion-thumbnail> -->
+                                        <ion-thumbnail *ngIf="_img.imgpath.includes('.pdf') == false" (click)="openSliderModal(_img,thumb)" class="checklist-thumb" > <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}?{{randomNumber}}"> </ion-thumbnail>
+                                        <ion-thumbnail *ngIf="_img.imgpath.includes('.pdf')" (click)="openConDocViewPDF(_img)" class="checklist-thumb" > <ion-icon name="document"></ion-icon> </ion-thumbnail>
+
+                                    </div>
+                                    <ion-button *ngIf="isinspection == false"  style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionSheet(service.columnname, _index)">
                                         <ion-icon style="padding: 0px;" size="large" name="add" ></ion-icon>
                                         <ion-icon style="padding: 0px;" size="large" name="camera" ></ion-icon>
                                     </ion-button>
                                 </ion-item>
                             </li>
-                            <li class = "btn-new-subsection" (click)="addSubsection(key)" *ngIf="service.img.type == 'Sub-Sections'"> 
+                            <li class = "btn-new-subsection" (click)="addSubsection(key)" *ngIf="service.img.type == 'Sub-Sections' && isinspection == false">
                                 Add another {{service.fieldlabel}}?
                             </li>
                         </ul>

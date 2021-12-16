@@ -48,6 +48,7 @@ export class ImageModalPage implements OnInit {
     is_delete:any;
     documentid:any;
     fileName:any;
+    imagefrom:any;
     base64Image:string[];
 
     btnList = [
@@ -163,6 +164,7 @@ export class ImageModalPage implements OnInit {
         this.is_delete = this.navParams.data.is_delete;
         this.documentid = this.navParams.data.documentid;
         this.subSection = this.navParams.data.subSection;
+        this.imagefrom = this.navParams.data.imagefrom;
     }
 
     ngAfterViewInit() {
@@ -488,9 +490,9 @@ export class ImageModalPage implements OnInit {
         }
     }
 
-    async closeModal() {
+    async closeModal(data = 'Wrapped Up!') {
         const onClosedData: string = "Wrapped Up!";
-        await this.modalController.dismiss(onClosedData);
+        await this.modalController.dismiss(data);
     }
 
     loading: any;
@@ -593,6 +595,7 @@ export class ImageModalPage implements OnInit {
             formData.append("documentid", this.documentid);
             formData.append("notecontent", data.title);
             formData.append("mode", 'image_upload');
+            formData.append("imagefrom", this.imagefrom);
         }
 
         var postParam = (delete_needed === true) ? formDataD : formData;
@@ -623,7 +626,7 @@ export class ImageModalPage implements OnInit {
                                 })(this);
                             }
                             this.presentToastPrimary('Photo deleted successfully\n');
-                            this.closeModal();
+                            this.closeModal(data['body']['data']);
                         }else{
                             if(this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'][this.subSection] == undefined) {
                                     this.appConst.workOrder[this.serviceid][this.columnname]['photos'][this.index]['photos'][this.subSection] = [
@@ -642,7 +645,7 @@ export class ImageModalPage implements OnInit {
                             }
                             console.log(this.appConst.workOrder);
                             this.presentToastPrimary('Photo saved successfully\n');
-                            this.closeModal();
+                            this.closeModal(data['body']['data']);
                         }
                     }else{
                         if (delete_needed === true){

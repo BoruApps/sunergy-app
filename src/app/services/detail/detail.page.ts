@@ -26,6 +26,7 @@ import { ImageGallery } from "../image-gallery/image-gallery.page";
 // @ts-ignore
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { InstallationForm } from "../Installation-Form/Installation-Form.page";
+import { inspectionsform } from "../inspections-form/inspections-form.page";
 
 @Component({
   selector: "app-detail",
@@ -261,6 +262,7 @@ export class DetailPage implements OnInit {
                           : false;
                       var t_image_count = 0;
                       var image_count = 0;
+                      var totalForms = 0;
 
                       for (let photoid in this.appConst.workOrder[serviceid][
                         fieldkey
@@ -278,6 +280,8 @@ export class DetailPage implements OnInit {
                                 "photos"
                               ][photoid]["photos"][subphotoid].length > 0
                             ) {
+                              totalForms ++;
+
                               image_count =
                                 image_count +
                                 this.appConst.workOrder[serviceid][fieldkey][
@@ -294,6 +298,9 @@ export class DetailPage implements OnInit {
                       this.appConst.workOrder[this.serviceid][fieldkey][
                         "t_image_count"
                       ] = t_image_count;
+                      this.appConst.workOrder[this.serviceid][fieldkey][
+                          "forms_count"
+                          ] = totalForms;
 
                       this.completedFields[fieldkey] =
                         this.appConst.workOrder[this.serviceid][fieldkey][
@@ -323,6 +330,7 @@ export class DetailPage implements OnInit {
                 
                 if(key.includes('Ginlong') || key.includes('Tesla') || key.includes('Enphase') || key.includes('SolarEdge') || key.includes('Delta')){
                   this.ISInstallationForm = 1;
+                  key = 'Solar Installation';
                 }
                 this.servicedetail.push({
                   blockname: key,
@@ -354,10 +362,18 @@ export class DetailPage implements OnInit {
         paramTitle: 'Solar Install Completion Form',
         logged_in_user: this.userinfo.id,
         serviceid: this.serviceid,
+        currentdate: this.workorderdetail.currentdate,
       },
     });
     modal_InstallationForm.onDidDismiss().then((dataReturned) => {
-      console.log('dataReturned', dataReturned);
+        console.log('dataReturned', dataReturned);
+        if(dataReturned.data.formsubmitted){
+            var date = new Date(this.workorderdetail.currentdate);
+            var joinDate = date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear().toString().substr(-2);
+            this.workorderdetail.cf_formsubmit_date = joinDate;
+            this.workorderdetail.cf_formsubmit_count = this.workorderdetail.cf_formsubmit_count+1;
+            this.workorderdetail.cf_isformsubmittedtoday = true;
+        }
     });
     return await modal_InstallationForm.present();
   }
@@ -549,15 +565,39 @@ export class DetailPage implements OnInit {
       });
   }
 
+  async openInspectionsForm(
+    record_id,
+    inspection_type,
+    defaultContent,
+    currentValue,
+    title,
+    columnName,
+    isinspection = false){
+    console.log('serviceid == ', this.serviceid);
+    const modal_inspectionsform = await this.modalCtrl.create({
+      component: inspectionsform,
+      componentProps: {
+        paramTitle: 'Solar Inspections Form',
+        logged_in_user: this.userinfo.id,
+        serviceid: record_id,
+      },
+    });
+    modal_inspectionsform.onDidDismiss().then((dataReturned) => {
+      console.log('dataReturned', dataReturned);
+    });
+    return await modal_inspectionsform.present();
+  }
   async openChecklist(
     record_id,
     inspection_type,
     defaultContent,
     currentValue,
     title,
-    columnName
+    columnName,
+    isinspection = false
   ) {
     console.log("opening checklist for record", record_id);
+    console.log("opening checklist for isinspection", isinspection);
     const modal_checklist = await this.modalCtrl.create({
       component: ChecklistModalPage,
       componentProps: {
@@ -569,6 +609,7 @@ export class DetailPage implements OnInit {
         defaultContent: defaultContent,
         value: currentValue,
         field: columnName,
+        isinspection: isinspection,
       },
     });
 
