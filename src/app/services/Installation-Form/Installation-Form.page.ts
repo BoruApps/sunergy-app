@@ -456,7 +456,7 @@ export class InstallationForm implements OnInit {
         }else{
             var input = document.getElementById(fieldlist[0]);
             console.log('input == ',input);
-            input.scrollIntoView({ behavior: "instant" })
+            input.scrollIntoView(true)
             this.presentToast(
                 fieldlistmassge
             );
