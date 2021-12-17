@@ -354,7 +354,7 @@ export class DetailPage implements OnInit {
         }
       );
   }
-  async openInstallationForm(){
+  async openInstallationForm(blockname){
     console.log('serviceid == ', this.serviceid);
     const modal_InstallationForm = await this.modalCtrl.create({
       component: InstallationForm,
@@ -363,6 +363,7 @@ export class DetailPage implements OnInit {
         logged_in_user: this.userinfo.id,
         serviceid: this.serviceid,
         currentdate: this.workorderdetail.currentdate,
+        blockname: blockname,
       },
     });
     modal_InstallationForm.onDidDismiss().then((dataReturned) => {

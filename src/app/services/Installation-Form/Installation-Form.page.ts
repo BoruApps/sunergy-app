@@ -21,6 +21,7 @@ import SignaturePad from 'signature_pad';
 })
 export class InstallationForm implements OnInit {
     modalTitle: string;
+    blockname: string;
     modelId: number;
     serviceid: any;
     user_id: any;
@@ -87,6 +88,8 @@ export class InstallationForm implements OnInit {
         this.user_id = this.navParams.data.logged_in_user;
         this.modalTitle = this.navParams.data.paramTitle;
         this.currentdate = this.navParams.data.currentdate;
+        this.blockname = this.navParams.data.blockname;
+        console.log('blockname == ',this.blockname);
         this.InstallfieldList = [];
         this.btnsubmitInstallform = 1;
         this.localInstallform = 'InstallfieldList-'+this.serviceid;
@@ -451,12 +454,16 @@ export class InstallationForm implements OnInit {
                 fieldlistmassge += 'This field is Required '+this.InstallfieldList[i]["label"] +'\n';
             }
         }
+        console.log(flag, '====', this.InstallfieldList.length);
         if(flag == this.InstallfieldList.length){
             return true;
         }else{
-            var input = document.getElementById(fieldlist[0]);
-            console.log('input == ',input);
-            input.scrollIntoView(true)
+            console.log('fieldlist = ',fieldlist);
+            if(fieldlist[0] != 'cf_installer_signature'){
+                var input = document.getElementById(fieldlist[0]);
+                console.log('input == ',input);
+                input.scrollIntoView(true)
+            }
             this.presentToast(
                 fieldlistmassge
             );
@@ -482,6 +489,7 @@ export class InstallationForm implements OnInit {
                 'InstallfieldList': JSON.stringify(this.InstallfieldList),
                 'recordid': this.serviceid,
                 'logged_in_user': this.user_id,
+                'blockname': this.blockname,
             };
             this.httpClient
             .post(this.apiurl + "saveInstallationform.php", params, {
@@ -520,19 +528,8 @@ export class InstallationForm implements OnInit {
           fieldname = event.target.id;
         }
         var fieldvalue = event.target.textContent + event.target.value;
-        if (event.target.tagName == "ION-RADIO" || event.target.tagName == "ION-CHECKBOX")
+        if (event.target.tagName == "ION-RADIO" || event.target.tagName == "ION-CHECKBOX" || event.target.tagName == "ION-DATETIME" || event.target.tagName == "ION-TEXTAREA" || event.target.tagName == "ION-SELECT")
         {
-          fieldvalue = event.target.checked ? 1 : 0;
-            fieldvalue = event.target.value;
-        }
-        if (event.target.tagName == "ION-DATETIME"
-        ) {
-            fieldvalue = event.target.value;
-        }
-        if (
-          event.target.tagName == "ION-TEXTAREA" ||
-          event.target.tagName == "ION-SELECT"
-        ) {
           fieldvalue = event.target.value;
         }
         this.setValuetoInstallfield(fieldname, fieldvalue);
@@ -577,7 +574,6 @@ export class InstallationForm implements OnInit {
         var flag = 0;
         for (var i = 0; i < this.InstallfieldList.length; ++i) {
             if(this.InstallfieldList[i].fieldname === fieldname){
-                this.InstallfieldList[i]["value"] = '';
                 this.InstallfieldList[i]["value"] = value;
             }
             if(this.InstallfieldList[i]["value"] != '' && this.InstallfieldList[i]["value"] != undefined){
