@@ -165,6 +165,9 @@ export class ImageModalPage implements OnInit {
         this.documentid = this.navParams.data.documentid;
         this.subSection = this.navParams.data.subSection;
         this.imagefrom = this.navParams.data.imagefrom;
+        console.log('columnname = ',this.columnname);
+        console.log('index = ',this.index);
+        console.log('subSection = ',this.subSection);
     }
 
     ngAfterViewInit() {

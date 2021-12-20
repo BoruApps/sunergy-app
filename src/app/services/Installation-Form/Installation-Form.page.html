@@ -31,7 +31,24 @@
                           <ion-datetime id="{{fieldDetail.fieldname}}" name="{{fieldDetail.fieldname}}" displayFormat="MM/DD/YYYY" min="1994-03-14" max="2052-12-09"  (ionChange)="addUpdate($event,'date')" value="{{fieldDetail.value}}"></ion-datetime>
                         </ion-item>
                     </div>
-                    
+                    <ion-card *ngIf="fieldDetail.uitype == '444'" style="border-radius: 10px;width: fit-content;" lines="none">
+                        <ion-list lines="none">
+                            <ion-input id="{{fieldDetail.fieldname}}" name="{{fieldDetail.fieldname}}" value="{{fieldDetail.value}}" type="hidden"></ion-input>
+                            <ul>
+                                <li class="checklist-thumb-list">
+                                    <ion-item class="item-accordion">
+                                        <ion-thumbnail *ngFor="let _img of installphoto[fieldDetail.fieldname]" class="checklist-thumb">
+                                            <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.image_path}}">
+                                        </ion-thumbnail>
+                                        <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionInspection(fieldDetail.fieldname)">
+                                            <ion-icon style="padding: 0px;" size="large" name="add" ></ion-icon>
+                                            <ion-icon style="padding: 0px;" size="large" name="camera" ></ion-icon>
+                                        </ion-button>
+                                    </ion-item>
+                                </li>
+                            </ul>
+                        </ion-list>
+                    </ion-card>
                     <ion-card *ngIf="fieldDetail.uitype == '555' || fieldDetail.uitype == '33'" style="border-radius: 10px;width: fit-content;" lines="none">
                         <ion-radio-group id="{{fieldDetail.fieldname}}" style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (ionBlur)="addUpdate($event)">
                             <ion-item lines="none">

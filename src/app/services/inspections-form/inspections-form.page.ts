@@ -28,6 +28,7 @@ export class inspectionsform implements OnInit {
     inspection_type: any;
     inspectionsfieldList: any[] = [];
     instectionservice: any[] = [];
+    instectionjobcard: any[] = [];
     btnsubmitinspectionsform: number;
     field: any;
     fieldindex: any;
@@ -156,7 +157,7 @@ export class inspectionsform implements OnInit {
         },{ 
             label : 'Job Card',
             fieldname : 'cf_job_card',
-            uitype : 15,
+            uitype : 444,
             typeofdata : 'V~O',
             picklistvalues : ['Yes', 'No'],
         });
@@ -172,7 +173,7 @@ export class inspectionsform implements OnInit {
         return await this.loading.present();
     }
 
-    openActionInspection() {
+    openActionInspection(fieldname) {
         console.log('launching openActionInspection', this.inspectionsfieldList);
         var inspection_typedetails = this.inspectionsfieldList[7];
         console.log('inspection_typedetails = ',inspection_typedetails);
@@ -231,7 +232,7 @@ export class inspectionsform implements OnInit {
                     // If it's base64 (DATA_URL):
                     let base64Image = 'data:image/png;base64,' + imageData;
                     this.imgpov.setImage(imageData);
-                    this.openModal(this.serviceid, base64Image, this.field, this.fieldindex, this.section);
+                    this.openModal(this.serviceid, base64Image, this.field, this.fieldindex, this.section, fieldname);
                     // TODO: need code to upload to server here.
                     // On success: show toast
                     //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
@@ -248,7 +249,7 @@ export class inspectionsform implements OnInit {
                     // If it's base64 (DATA_URL):
                     let base64Image = 'data:image/png;base64,' + imageData;
                     this.imgpov.setImage(imageData);
-                    this.openModal(this.serviceid, base64Image, this.field,this.fieldindex, this.section);
+                    this.openModal(this.serviceid, base64Image, this.field,this.fieldindex, this.section, fieldname);
                     // TODO: need code to upload to server here.
                     // On success: show toast
                     //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
@@ -264,11 +265,11 @@ export class inspectionsform implements OnInit {
             let base64Image = 'data:image/png;base64,' + imageData;
             //console.log(err);
             this.imgpov.setImage(imageData);
-            this.openModal(this.serviceid, base64Image, this.field,this.fieldindex, this.section);
+            this.openModal(this.serviceid, base64Image, this.field,this.fieldindex, this.section, fieldname);
             this.presentToast(`Operation failed! \n` + err);
         });
     }
-    async openModal(serviceid, base64Image,columnname,index, section) {
+    async openModal(serviceid, base64Image,columnname,index, section, fieldname) {
         console.log('openModal',section);
         const modal = await this.modalCtrl.create({
             component: ImageModalPage,
@@ -284,12 +285,17 @@ export class inspectionsform implements OnInit {
         });
 
         modal.onDidDismiss().then((dataReturned) => {
-            if (dataReturned !== null) {
-                this.dataReturned = dataReturned.data;
+            this.dataReturned = dataReturned.data;
+            if (this.dataReturned !== null && this.dataReturned != 'Wrapped Up!') {
                 console.log('dataReturned = ',this.dataReturned);
-                this.instectionservice.push(this.dataReturned);
-                console.log('instectionservice = ',this.instectionservice);
-                //alert('Modal Sent Data :'+ dataReturned);
+                console.log('fieldname = ',fieldname);
+                if(fieldname == 'cf_job_card'){
+                    this.instectionjobcard.push(this.dataReturned);
+                    console.log('instectionjobcard = ',this.instectionjobcard);
+                }else{
+                    this.instectionservice.push(this.dataReturned);
+                    console.log('instectionservice = ',this.instectionservice);
+                }
             }
         });
 
@@ -316,6 +322,17 @@ export class inspectionsform implements OnInit {
         var fieldlist = [];
         var fieldlistmassge = '';
         for (var i = 0; i < this.inspectionsfieldList.length; ++i) {
+            if(this.inspectionsfieldList[i]["fieldname"] == 'cf_job_card'){
+                if(this.instectionjobcard.length < 1){
+                    var fieldlistmassge1 = 'Please upload Job Card.';
+                    this.presentToast(
+                        fieldlistmassge1
+                    );
+                    return false;
+                }else{
+                    this.inspectionsfieldList[i]["value"] = 'image';
+                }
+            }
             if(this.inspectionsfieldList[i]["value"] != '' && this.inspectionsfieldList[i]["value"] != undefined){
                 flag++;
             }else{

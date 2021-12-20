@@ -32,11 +32,32 @@ export class InstallationForm implements OnInit {
     localInstallformdate: any;
     cf_install_date: any;
     InstallfieldList: any[] = [];
+    installphoto: any[] = [];
     btnsubmitInstallform: number;
     signaturePad: SignaturePad;
       @ViewChild('canvas',{static:false}) canvasEl : ElementRef;
       signatureImg: string;
-
+    buttonLabels = ['Take Photo', 'Upload from Library'];
+    actionOptions: ActionSheetOptions = {
+        title: 'Which would you like to do?',
+        buttonLabels: this.buttonLabels,
+        addCancelButtonWithLabel: 'Cancel',
+        androidTheme: 1 //this.actionSheet.ANDROID_THEMES.THEME_HOLO_DARK,
+    }
+    options: CameraOptions = {
+        quality: 50,
+        destinationType: this.camera.DestinationType.DATA_URL,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE,
+        saveToPhotoAlbum: false //true causes crash probably due to permissions to access library.
+    }
+    libraryOptions: CameraOptions = {
+        quality: 100,
+        destinationType: this.camera.DestinationType.DATA_URL,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE,
+        sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
+    }
     constructor(
         private camera: Camera,
         private photoviewer: PhotoViewer,
@@ -226,7 +247,7 @@ export class InstallationForm implements OnInit {
             },{ 
                 label : 'All Sunrun Photos Taken?',
                 fieldname : 'cf_all_sunrun_photo',
-                uitype : 33,
+                uitype : 444,
                 typeofdata : 'V~O',
                 picklistvalues : ['Yes', 'No'],
             },{ 
@@ -304,8 +325,9 @@ export class InstallationForm implements OnInit {
             },{ 
                 label : 'All Grounding/Bonding Completed (Take Photos)?',
                 fieldname : 'cf_all_grounding',
-                uitype : 555,
+                uitype : 444,
                 typeofdata : 'V~O',
+                value : 'Image',
                 picklistvalues : ['Yes', 'No'],
             },{ 
                 label : 'How Many Ground Rods Installed?',
@@ -322,8 +344,9 @@ export class InstallationForm implements OnInit {
             },{ 
                 label : 'Correct PV Breaker Installed (Take Photos)?',
                 fieldname : 'cf_correct_pv_breaker',
-                uitype : 555,
+                uitype : 444,
                 typeofdata : 'V~O',
+                value : 'Image',
                 picklistvalues : ['Yes', 'No'],
             },{ 
                 label : 'MPU Upgrade Needed?',
@@ -362,20 +385,23 @@ export class InstallationForm implements OnInit {
             },{ 
                 label : 'Optimizers/Micros Paired (Take Photos)?',
                 fieldname : 'cf_micros_paired',
-                uitype : 555,
+                uitype : 444,
                 typeofdata : 'V~O',
+                value : 'Image',
                 picklistvalues : ['Yes', 'No'],
             },{ 
                 label : 'Monitoring Map completed (Take Photo)?',
                 fieldname : 'cf_monitoring_map',
-                uitype : 33,
+                uitype : 444,
                 typeofdata : 'V~O',
+                value : 'Image',
                 picklistvalues : ['Yes', 'No'],
             },{ 
                 label : 'Job Site Clean (Take Photo)?',
                 fieldname : 'cf_job_site_clean',
-                uitype : 555,
+                uitype : 444,
                 typeofdata : 'V~O',
+                value : 'Image',
                 picklistvalues : ['Yes', 'No'],
             },{ 
                 label : 'Sample of Broken Tiles Taken?',
@@ -447,6 +473,13 @@ export class InstallationForm implements OnInit {
         var fieldlist = [];
         var fieldlistmassge = '';
         for (var i = 0; i < this.InstallfieldList.length; ++i) {
+            if(this.InstallfieldList[i]["fieldname"] == 'cf_all_sunrun_photo' || this.InstallfieldList[i]["fieldname"] == 'cf_all_grounding' || this.InstallfieldList[i]["fieldname"] == 'cf_correct_pv_breaker' || this.InstallfieldList[i]["fieldname"] == 'cf_micros_paired' || this.InstallfieldList[i]["fieldname"] == 'cf_monitoring_map' || this.InstallfieldList[i]["fieldname"] == 'cf_job_site_clean'){
+                if(Array.isArray(this.installphoto[this.InstallfieldList[i]["fieldname"]]) && this.installphoto[this.InstallfieldList[i]["fieldname"]].length > 0){
+                    this.InstallfieldList[i]["value"] = 'Image';
+                }else{
+                    this.InstallfieldList[i]["value"] = '';
+                }
+            }
             if(this.InstallfieldList[i]["value"] != '' && this.InstallfieldList[i]["value"] != undefined){
                 flag++;
             }else{
@@ -469,6 +502,79 @@ export class InstallationForm implements OnInit {
             );
             return false;
         }
+    }
+    openActionInspection(fieldname) {
+        this.actionSheet.show(this.actionOptions).then((buttonIndex: number) => {
+            console.log('Option pressed', buttonIndex);
+            if (buttonIndex == 1) {
+                console.log('launching camera');
+                this.camera.getPicture(this.options).then((imageData) => {
+                    // imageData is either a base64 encoded string or a file URI
+                    // If it's base64 (DATA_URL):
+                    let base64Image = 'data:image/png;base64,' + imageData;
+                    this.imgpov.setImage(imageData);
+                    this.openModal(this.serviceid, base64Image, fieldname);
+                    // TODO: need code to upload to server here.
+                    // On success: show toast
+                    //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
+                }, (err) => {
+                    // Handle error
+                    console.error(err);
+                    // On Fail: show toast
+                    this.presentToast(`Upload failed! Please try again \n` + err);
+                });
+            } else if (buttonIndex == 2) {
+                console.log('launching gallery');
+                this.camera.getPicture(this.libraryOptions).then((imageData) => {
+                    // imageData is either a base64 encoded string or a file URI
+                    // If it's base64 (DATA_URL):
+                    let base64Image = 'data:image/png;base64,' + imageData;
+                    this.imgpov.setImage(imageData);
+                    this.openModal(this.serviceid, base64Image, fieldname);
+                    // TODO: need code to upload to server here.
+                    // On success: show toast
+                    //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
+                }, (err) => {
+                    // Handle error
+                    console.error(err);
+                    // On Fail: show toast
+                    this.presentToast(`Upload failed! Please try again \n` + err);
+                });
+            }
+        }).catch((err) => {
+            let imageData = this.appConst.appTestImg;
+            let base64Image = 'data:image/png;base64,' + imageData;
+            //console.log(err);
+            this.imgpov.setImage(imageData);
+            this.openModal(this.serviceid, base64Image, fieldname);
+            this.presentToast(`Operation failed! \n` + err);
+        });
+    }
+    async openModal(serviceid, base64Image, fieldname) {
+        const modal = await this.modalCtrl.create({
+            component: ImageModalPage,
+            componentProps: {
+                "base64Image": base64Image,
+                "paramTitle": "Upload Photo",
+                "serviceid": serviceid,
+                "user_id": this.user_id,
+                "imagefrom": fieldname,
+            }
+        });
+
+        modal.onDidDismiss().then((dataReturned) => {
+                this.dataReturned = dataReturned.data;
+            if (dataReturned !== null && this.dataReturned != 'Wrapped Up!') {
+                console.log('dataReturned = ',this.dataReturned);
+                console.log('instectionservice-fieldname = ',fieldname);
+                this.installphoto[fieldname] = [];
+                this.installphoto[fieldname].push(this.dataReturned);
+                console.log('instectionservice = ',this.installphoto);
+                //alert('Modal Sent Data :'+ dataReturned);
+            }
+        });
+
+        return await modal.present();
     }
     async submitinstallationcompletionform(){
         var formflag = await this.checkrequiredfields();
