@@ -247,7 +247,7 @@ export class InstallationForm implements OnInit {
             },{ 
                 label : 'All Sunrun Photos Taken?',
                 fieldname : 'cf_all_sunrun_photo',
-                uitype : 444,
+                uitype : 33,
                 typeofdata : 'V~O',
                 picklistvalues : ['Yes', 'No'],
             },{ 
@@ -267,7 +267,7 @@ export class InstallationForm implements OnInit {
                 fieldname : 'cf_what_incorrect',
                 uitype : 15,
                 typeofdata : 'V~O',
-                picklistvalues : ['Layout', 'Single Line','Roof Type','Equipment/Material','Inverter Location','Conduit Size/Type','Other - Please Explain'],
+                picklistvalues : ['None','Layout', 'Single Line','Roof Type','Equipment/Material','Inverter Location','Conduit Size/Type','Other - Please Explain'],
             },{ 
                 label : 'All Feet And Rail Installed?',
                 fieldname : 'cf_feet_rail_install',
@@ -470,14 +470,17 @@ export class InstallationForm implements OnInit {
       }
     async checkrequiredfields(){
         var flag = 0;
+        var extraFlag = 0;
         var fieldlist = [];
         var fieldlistmassge = '';
         for (var i = 0; i < this.InstallfieldList.length; ++i) {
-            if(this.InstallfieldList[i]["fieldname"] == 'cf_all_sunrun_photo' || this.InstallfieldList[i]["fieldname"] == 'cf_all_grounding' || this.InstallfieldList[i]["fieldname"] == 'cf_correct_pv_breaker' || this.InstallfieldList[i]["fieldname"] == 'cf_micros_paired' || this.InstallfieldList[i]["fieldname"] == 'cf_monitoring_map' || this.InstallfieldList[i]["fieldname"] == 'cf_job_site_clean'){
+            if(this.InstallfieldList[i]["value"] == 'Yes' && this.InstallfieldList[i]["uitype"] == '444'){
                 if(Array.isArray(this.installphoto[this.InstallfieldList[i]["fieldname"]]) && this.installphoto[this.InstallfieldList[i]["fieldname"]].length > 0){
-                    this.InstallfieldList[i]["value"] = 'Image';
+
                 }else{
-                    this.InstallfieldList[i]["value"] = '';
+                    extraFlag = 1;
+                    fieldlist.push(this.InstallfieldList[i]["fieldname"]);
+                    fieldlistmassge += 'Please select/upload Image '+this.InstallfieldList[i]["label"] +'\n';
                 }
             }
             if(this.InstallfieldList[i]["value"] != '' && this.InstallfieldList[i]["value"] != undefined){
@@ -488,7 +491,7 @@ export class InstallationForm implements OnInit {
             }
         }
         console.log(flag, '====', this.InstallfieldList.length);
-        if(flag == this.InstallfieldList.length){
+        if(flag == this.InstallfieldList.length && extraFlag == 0){
             return true;
         }else{
             console.log('fieldlist = ',fieldlist);
@@ -628,7 +631,7 @@ export class InstallationForm implements OnInit {
             );
         }
     }
-    addUpdate(event, formate=null) {
+    addUpdate(event, extra=null) {
         var fieldname = event.target.name;
         if (!fieldname || fieldname == "" || fieldname == undefined) {
           fieldname = event.target.id;
@@ -637,6 +640,15 @@ export class InstallationForm implements OnInit {
         if (event.target.tagName == "ION-RADIO" || event.target.tagName == "ION-CHECKBOX" || event.target.tagName == "ION-DATETIME" || event.target.tagName == "ION-TEXTAREA" || event.target.tagName == "ION-SELECT")
         {
           fieldvalue = event.target.value;
+        }
+        if(extra == 444 && fieldvalue == 'Yes'){
+            console.log('Need to display Image', fieldname);
+            var input = document.getElementById('cf_all_grounding_photos');
+            document.body.classList.toggle('cf_all_grounding_photos', true);
+        }else{
+            console.log('No Need to display Image', fieldname);
+            var input = document.getElementById('cf_all_grounding_photos');
+            document.body.classList.toggle('cf_all_grounding_photos', false);
         }
         this.setValuetoInstallfield(fieldname, fieldvalue);
         console.log('tagName = ',event.target.tagName);

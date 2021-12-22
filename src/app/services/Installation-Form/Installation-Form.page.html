@@ -31,10 +31,25 @@
                           <ion-datetime id="{{fieldDetail.fieldname}}" name="{{fieldDetail.fieldname}}" displayFormat="MM/DD/YYYY" min="1994-03-14" max="2052-12-09"  (ionChange)="addUpdate($event,'date')" value="{{fieldDetail.value}}"></ion-datetime>
                         </ion-item>
                     </div>
-                    <ion-card *ngIf="fieldDetail.uitype == '444'" style="border-radius: 10px;width: fit-content;" lines="none">
-                        <ion-list lines="none">
-                            <ion-input id="{{fieldDetail.fieldname}}" name="{{fieldDetail.fieldname}}" value="{{fieldDetail.value}}" type="hidden"></ion-input>
-                            <ul>
+                    <div *ngIf="fieldDetail.uitype == '444'">
+                        <ion-card  style="border-radius: 10px;width: fit-content;" lines="none">
+                            <ion-list lines="none">
+                                <ion-radio-group id="{{fieldDetail.fieldname}}" style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (click)="addUpdate($event, 444)">
+                                    <ion-item lines="none">
+                                        <ion-label>Yes</ion-label>
+                                        <ion-radio [checked]="fieldDetail.value==='Yes'" name="{{fieldDetail.fieldname}}" value="Yes"></ion-radio>
+                                    </ion-item>
+
+                                    <ion-item lines="none">
+                                        <ion-label>No</ion-label>
+                                        <ion-radio [checked]="fieldDetail.value==='No'" name="{{fieldDetail.fieldname}}" value="No"></ion-radio>
+                                    </ion-item>
+                                </ion-radio-group>
+
+                            </ion-list>
+                        </ion-card>
+                        <ion-card  style="border-radius: 10px;width: fit-content;" lines="none">
+                            <ul [hidden]="fieldDetail.value != 'Yes'">
                                 <li class="checklist-thumb-list">
                                     <ion-item class="item-accordion">
                                         <ion-thumbnail *ngFor="let _img of installphoto[fieldDetail.fieldname]" class="checklist-thumb">
@@ -47,10 +62,10 @@
                                     </ion-item>
                                 </li>
                             </ul>
-                        </ion-list>
-                    </ion-card>
+                        </ion-card>
+                    </div>
                     <ion-card *ngIf="fieldDetail.uitype == '555' || fieldDetail.uitype == '33'" style="border-radius: 10px;width: fit-content;" lines="none">
-                        <ion-radio-group id="{{fieldDetail.fieldname}}" style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (ionBlur)="addUpdate($event)">
+                        <ion-radio-group id="{{fieldDetail.fieldname}}" style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (click)="addUpdate($event)">
                             <ion-item lines="none">
                                 <ion-label>Yes</ion-label>
                                 <ion-radio [checked]="fieldDetail.value==='Yes'" name="{{fieldDetail.fieldname}}" value="Yes"></ion-radio>
@@ -70,7 +85,7 @@
                             </div>
                         </ion-select>
                     </div>
-                    <ion-textarea *ngIf="fieldDetail.uitype == '19'"  (ionBlur)="addUpdate($event)" id="{{fieldDetail.fieldname}}" name = "{{fieldDetail.fieldname}}" value = "{{fieldDetail.value}}" placeholder="Press Here To Type"></ion-textarea>
+                    <ion-textarea *ngIf="fieldDetail.uitype == '19'"  (ionChange)="addUpdate($event)" id="{{fieldDetail.fieldname}}" name = "{{fieldDetail.fieldname}}" value = "{{fieldDetail.value}}" placeholder="Press Here To Type"></ion-textarea>
                     <div *ngIf="fieldDetail.uitype == '999'">
                         <ion-content class="ion-padding" style="height: 190px;overflow: hidden;">
                           <div>
