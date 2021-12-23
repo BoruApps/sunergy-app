@@ -475,10 +475,13 @@ export class InstallationForm implements OnInit {
         var fieldlistmassge = '';
         for (var i = 0; i < this.InstallfieldList.length; ++i) {
             if(this.InstallfieldList[i]["value"] == 'Yes' && this.InstallfieldList[i]["uitype"] == '444'){
+                console.log('step-1');
                 if(Array.isArray(this.installphoto[this.InstallfieldList[i]["fieldname"]]) && this.installphoto[this.InstallfieldList[i]["fieldname"]].length > 0){
+                console.log('step-2');
 
                 }else{
                     extraFlag = 1;
+                console.log('step-3');
                     fieldlist.push(this.InstallfieldList[i]["fieldname"]);
                     fieldlistmassge += 'Please select/upload Image '+this.InstallfieldList[i]["label"] +'\n';
                 }
@@ -570,7 +573,9 @@ export class InstallationForm implements OnInit {
             if (dataReturned !== null && this.dataReturned != 'Wrapped Up!') {
                 console.log('dataReturned = ',this.dataReturned);
                 console.log('instectionservice-fieldname = ',fieldname);
-                this.installphoto[fieldname] = [];
+                if(this.installphoto[fieldname] == undefined){
+                    this.installphoto[fieldname] = [];
+                }
                 this.installphoto[fieldname].push(this.dataReturned);
                 console.log('instectionservice = ',this.installphoto);
                 //alert('Modal Sent Data :'+ dataReturned);
