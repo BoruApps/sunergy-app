@@ -126,7 +126,7 @@ export class inspectionsform implements OnInit {
             fieldname : 'cf_inspection_type',
             uitype : 15,
             typeofdata : 'V~O',
-            picklistvalues : ['Footing', 'Lath', 'Sheeting', 'Hole and Trench', 'Misc In-Process', 'Solar', 'Electrical', 'Roof', 'Building', 'Rough', 'Final', 'Other Post-Install'],
+            picklistvalues : ['Footing', 'Lath', 'Sheeting', 'Hole And Trench', 'Misc In-Process', 'Solar', 'Electrical', 'Roof', 'Building', 'Rough', 'Final', 'Other Post-Install'],
         },{ 
             label : 'Inspection Date',
             fieldname : 'cf_inspection_date',
@@ -182,9 +182,6 @@ export class inspectionsform implements OnInit {
             return false;
         }
         this.inspection_type = inspection_typedetails.value;
-        if(this.inspection_type == 'Hole and Trench Inspections' ){
-           this.inspection_type =  'Hole And Trench ';
-        }
         if(this.inspection_type == 'Misc In-Process Inspections' ){
            this.inspection_type =  'Miscellaneous In-Process ';
         }
@@ -194,8 +191,6 @@ export class inspectionsform implements OnInit {
         var flagmatch = 0;
         console.log('Inspections name1 == ',this.inspection_type+' Inspections');
         for (var column in data) {
-            console.log('field name ', column);
-            console.log('column == ',data[column]);
           if (data[column]["photos"] !== undefined) {
             for (var index in data[column]["photos"]) {
                 console.log('Inspections name2 == ',data[column]["photos"][index]["name"]);

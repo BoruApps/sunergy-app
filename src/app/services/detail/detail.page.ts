@@ -26,6 +26,8 @@ import { ImageGallery } from "../image-gallery/image-gallery.page";
 // @ts-ignore
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
 import { InstallationForm } from "../Installation-Form/Installation-Form.page";
+import { ElectricalInstallationForm } from "../ElectricalInstallation-Form/ElectricalInstallation-Form.page";
+import { RoofInstallationForm } from "../RoofInstallation-Form/RoofInstallation-Form.page";
 import { inspectionsform } from "../inspections-form/inspections-form.page";
 
 @Component({
@@ -66,6 +68,7 @@ export class DetailPage implements OnInit {
   optionalFieldId: any;
   serviceName: string;
   inspection_type: string;
+  activitytype: string;
   activityid: string;
   isCompleteWO: number = 0;
   ISInstallationForm: number = 0;
@@ -209,6 +212,8 @@ export class DetailPage implements OnInit {
           if (success == true) {
             var workorder = data["body"]["data"];
             this.inspection_type = data["body"]["inspection_type"];
+            this.activitytype = data["body"]["activitytype"];
+            console.log('activitytype == ',this.activitytype);
             var allfields = data["body"]["allfields"];
             allfields.description.replace(/\n/g, "<br>");
             var longitude = this.decodeHTML(allfields.cf_longtitude);
@@ -330,7 +335,7 @@ export class DetailPage implements OnInit {
                 
                 if(key.includes('Ginlong') || key.includes('Tesla') || key.includes('Enphase') || key.includes('SolarEdge') || key.includes('Delta')){
                   this.ISInstallationForm = 1;
-                  key = 'Solar Installation';
+                  key = 'Installation';
                 }
                 this.servicedetail.push({
                   blockname: key,
@@ -377,6 +382,56 @@ export class DetailPage implements OnInit {
         }
     });
     return await modal_InstallationForm.present();
+  }
+
+  async openElectricalInstallationForm(blockname){
+    console.log('serviceid == ', this.serviceid);
+    const modal_ElectricalInstallationForm = await this.modalCtrl.create({
+      component: ElectricalInstallationForm,
+      componentProps: {
+        paramTitle: 'Electrical Install Completion Form',
+        logged_in_user: this.userinfo.id,
+        serviceid: this.serviceid,
+        currentdate: this.workorderdetail.currentdate,
+        blockname: blockname,
+      },
+    });
+    modal_ElectricalInstallationForm.onDidDismiss().then((dataReturned) => {
+        console.log('dataReturned', dataReturned);
+        if(dataReturned.data.formsubmitted){
+            var date = new Date(this.workorderdetail.currentdate);
+            var joinDate = date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear().toString().substr(-2);
+            this.workorderdetail.cf_formsubmit_date = joinDate;
+            this.workorderdetail.cf_formsubmit_count = this.workorderdetail.cf_formsubmit_count+1;
+            this.workorderdetail.cf_isformsubmittedtoday = true;
+        }
+    });
+    return await modal_ElectricalInstallationForm.present();
+  }
+
+  async openRoofInstallationForm(blockname){
+    console.log('serviceid == ', this.serviceid);
+    const modal_RoofInstallationForm = await this.modalCtrl.create({
+      component: RoofInstallationForm,
+      componentProps: {
+        paramTitle: 'Roof Install Completion Form',
+        logged_in_user: this.userinfo.id,
+        serviceid: this.serviceid,
+        currentdate: this.workorderdetail.currentdate,
+        blockname: blockname,
+      },
+    });
+    modal_RoofInstallationForm.onDidDismiss().then((dataReturned) => {
+        console.log('dataReturned', dataReturned);
+        if(dataReturned.data.formsubmitted){
+            var date = new Date(this.workorderdetail.currentdate);
+            var joinDate = date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear().toString().substr(-2);
+            this.workorderdetail.cf_formsubmit_date = joinDate;
+            this.workorderdetail.cf_formsubmit_count = this.workorderdetail.cf_formsubmit_count+1;
+            this.workorderdetail.cf_isformsubmittedtoday = true;
+        }
+    });
+    return await modal_RoofInstallationForm.present();
   }
   checkJson(data) {
     data = typeof data !== "string" ? JSON.stringify(data) : data;

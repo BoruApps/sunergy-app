@@ -1,0 +1,108 @@
+<ion-header>
+    <ion-toolbar text-center>
+        <ion-buttons slot="primary">
+            <ion-button type="button" name="close" class="ion-close-center" size="large" (click)="closeModal()">
+                <ion-icon name="close" size="large"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="padding-inline: 10px;">{{modalTitle}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <form #form="ngForm" class="ion-padding">
+            <ion-item-group class="item-background-color" *ngFor="let fieldDetail of InstallfieldList; let key=index">
+                <ion-list lines="none" style="padding: 10px;">
+                    <ion-text>
+                        {{fieldDetail.label}} <span class="redColor">*</span>
+                    </ion-text>
+                    <ion-input *ngIf="fieldDetail.uitype == '1'" type="text" name="{{fieldDetail.fieldname}}"  id="{{fieldDetail.fieldname}}" placeholder="Press Here To Type" (ionChange)="addUpdate($event)" value="{{fieldDetail.value}}">
+                    </ion-input>
+                    <ion-input *ngIf="fieldDetail.uitype == '111'" type="number" id="{{fieldDetail.fieldname}}" name="{{fieldDetail.fieldname}}" placeholder="Press Here To Type" (ionChange)="addUpdate($event)" value="{{fieldDetail.value}}">
+                    </ion-input>
+                    <div *ngIf="fieldDetail.uitype == '2'">
+                        <ion-item>
+                            <ion-label position="floating">hh:mm A</ion-label>
+                            <ion-datetime id="{{fieldDetail.fieldname}}" name="{{fieldDetail.fieldname}}" displayFormat="hh:mm A" min="1994-03-14" max="2052-12-09"  (ionChange)="addUpdate($event,'time')" value="{{fieldDetail.value}}"></ion-datetime>
+                        </ion-item>
+                    </div>
+                    <div *ngIf="fieldDetail.uitype == '5'">
+                        <ion-item>
+                          <ion-label position="floating">MM/DD/YYYY</ion-label>
+                          <ion-datetime id="{{fieldDetail.fieldname}}" name="{{fieldDetail.fieldname}}" displayFormat="MM/DD/YYYY" min="1994-03-14" max="2052-12-09"  (ionChange)="addUpdate($event,'date')" value="{{fieldDetail.value}}"></ion-datetime>
+                        </ion-item>
+                    </div>
+                    <div *ngIf="fieldDetail.uitype == '444'">
+                        <ion-card  style="border-radius: 10px;width: fit-content;" lines="none">
+                            <ion-list lines="none">
+                                <ion-radio-group id="{{fieldDetail.fieldname}}" style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (click)="addUpdate($event, 444)">
+                                    <ion-item lines="none">
+                                        <ion-label>Yes</ion-label>
+                                        <ion-radio [checked]="fieldDetail.value==='Yes'" name="{{fieldDetail.fieldname}}" value="Yes"></ion-radio>
+                                    </ion-item>
+
+                                    <ion-item lines="none">
+                                        <ion-label>No</ion-label>
+                                        <ion-radio [checked]="fieldDetail.value==='No'" name="{{fieldDetail.fieldname}}" value="No"></ion-radio>
+                                    </ion-item>
+                                </ion-radio-group>
+                                
+                            </ion-list>
+                            <ul [hidden]="fieldDetail.value != 'Yes'">
+                                <li class="checklist-thumb-list">
+                                    <ion-item class="item-accordion">
+                                        <ion-thumbnail *ngFor="let _img of installphoto[fieldDetail.fieldname]" class="checklist-thumb"> 
+                                            <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.image_path}}">
+                                        </ion-thumbnail>
+                                        <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionInspection(fieldDetail.fieldname)">
+                                            <ion-icon style="padding: 0px;" size="large" name="add" ></ion-icon>
+                                            <ion-icon style="padding: 0px;" size="large" name="camera" ></ion-icon>
+                                        </ion-button>
+                                    </ion-item>
+                                </li>
+                            </ul>
+                        </ion-card>
+                    </div>
+                    <ion-card *ngIf="fieldDetail.uitype == '555' || fieldDetail.uitype == '33'" style="border-radius: 10px;width: fit-content;" lines="none">
+                        <ion-radio-group id="{{fieldDetail.fieldname}}" style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (click)="addUpdate($event)">
+                            <ion-item lines="none">
+                                <ion-label>Yes</ion-label>
+                                <ion-radio [checked]="fieldDetail.value==='Yes'" name="{{fieldDetail.fieldname}}" value="Yes"></ion-radio>
+                            </ion-item>
+
+                            <ion-item lines="none">
+                                <ion-label>No</ion-label>
+                                <ion-radio [checked]="fieldDetail.value==='No'" name="{{fieldDetail.fieldname}}" value="No"></ion-radio>
+                            </ion-item>
+                        </ion-radio-group>
+                    </ion-card>
+                    <div *ngIf="fieldDetail.uitype == '15'" class="picklist-drowpdown">
+                        <ion-select id="{{fieldDetail.fieldname}}" style="color: black;background: white;" lines="none" (ionChange)="addUpdate($event)" name="{{fieldDetail.fieldname}}" value="{{fieldDetail.value}}">
+                            <ion-select-option value="" selected="selected">Choose An Option</ion-select-option>
+                            <div *ngFor="let picklist of fieldDetail.picklistvalues">
+                                <ion-select-option value="{{picklist}}">{{picklist}}</ion-select-option>
+                            </div>
+                        </ion-select>
+                    </div>
+                    <ion-textarea *ngIf="fieldDetail.uitype == '19'"  (ionChange)="addUpdate($event)" id="{{fieldDetail.fieldname}}" name = "{{fieldDetail.fieldname}}" value = "{{fieldDetail.value}}" placeholder="Press Here To Type"></ion-textarea>
+                    <div *ngIf="fieldDetail.uitype == '999'">
+                        <ion-content class="ion-padding" style="height: 190px;overflow: hidden;">
+                          <div>
+                            <canvas #canvas (touchstart)="startDrawing($event)" (touchmove)="moved($event)" style="width: 100%;"></canvas>
+                            <ion-grid>
+                              <ion-row style="justify-content: flex-end;">
+                                <span class="clear-pad-btn clear-pad" role="button" tabindex="0" (click)="clearPad()">Clear</span>
+                              </ion-row>
+                            </ion-grid>
+                          </div>
+                          <img src='{{ signatureImg }}' />
+                        </ion-content>
+                    </div>
+                </ion-list>
+            </ion-item-group>
+    </form>
+    <div style="margin-bottom: 25px;text-align: center;">
+        <ion-button type="button" class="add-image" color="secondary" (click)="submitinstallationcompletionform()">
+            Submit Electrical Installation Completion Form
+        </ion-button>
+    </div>
+</ion-content>

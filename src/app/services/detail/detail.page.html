@@ -77,8 +77,29 @@
                     <div [ngClass]="{'section-active': blockGroups[blockservice.blockname].open, 'section': !blockGroups[blockservice.blockname].open}">
                         <!-- editable fields -->
                         <ion-item *ngIf="ISInstallationForm == 1 && blockservice.blockname != 'Inspection Forms'" detail="false" lines="none">
-                            <div>
-                                <ion-label class="ft-18" style="font-size: 24px;" position="stacked">Installation Form</ion-label>
+                            <div *ngIf="activitytype == 'Electrical Installation'">
+                                <ion-label class="ft-18" style="font-size: 24px;" position="stacked">Electrical Installation Form</ion-label>
+                                <ion-grid>
+                                    <ion-row>
+                                        <ion-col  style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
+                                            <ion-text [ngClass]="{'green-text' : workorderdetail.cf_isformsubmittedtoday === true}"  *ngIf = "workorderdetail.cf_ele_formsubmit_count > 0">
+                                                Form Submitted <br> on {{workorderdetail.cf_ele_formsubmit_date}}
+                                            </ion-text>
+                                            <ion-text *ngIf = "workorderdetail.cf_ele_formsubmit_count == 0">
+                                                Form Not Submitted {{workorderdetail.cf_ele_formsubmit_count}}
+                                                {{workorderdetail.cf_ele_formsubmit_date}}
+                                            </ion-text>
+                                        </ion-col>
+                                        <ion-col>
+                                            <div class = "photo-icon" (click)="openElectricalInstallationForm(blockservice.blockname)">
+                                                <span>Open <br>Form</span>
+                                            </div>
+                                        </ion-col>
+                                    </ion-row>
+                                </ion-grid>
+                            </div>
+                            <div *ngIf="activitytype == 'Solar Installation'">
+                                <ion-label class="ft-18" style="font-size: 24px;" position="stacked">Solar Installation Form</ion-label>
                                 <ion-grid>
                                     <ion-row>
                                         <ion-col  style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
@@ -92,6 +113,27 @@
                                         </ion-col>
                                         <ion-col>
                                             <div class = "photo-icon" (click)="openInstallationForm(blockservice.blockname)">
+                                                <span>Open <br>Form</span>
+                                            </div>
+                                        </ion-col>
+                                    </ion-row>
+                                </ion-grid>
+                            </div>
+                            <div *ngIf="activitytype == 'Roof Installation'">
+                                <ion-label class="ft-18" style="font-size: 24px;" position="stacked">Roof Installation Form</ion-label>
+                                <ion-grid>
+                                    <ion-row>
+                                        <ion-col  style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
+                                            <ion-text [ngClass]="{'green-text' : workorderdetail.cf_isformsubmittedtoday === true}"  *ngIf = "workorderdetail.cf_formsubmit_count > 0">
+                                                Form Submitted <br> on {{workorderdetail.cf_formsubmit_date}}
+                                            </ion-text>
+                                            <ion-text *ngIf = "workorderdetail.cf_formsubmit_count == 0">
+                                                Form Not Submitted {{workorderdetail.cf_formsubmit_count}}
+                                                {{workorderdetail.cf_formsubmit_date}}
+                                            </ion-text>
+                                        </ion-col>
+                                        <ion-col>
+                                            <div class = "photo-icon" (click)="openRoofInstallationForm(blockservice.blockname)">
                                                 <span>Open <br>Form</span>
                                             </div>
                                         </ion-col>

@@ -12,14 +12,14 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {DomSanitizer} from '@angular/platform-browser';
 import {ImageSlider} from "../image-slider/image-slider.page";
 import { imagePreview } from "../image-preview/image-preview.page";
-import SignaturePad from 'signature_pad';
+
 
 @Component({
-    selector: 'Installation-Form',
-    templateUrl: './Installation-Form.page.html',
-    styleUrls: ['./Installation-Form.page.scss'],
+    selector: 'ElectricalInstallation-Form',
+    templateUrl: './ElectricalInstallation-Form.page.html',
+    styleUrls: ['./ElectricalInstallation-Form.page.scss'],
 })
-export class InstallationForm implements OnInit {
+export class ElectricalInstallationForm implements OnInit {
     modalTitle: string;
     blockname: string;
     modelId: number;
@@ -27,16 +27,12 @@ export class InstallationForm implements OnInit {
     user_id: any;
     apiurl: any;
     dataReturned: any;
-    localInstallform: any;
     currentdate: any;
-    localInstallformdate: any;
-    cf_install_date: any;
     InstallfieldList: any[] = [];
+    localInstallform: any;
+    localInstallformdate: any;
     installphoto: any[] = [];
-    btnsubmitInstallform: number;
-    signaturePad: SignaturePad;
-      @ViewChild('canvas',{static:false}) canvasEl : ElementRef;
-      signatureImg: string;
+    
     buttonLabels = ['Take Photo', 'Upload from Library'];
     actionOptions: ActionSheetOptions = {
         title: 'Which would you like to do?',
@@ -77,31 +73,6 @@ export class InstallationForm implements OnInit {
         this.apiurl = this.appConst.getApiUrl();
         this.sanitizer = sanitizer;
     }
-
-    ngAfterViewInit() {
-        this.signaturePad = new SignaturePad(this.canvasEl.nativeElement);
-      }
-
-      startDrawing(event: Event) {
-        console.log('startDrawing = ',event);
-        this.setValuetoInstallfield('cf_installer_signature', 'signature');
-        // works in device not in browser
-
-      }
-
-      moved(event: Event) {
-        // works in device not in browser
-      }
-
-      clearPad() {
-        this.signaturePad.clear();
-        this.setValuetoInstallfield('cf_installer_signature', '');
-      }
-
-      savePad() {
-        const base64Data = this.signaturePad.toDataURL();
-        this.signatureImg = base64Data;
-      }
     ngOnInit() {
         // console.table(this);
         this.modelId = this.navParams.data.paramID;
@@ -112,329 +83,169 @@ export class InstallationForm implements OnInit {
         this.blockname = this.navParams.data.blockname;
         console.log('blockname == ',this.blockname);
         this.InstallfieldList = [];
-        this.btnsubmitInstallform = 1;
-        this.localInstallform = 'InstallfieldList-'+this.serviceid;
-        this.localInstallformdate = 'Installformdate-'+this.serviceid;
-        console.log('localInstallform = ',this.localInstallform);
+        this.localInstallform = 'ElectricalInstallfieldList-'+this.serviceid;
+        this.localInstallformdate = 'ElectricalInstallformdate-'+this.serviceid;
         var storedNames = JSON.parse(localStorage.getItem(this.localInstallform));
         var formsubmitdate = localStorage.getItem(this.localInstallformdate);
         if(storedNames && formsubmitdate == this.currentdate){
             this.InstallfieldList = storedNames;
             console.log('InstallfieldList === ',this.InstallfieldList);
         }else{
-            this.InstallfieldList.push({ 
-                label : 'Install Date',
-                fieldname : 'cf_install_date',
-                uitype : 5,
-                typeofdata : 'D~O'
-            },{ 
-                label : 'Sunergy Office Location',
-                fieldname : 'cf_office_ocation',
-                uitype : 15,
-                typeofdata : 'V~O',
-                picklistvalues : ['SoCal', 'NorCal', 'CentralCal'],
-            },{ 
-                label : 'Customer First Name',
-                fieldname : 'cf_cut_first_name',
-                uitype : 1,
-                typeofdata : 'V~O'
-            },{ 
-                label : 'Customer Last Name',
-                fieldname : 'cf_cut_last_name',
-                uitype : 1,
-                typeofdata : 'V~O'
-            },{ 
-                label : 'Was Customer Home?',
-                fieldname : 'cf_was_cus_home',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Lead Installer on Site',
-                fieldname : 'cf_lead_install_site',
-                uitype : 15,
-                typeofdata : 'V~O',
-                picklistvalues : ['Miguel Mendoza','Augistine','Raymond Labelle','Anthony Ortiz','Douglas Moreno','John Granda','Jesse Cook','Mike Smith','Travis Li','Trevor','Armando R','Michael Sanchez'],
-            },{ 
-                label : 'How Many on Crew?',
-                fieldname : 'cf_many_crew',
-                uitype : 111,
-                typeofdata : 'I~O',
-            },{ 
-                label : 'System Size KW',
-                fieldname : 'cf_system_size',
-                uitype : 111,
-                typeofdata : 'I~O',
-            },{ 
-                label : 'Panel Qty',
-                fieldname : 'cf_panel_qty',
-                uitype : 1,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Panels Watts/Type',
-                fieldname : 'cf_panel_watts_type',
-                uitype : 1,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Inverter Qty',
-                fieldname : 'cf_inverter_qty',
-                uitype : 1,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Inverter Watts/Type',
-                fieldname : 'cf_inverter_watts_type',
-                uitype : 1,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Optimizers Qty',
-                fieldname : 'cf_optimizers_qty',
-                uitype : 1,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Optimizers Watts/Type',
-                fieldname : 'cf_optimizers_watts_type',
-                uitype : 1,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Racking Qty',
-                fieldname : 'cf_racking_qty',
-                uitype : 1,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Racking Watts/Type',
-                fieldname : 'cf_racking_watts_type',
-                uitype : 1,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Was OT Needed To Finish?',
-                fieldname : 'cf_ot_finish',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Time Arrived',
-                fieldname : 'cf_time_arrived',
-                uitype : 2,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Time Finished',
-                fieldname : 'cf_time_finished',
-                uitype : 2,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Hours On Site',
-                fieldname : 'cf_hours_site',
-                uitype : 111,
-                typeofdata : 'I~O',
-            },{ 
-                label : 'Accidents/Injury\'s On The Job?',
-                fieldname : 'cf_acc_inj_job',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Non Injury Reporting Completed?',
-                fieldname : 'cf_non_inj_rep',
-                uitype : 33,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'JHA Completed For Job?',
-                fieldname : 'cf_jha_completed_job',
-                uitype : 33,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'All Sunrun Photos Taken?',
-                fieldname : 'cf_all_sunrun_photo',
-                uitype : 33,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Did Your Crew Fix Missed Punches',
-                fieldname : 'cf_crew_fix_missed',
-                uitype : 33,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Was Job Build Per Plan',
-                fieldname : 'cf_job_build_plan',
-                uitype : 15,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No','Plans Incorrect'],
-            },{ 
-                label : 'What Changed / Was Incorrect',
-                fieldname : 'cf_what_incorrect',
-                uitype : 15,
-                typeofdata : 'V~O',
-                picklistvalues : ['None','Layout', 'Single Line','Roof Type','Equipment/Material','Inverter Location','Conduit Size/Type','Other - Please Explain'],
-            },{ 
-                label : 'All Feet And Rail Installed?',
-                fieldname : 'cf_feet_rail_install',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'All Optimizers/Micros Installed?',
-                fieldname : 'cf_optimizers_micros_install',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Panels installed?',
-                fieldname : 'cf_panel_install',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'J-Box & Conduit Installed?',
-                fieldname : 'cf_jbox_conduit',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Panel Stringing Complete?',
-                fieldname : 'cf_panel_stringing',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Roof Conduit Painted?',
-                fieldname : 'cf_roof_conduit',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Inverter & Disconnect Installed?',
-                fieldname : 'cf_inverter_disconnect',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'System Tied to inverter?',
-                fieldname : 'cf_system_tied',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Disconnect Tied to MPU?',
-                fieldname : 'cf_discconnect_tied_mpu',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'All Grounding/Bonding Completed (Take Photos)?',
-                fieldname : 'cf_all_grounding',
-                uitype : 444,
-                typeofdata : 'V~O',
-                value : 'Image',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'How Many Ground Rods Installed?',
-                fieldname : 'cf_many_ground_rod',
-                uitype : 15,
-                typeofdata : 'V~O',
-                picklistvalues : ['1', '2'],
-            },{ 
-                label : 'Was there a Ufer on site?',
-                fieldname : 'cf_wasufersite',
-                uitype : 33,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Correct PV Breaker Installed (Take Photos)?',
-                fieldname : 'cf_correct_pv_breaker',
-                uitype : 444,
-                typeofdata : 'V~O',
-                value : 'Image',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'MPU Upgrade Needed?',
-                fieldname : 'cf_mpu_upgrade',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'MPU Completed?',
-                fieldname : 'cf_mpu_completed',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'MPU Completed Other?',
-                fieldname : 'cf_mpu_completed_other',
-                uitype : 1,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Derate Needed?',
-                fieldname : 'cf_derate_needed',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'System Working Properly?',
-                fieldname : 'cf_system_working',
-                uitype : 15,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes','No','Other'],
-            },{ 
-                label : 'System Working Properly Other?',
-                fieldname : 'cf_system_working_other',
-                uitype : 1,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Optimizers/Micros Paired (Take Photos)?',
-                fieldname : 'cf_micros_paired',
-                uitype : 444,
-                typeofdata : 'V~O',
-                value : 'Image',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Monitoring Map completed (Take Photo)?',
-                fieldname : 'cf_monitoring_map',
-                uitype : 444,
-                typeofdata : 'V~O',
-                value : 'Image',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Job Site Clean (Take Photo)?',
-                fieldname : 'cf_job_site_clean',
-                uitype : 444,
-                typeofdata : 'V~O',
-                value : 'Image',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Sample of Broken Tiles Taken?',
-                fieldname : 'cf_broken_tiles',
-                uitype : 555,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'How many broken tiles?',
-                fieldname : 'cf_how_many_broken_tiles',
-                uitype : 1,
-                typeofdata : 'V~O',
-                picklistvalues : ['Yes', 'No'],
-            },{ 
-                label : 'Installation Status',
-                fieldname : 'cf_installation_status',
-                uitype : 15,
-                typeofdata : 'V~O',
-                picklistvalues : ['Install Ready For inspection','Incomplete (1 More Day)','Incomplete (Weather)','Incomplete (needs Service)','Pending MPU Install','Pending Battery Install'],
-            },{ 
-                label : 'Comments',
-                fieldname : 'cf_comments',
-                uitype : 19,
-                typeofdata : 'V~O',
-            },{ 
-                label : 'Lead Installer Signature',
-                fieldname : 'cf_installer_signature',
-                uitype : 999,
-                typeofdata : 'V~O',
-            });
-        }
-        
+        this.InstallfieldList.push({ 
+            label : 'Job Number',
+            fieldname : 'cf_ele_job_number',
+            uitype : 1,
+            typeofdata : 'V~O'
+        },{ 
+            label : 'DateTime',
+            fieldname : 'cf_ele_datetime',
+            uitype : 5,
+            typeofdata : 'D~O',
+        },{ 
+            label : 'Customer First Name',
+            fieldname : 'cf_ele_cut_first_name',
+            uitype : 1,
+            typeofdata : 'V~O'
+        },{ 
+            label : 'Customer Last Name',
+            fieldname : 'cf_ele_cut_last_name',
+            uitype : 1,
+            typeofdata : 'V~O'
+        },{ 
+            label : 'Was Customer Home?',
+            fieldname : 'cf_ele_was_cus_home',
+            uitype : 555,
+            typeofdata : 'V~O',
+            picklistvalues : ['Yes', 'No'],
+        },{ 
+            label : 'Lead Electrician on Site',
+            fieldname : 'cf_ele_lead_ele_site',
+            uitype : 15,
+            typeofdata : 'V~O',
+            picklistvalues : ['Luis Vazquez','Larry Wagon','Jerry Miller','Raymond Labelle','Danny Banuelos','Alex Ortega','Travis Li','Trevor Lee'],
+        },{ 
+            label : 'How Many on Crew?',
+            fieldname : 'cf_ele_many_crew',
+            uitype : 111,
+            typeofdata : 'I~O',
+        },{ 
+            label : 'MPU Details',
+            fieldname : 'cf_ele_mpu_details',
+            uitype : 15,
+            typeofdata : 'V~O',
+            picklistvalues : ['125a/100a Breaker', '200a/200a Breaker', '225a/200a Breaker', '400a/Split 200a Breaker'],
+        },{ 
+            label : 'Over / Under',
+            fieldname : 'cf_ele_over_under',
+            uitype : 15,
+            typeofdata : 'V~O',
+            picklistvalues : ['Overhead Feed', 'Underground Feed']
+        },{ 
+            label : 'Mounting Type',
+            fieldname : 'cf_ele_mounting_type',
+            uitype : 15,
+            typeofdata : 'V~O',
+            picklistvalues : ['Surface', 'Flush'],
+        },{ 
+            label : 'Disco/Reco?',
+            fieldname : 'cf_ele_disco_reco',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Was OT Needed to Finish?',
+            fieldname : 'cf_ele_was_neededfinish',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Was OT Approved?',
+            fieldname : 'cf_ele_otapproved',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Approved By',
+            fieldname : 'cf_ele_approvedby',
+            uitype : 15,
+            typeofdata : 'V~O',
+            picklistvalues : ['Matt', 'Jonathan', 'Erica', 'Richard'],
+        },{ 
+            label : 'Time Arrived',
+            fieldname : 'cf_ele_time_arrived',
+            uitype : 2,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Time Finished',
+            fieldname : 'cf_ele_time_finished',
+            uitype : 2,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Hours On Site',
+            fieldname : 'cf_ele_hours_on_site',
+            uitype : 111,
+            typeofdata : 'I~O',
+        },{ 
+            label : 'Was Inspection Scheduled',
+            fieldname : 'cf_ele_wasscheduled',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Inspection Results',
+            fieldname : 'cf_ele_ins_results',
+            uitype : 15,
+            typeofdata : 'V~O',
+            picklistvalues : ['Pass', 'Fail', 'Reschedule'],
+        },{ 
+            label : 'All Bonding Completed?',
+            fieldname : 'cf_ele_bonding_comd',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'All correct Breakers Installed?',
+            fieldname : 'cf_ele_breakers_ind',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Correct PV Breaker Installed?',
+            fieldname : 'cf_ele_pv_breaker_ind',
+            uitype : 555,
+            typeofdata : 'I~O',
+        },{ 
+            label : 'Derated Needed?',
+            fieldname : 'cf_ele_derated_needed',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Derate Completed?',
+            fieldname : 'cf_ele_derate_completed',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Lath completed?',
+            fieldname : 'cf_ele_lath_completed',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Was Site Cleaned?',
+            fieldname : 'cf_ele_site_cleaned',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Were Necessary Photos Taken?',
+            fieldname : 'cf_ele_were_necessary',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Is Job Ready For Inspection?',
+            fieldname : 'cf_ele_is_job_ready',
+            uitype : 555,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Comments',
+            fieldname : 'cf_comments',
+            uitype : 19,
+            typeofdata : 'V~O',
+        });
         console.log('InstallfieldList == ',this.InstallfieldList);
+        }
     }
 
     loading: any;
@@ -456,7 +267,6 @@ export class InstallationForm implements OnInit {
     async closeModal(changes='') {
         localStorage.setItem(this.localInstallform, JSON.stringify(this.InstallfieldList));
         localStorage.setItem(this.localInstallformdate, this.currentdate);
-        console.log('closeModal == ',localStorage.getItem(this.localInstallform))
         await this.modalController.dismiss({'formsubmitted':false});
     }
     async presentToast(message: string) {
@@ -478,7 +288,7 @@ export class InstallationForm implements OnInit {
                 console.log('step-1');
                 if(Array.isArray(this.installphoto[this.InstallfieldList[i]["fieldname"]]) && this.installphoto[this.InstallfieldList[i]["fieldname"]].length > 0){
                 console.log('step-2');
-
+                    
                 }else{
                     extraFlag = 1;
                 console.log('step-3');
@@ -593,20 +403,15 @@ export class InstallationForm implements OnInit {
             headers.append("Accept", "application/json");
             headers.append("Content-Type", "application/x-www-form-urlencoded");
             headers.append("Access-Control-Allow-Origin", "*");
-            const base64Data = this.signaturePad.toDataURL();
-            this.signatureImg = base64Data;
-            var base64Datapost = base64Data.split(',')[1];
-            // 'base64Image': base64Datapost,
             this.showLoading();
             var params = {
-                'base64Image': base64Datapost,
                 'InstallfieldList': JSON.stringify(this.InstallfieldList),
                 'recordid': this.serviceid,
                 'logged_in_user': this.user_id,
                 'blockname': this.blockname,
             };
             this.httpClient
-            .post(this.apiurl + "saveInstallationform.php", params, {
+            .post(this.apiurl + "saveElectricalInstallationform.php", params, {
               headers: headers,
               observe: "response",
             })
@@ -617,8 +422,7 @@ export class InstallationForm implements OnInit {
                 console.log(data["body"]);
                 if (success == true) {
                     console.log("Saved and updated data for workorder");
-                    //localStorage.removeItem(this.localInstallform);
-                    this.clearPad();
+                    //this.clearPad();
                     localStorage.setItem(this.localInstallform, JSON.stringify(this.InstallfieldList));
                     localStorage.setItem(this.localInstallformdate, this.currentdate);
                     this.modalController.dismiss({'formsubmitted':true});
@@ -685,11 +489,6 @@ export class InstallationForm implements OnInit {
                 flag++;
             }
         }
-        if(flag == this.InstallfieldList.length){
-            this.btnsubmitInstallform = 1;
-        }else{
-            //this.btnsubmitInstallform = 0;
-        }
         console.log('flag = ',flag);
         console.log('InstallfieldList = ',this.InstallfieldList);
     }
@@ -702,11 +501,6 @@ export class InstallationForm implements OnInit {
             if(this.InstallfieldList[i]["value"] != '' && this.InstallfieldList[i]["value"] != undefined){
                 flag++;
             }
-        }
-        if(flag == this.InstallfieldList.length){
-            this.btnsubmitInstallform = 1;
-        }else{
-            //this.btnsubmitInstallform = 0;
         }
         console.log('setValuetoInstallfield - flag = ',flag);
     }
