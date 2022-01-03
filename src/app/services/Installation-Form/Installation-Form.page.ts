@@ -27,6 +27,8 @@ export class InstallationForm implements OnInit {
     user_id: any;
     apiurl: any;
     dataReturned: any;
+    cust_firstname: any;
+    cust_lastname: any;
     localInstallform: any;
     currentdate: any;
     localInstallformdate: any;
@@ -109,8 +111,10 @@ export class InstallationForm implements OnInit {
         this.user_id = this.navParams.data.logged_in_user;
         this.modalTitle = this.navParams.data.paramTitle;
         this.currentdate = this.navParams.data.currentdate;
+        this.cust_firstname = this.navParams.data.cust_firstname;
+        this.cust_lastname = this.navParams.data.cust_lastname;
         this.blockname = this.navParams.data.blockname;
-        console.log('blockname == ',this.blockname);
+        console.log(' ========appConst.my log workOrder == ',this.appConst.workOrder);
         this.InstallfieldList = [];
         this.btnsubmitInstallform = 1;
         this.localInstallform = 'InstallfieldList-'+this.serviceid;
@@ -126,7 +130,8 @@ export class InstallationForm implements OnInit {
                 label : 'Install Date',
                 fieldname : 'cf_install_date',
                 uitype : 5,
-                typeofdata : 'D~O'
+                typeofdata : 'D~O',
+                value : this.currentdate
             },{ 
                 label : 'Sunergy Office Location',
                 fieldname : 'cf_office_ocation',
@@ -137,12 +142,14 @@ export class InstallationForm implements OnInit {
                 label : 'Customer First Name',
                 fieldname : 'cf_cut_first_name',
                 uitype : 1,
-                typeofdata : 'V~O'
+                typeofdata : 'V~O',
+                value : this.cust_firstname
             },{ 
                 label : 'Customer Last Name',
                 fieldname : 'cf_cut_last_name',
                 uitype : 1,
-                typeofdata : 'V~O'
+                typeofdata : 'V~O',
+                value : this.cust_lastname
             },{ 
                 label : 'Was Customer Home?',
                 fieldname : 'cf_was_cus_home',
@@ -224,8 +231,8 @@ export class InstallationForm implements OnInit {
             },{ 
                 label : 'Hours On Site',
                 fieldname : 'cf_hours_site',
-                uitype : 111,
-                typeofdata : 'I~O',
+                uitype : 1,
+                typeofdata : 'V~O',
             },{ 
                 label : 'Accidents/Injury\'s On The Job?',
                 fieldname : 'cf_acc_inj_job',
@@ -510,6 +517,20 @@ export class InstallationForm implements OnInit {
         }
     }
     openActionInspection(fieldname) {
+        var index = 0;
+        if(fieldname == 'cf_all_grounding'){
+            var index = 0;
+        }else if(fieldname == 'cf_correct_pv_breaker'){
+            var index = 1;
+        }else if(fieldname == 'cf_micros_paired'){
+            var index = 2;
+        }else if(fieldname == 'cf_monitoring_map'){
+            var index = 3;
+        }else if(fieldname == 'cf_job_site_clean'){
+            var index = 4;
+        }
+        var mainfieldname = 'cf_2303';
+        var section = 0;
         this.actionSheet.show(this.actionOptions).then((buttonIndex: number) => {
             console.log('Option pressed', buttonIndex);
             if (buttonIndex == 1) {
@@ -519,7 +540,7 @@ export class InstallationForm implements OnInit {
                     // If it's base64 (DATA_URL):
                     let base64Image = 'data:image/png;base64,' + imageData;
                     this.imgpov.setImage(imageData);
-                    this.openModal(this.serviceid, base64Image, fieldname);
+                    this.openModal(this.serviceid, base64Image, mainfieldname, index, section, fieldname);
                     // TODO: need code to upload to server here.
                     // On success: show toast
                     //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
@@ -536,7 +557,7 @@ export class InstallationForm implements OnInit {
                     // If it's base64 (DATA_URL):
                     let base64Image = 'data:image/png;base64,' + imageData;
                     this.imgpov.setImage(imageData);
-                    this.openModal(this.serviceid, base64Image, fieldname);
+                    this.openModal(this.serviceid, base64Image, mainfieldname, index, section, fieldname);
                     // TODO: need code to upload to server here.
                     // On success: show toast
                     //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
@@ -552,11 +573,11 @@ export class InstallationForm implements OnInit {
             let base64Image = 'data:image/png;base64,' + imageData;
             //console.log(err);
             this.imgpov.setImage(imageData);
-            this.openModal(this.serviceid, base64Image, fieldname);
+            this.openModal(this.serviceid, base64Image, mainfieldname, index, section, fieldname);
             this.presentToast(`Operation failed! \n` + err);
         });
     }
-    async openModal(serviceid, base64Image, fieldname) {
+    async openModal(serviceid, base64Image, mainfieldname, index, section, fieldname) {
         const modal = await this.modalCtrl.create({
             component: ImageModalPage,
             componentProps: {
@@ -564,7 +585,10 @@ export class InstallationForm implements OnInit {
                 "paramTitle": "Upload Photo",
                 "serviceid": serviceid,
                 "user_id": this.user_id,
-                "imagefrom": fieldname,
+                "columnIndex": index,
+                "imagefrom": mainfieldname,
+                "columnname": mainfieldname,
+                "subSection": section
             }
         });
 
@@ -578,7 +602,6 @@ export class InstallationForm implements OnInit {
                 }
                 this.installphoto[fieldname].push(this.dataReturned);
                 console.log('instectionservice = ',this.installphoto);
-                //alert('Modal Sent Data :'+ dataReturned);
             }
         });
 
@@ -695,12 +718,36 @@ export class InstallationForm implements OnInit {
     }
     setValuetoInstallfield(fieldname, value){
         var flag = 0;
+        var timearrived = '';
+        var timefinished = '';
+        var old_hours_site = '';
         for (var i = 0; i < this.InstallfieldList.length; ++i) {
             if(this.InstallfieldList[i].fieldname === fieldname){
                 this.InstallfieldList[i]["value"] = value;
             }
             if(this.InstallfieldList[i]["value"] != '' && this.InstallfieldList[i]["value"] != undefined){
                 flag++;
+            }
+            if(this.InstallfieldList[i].fieldname == 'cf_time_arrived'){
+                timearrived = this.InstallfieldList[i]["value"]
+            }
+            if(this.InstallfieldList[i].fieldname == 'cf_time_finished'){
+                timefinished = this.InstallfieldList[i]["value"]
+            }
+            if(this.InstallfieldList[i].fieldname == 'cf_hours_site'){
+                old_hours_site = this.InstallfieldList[i]["value"]
+            }
+        }
+        if(timefinished != '' && timefinished != undefined && timearrived != '' && timearrived != undefined){
+            console.log('timearrived == ',timearrived);
+            console.log('timefinished == ',timefinished);
+            var timeDiff = this.getDataDiff(new Date(timearrived), new Date(timefinished));
+            console.log('timeDiff == ',timeDiff);
+            var hours_site = timeDiff.hour+" hours "+ timeDiff.minute +" minutes ";
+            console.log('hours_site = ',hours_site);
+            console.log('old_hours_site = ',old_hours_site);
+            if(hours_site != old_hours_site){
+                this.setValuetoInstallfield('cf_hours_site', hours_site);
             }
         }
         if(flag == this.InstallfieldList.length){
@@ -709,6 +756,14 @@ export class InstallationForm implements OnInit {
             //this.btnsubmitInstallform = 0;
         }
         console.log('setValuetoInstallfield - flag = ',flag);
+    }
+    getDataDiff(startDate, endDate) {
+        var diff = endDate.getTime() - startDate.getTime();
+        var days = Math.floor(diff / (60 * 60 * 24 * 1000));
+        var hours = Math.floor(diff / (60 * 60 * 1000)) - (days * 24);
+        var minutes = Math.floor(diff / (60 * 1000)) - ((days * 24 * 60) + (hours * 60));
+        var seconds = Math.floor(diff / 1000) - ((days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60));
+        return { day: days, hour: hours, minute: minutes, second: seconds };
     }
     numberOnly(event): boolean {
         const charCode = (event.which) ? event.which : event.keyCode;

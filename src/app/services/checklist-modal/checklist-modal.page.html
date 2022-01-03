@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content>
 
-    <ion-item style="font-size: 13px;padding-right: 16px;">
+    <ion-item style="font-size: 13px;padding-right: 16px;" *ngIf="isinspection == false">
         <ion-checkbox style="width: 14px;height: 14px;" checked="{{picCompleted}}"  (ionChange)="addPicCompleted($event)"></ion-checkbox>
         <ion-label>&nbsp;Mark {{modalTitle}} Section As Complete</ion-label>
     </ion-item>

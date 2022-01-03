@@ -14,28 +14,28 @@ import {ImageSlider} from "../image-slider/image-slider.page";
 import { imagePreview } from "../image-preview/image-preview.page";
 
 @Component({
-    selector: 'inspections-form',
-    templateUrl: './inspections-form.page.html',
-    styleUrls: ['./inspections-form.page.scss'],
+    selector: 'ServiceCompletion-form',
+    templateUrl: './ServiceCompletion-form.page.html',
+    styleUrls: ['./ServiceCompletion-form.page.scss'],
 })
-export class inspectionsform implements OnInit {
+export class servicecompletionform implements OnInit {
     modalTitle: string;
     modelId: number;
     serviceid: any;
     user_id: any;
     apiurl: any;
     dataReturned: any;
+    workorderdetail: any[] = [];
     currentdate: any;
     cust_firstname: any;
     cust_lastname: any;
     user_firstname: any;
     user_lastname: any;
+    user_email: any;
     currenttime: any;
     inspection_type: any;
     inspectionsfieldList: any[] = [];
     instectionservice: any[] = [];
-    instectionjobcard: any[] = [];
-    btnsubmitinspectionsform: number;
     field: any;
     fieldindex: any;
     section: any;
@@ -90,97 +90,146 @@ export class inspectionsform implements OnInit {
         this.serviceid = this.navParams.data.serviceid;
         this.user_id = this.navParams.data.logged_in_user;
         this.modalTitle = this.navParams.data.paramTitle;
-        this.currentdate = this.navParams.data.currentdate;
-        this.currenttime = this.navParams.data.fulldatetime;
-        this.cust_firstname = this.navParams.data.cust_firstname;
-        this.cust_lastname = this.navParams.data.cust_lastname;
+        this.workorderdetail = this.navParams.data.workorderdetail;
+        this.currentdate = this.workorderdetail.currentdate;
+        this.currenttime = this.workorderdetail.fulldatetime;
+        this.cust_firstname = this.workorderdetail.firstname;
+        this.cust_lastname = this.workorderdetail.lastname;
+        this.cust_street = this.workorderdetail.mailingstreet;
+        this.cust_city = this.workorderdetail.mailingcity;
+        this.cust_state = this.workorderdetail.mailingstate;
+        this.cust_zip = this.workorderdetail.mailingzip;
         this.user_firstname = this.navParams.data.user_firstname;
         this.user_lastname = this.navParams.data.user_lastname;
+        this.user_email = this.navParams.data.user_email;
         this.inspectionsfieldList = [];
-        this.btnsubmitinspectionsform = 1;
         this.inspectionsfieldList.push({ 
-            label : 'Date Submitted',
-            fieldname : 'cf_date_submitted',
+            label : 'Sunergy Office Location',
+            fieldname : 'cf_scf_office_location',
+            uitype : 15,
+            typeofdata : 'V~O',
+            picklistvalues : ['SoCal', 'CentralCal','NorCal'],
+        },{ 
+            label : 'Date of service',
+            fieldname : 'cf_scf_date_service',
             uitype : 5,
             typeofdata : 'D~O',
             value : this.currentdate
         },{ 
-            label : 'Time Submitted',
-            fieldname : 'cf_time_submitted',
+            label : 'Scheduled Time',
+            fieldname : 'cf_scf_scheduled_time',
             uitype : 2,
             typeofdata : 'V~O',
             value : this.currenttime
-        },{
+        },{ 
+            label : 'Service Tech First Name',
+            fieldname : 'cf_scf_tech_first_name',
+            uitype : 1,
+            typeofdata : 'V~O',
+            value : this.user_firstname
+        },{ 
+            label : 'Service Tech Last Name',
+            fieldname : 'cf_scf_tech_last_name',
+            uitype : 1,
+            typeofdata : 'V~O',
+            value : this.user_lastname,
+        },{ 
+            label : 'Service Tech Email',
+            fieldname : 'cf_scf_tech_email',
+            uitype : 1,
+            typeofdata : 'V~O',
+            value : this.user_email,
+        },{ 
             label : 'Customer First Name',
-            fieldname : 'cf_cut_first_name',
+            fieldname : 'cf_scf_cut_first_name',
             uitype : 1,
             typeofdata : 'V~O',
             value : this.cust_firstname
         },{ 
             label : 'Customer Last Name',
-            fieldname : 'cf_cut_last_name',
+            fieldname : 'cf_scf_cut_last_name',
             uitype : 1,
             typeofdata : 'V~O',
             value : this.cust_lastname
         },{ 
-            label : 'Sunergy Office Location',
-            fieldname : 'cf_sunergy_office_location',
-            uitype : 15,
-            typeofdata : 'V~O',
-            picklistvalues : ['SoCal', 'CentralCal','NorCal'],
-        },{ 
-            label : 'Inspection Tech First Name',
-            fieldname : 'cf_tech_first_name',
+            label : 'Street Address',
+            fieldname : 'cf_scf_street_add',
             uitype : 1,
             typeofdata : 'V~O',
-            value : this.user_firstname
+            value : this.cust_street
         },{ 
-            label : 'Inspection Tech Last Name',
-            fieldname : 'cf_tech_last_name',
+            label : 'Street Address Line 2',
+            fieldname : 'cf_scf_street_add_2',
             uitype : 1,
             typeofdata : 'V~O',
-            value : this.user_lastname,
         },{ 
-            label : 'Inspection Type',
-            fieldname : 'cf_inspection_type',
+            label : 'City',
+            fieldname : 'cf_scf_city',
+            uitype : 1,
+            typeofdata : 'V~O',
+            value: this.cust_city
+        },{ 
+            label : 'State / Province',
+            fieldname : 'cf_scf_state',
+            uitype : 1,
+            typeofdata : 'V~O',
+            value : this.cust_state,
+        },{ 
+            label : 'Postal / Zip Code',
+            fieldname : 'cf_scf_zipcode',
+            uitype : 1,
+            typeofdata : 'V~O',
+            value : this.cust_zip,
+        },{ 
+            label : 'Service is For?',
+            fieldname : 'cf_scf_servicefor',
             uitype : 15,
             typeofdata : 'V~O',
-            picklistvalues : ['Footing', 'Lath', 'Sheeting', 'Hole And Trench', 'Misc In-Process', 'Solar', 'Electrical', 'Roof', 'Building', 'Rough', 'Final', 'Other Post-Install'],
+            picklistvalues : ['SunRun', 'Failed inspection', 'Install', 'MPU Install', 'Other'],
         },{ 
-            label : 'Inspection Date',
-            fieldname : 'cf_inspection_date',
-            uitype : 5,
-            typeofdata : 'D~O',
-            value : this.currentdate
-        },{
-            label : 'Inspection Time',
-            fieldname : 'cf_inspection_time',
-            uitype : 2,
+            label : 'Service Type',
+            fieldname : 'cf_scf_service_type',
+            uitype : 33,
             typeofdata : 'V~O',
-            value : this.currenttime
-        },{
-            label : 'Inspection Pass/Fail/Cancel',
-            fieldname : 'cf_inspection',
-            uitype : 15,
-            typeofdata : 'V~O',
-            picklistvalues : ['Pass', 'Fail', 'Cancel'],
+            picklistvalues : ['Paneling', 'System Stringing', 'Conduit Run', 'Electrical Tie-In', 'Replace Inverter', 'Placards', 'Ground Rod', 'Bonding/Grounding', 'Roof Tiles', 'Leak Repair', 'Drate/Solar Breaker', 'Other/See Notes']
         },{ 
-            label : 'Correction Photos',
-            fieldname : 'cf_correction_photos_taken',
-            uitype : 333,
-            typeofdata : 'V~O',
-            value : 'Correction Photos'
-        },{ 
-            label : 'Pass/Fail Notes',
-            fieldname : 'cf_pass_fail_notes',
+            label : 'What work was completed on site?',
+            fieldname : 'cf_scf_work_completed',
             uitype : 19,
             typeofdata : 'V~O',
         },{ 
-            label : 'Job Card',
-            fieldname : 'cf_job_card',
-            uitype : 444,
+            label : 'RMA Case Number if needed',
+            fieldname : 'cf_scf_rma_number',
+            uitype : 19,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Service Complete',
+            fieldname : 'cf_scf_servicecomplete',
+            uitype : 555,
             typeofdata : 'V~O',
             picklistvalues : ['Yes', 'No'],
+        },{ 
+            label : 'Additional Work Needed (Explain)',
+            fieldname : 'cf_scf_additional',
+            uitype : 19,
+            typeofdata : 'V~O',
+        },{ 
+            label : 'Date Submitted',
+            fieldname : 'cf_scf_date_submitted',
+            uitype : 5,
+            typeofdata : 'D~O',
+            value : this.currentdate
+        },{ 
+            label : 'Time Submitted',
+            fieldname : 'cf_scf_time_submitted',
+            uitype : 2,
+            typeofdata : 'T~O',
+            value : this.currenttime
+        },{ 
+            label : 'Service Photos Taken',
+            fieldname : 'cf_scf_service_photos',
+            uitype : 444,
+            typeofdata : 'V~O',
         });
         console.log('inspectionsfieldList == ',this.inspectionsfieldList);
     }
@@ -195,27 +244,14 @@ export class inspectionsform implements OnInit {
     }
 
     openActionInspection(fieldname) {
-        console.log('launching openActionInspection', this.inspectionsfieldList);
-        var inspection_typedetails = this.inspectionsfieldList[7];
-        console.log('inspection_typedetails = ',inspection_typedetails);
-        if(inspection_typedetails.value == undefined || inspection_typedetails.value == ''){
-            this.presentToast('Please select Inspection type');
-            return false;
-        }
-        this.inspection_type = inspection_typedetails.value;
-        if(this.inspection_type == 'Misc In-Process Inspections' ){
-           this.inspection_type =  'Miscellaneous In-Process ';
-        }
-        console.log('appConst.workOrder == ',this.appConst.workOrder);
-
         var data = this.appConst.workOrder[this.serviceid];
+        console.log('appConst.workOrder = ',data);
         var flagmatch = 0;
-        console.log('Inspections name1 == ',this.inspection_type+' Inspections');
         for (var column in data) {
           if (data[column]["photos"] !== undefined) {
             for (var index in data[column]["photos"]) {
                 console.log('Inspections name2 == ',data[column]["photos"][index]["name"]);
-              if (data[column]["photos"][index]["name"] == this.inspection_type+' Inspections') {
+              if (data[column]["photos"][index]["name"] == 'Service Photos Taken') {
                 this.field = column;
                 this.fieldindex = index;
                 flagmatch = 1;
@@ -231,14 +267,9 @@ export class inspectionsform implements OnInit {
             }
           }
         }
-        if(flagmatch == 0){
-            this.presentToast('Please select Inspection type');
-            return false;
-        }
         console.log('field name == ',this.field);
         console.log('field index == ',this.fieldindex);
         console.log('section == ',this.section);
-        
         this.actionSheet.show(this.actionOptions).then((buttonIndex: number) => {
             console.log('Option pressed', buttonIndex);
             if (buttonIndex == 1) {
@@ -265,7 +296,7 @@ export class inspectionsform implements OnInit {
                     // If it's base64 (DATA_URL):
                     let base64Image = 'data:image/png;base64,' + imageData;
                     this.imgpov.setImage(imageData);
-                    this.openModal(this.serviceid, base64Image, this.field,this.fieldindex, this.section, fieldname);
+                    this.openModal(this.serviceid, base64Image, this.field, this.fieldindex, this.section, fieldname);
                     // TODO: need code to upload to server here.
                     // On success: show toast
                     //this.presentToastPrimary('Photo uploaded and added! \n' + imageData);
@@ -281,20 +312,19 @@ export class inspectionsform implements OnInit {
             let base64Image = 'data:image/png;base64,' + imageData;
             //console.log(err);
             this.imgpov.setImage(imageData);
-            this.openModal(this.serviceid, base64Image, this.field,this.fieldindex, this.section, fieldname);
+            this.openModal(this.serviceid, base64Image, this.field, this.fieldindex, this.section, fieldname);
             this.presentToast(`Operation failed! \n` + err);
         });
     }
     async openModal(serviceid, base64Image,columnname,index, section, fieldname) {
-        console.log('openModal',section);
         const modal = await this.modalCtrl.create({
             component: ImageModalPage,
             componentProps: {
                 "base64Image": base64Image,
                 "paramTitle": "Upload Photo",
                 "serviceid": serviceid,
-                "columnname": columnname,
                 "user_id": this.user_id,
+                "columnname": columnname,
                 "columnIndex": index,
                 "subSection": section,
             }
@@ -304,14 +334,8 @@ export class inspectionsform implements OnInit {
             this.dataReturned = dataReturned.data;
             if (this.dataReturned !== null && this.dataReturned != 'Wrapped Up!') {
                 console.log('dataReturned = ',this.dataReturned);
-                console.log('fieldname = ',fieldname);
-                if(fieldname == 'cf_job_card'){
-                    this.instectionjobcard.push(this.dataReturned);
-                    console.log('instectionjobcard = ',this.instectionjobcard);
-                }else{
-                    this.instectionservice.push(this.dataReturned);
-                    console.log('instectionservice = ',this.instectionservice);
-                }
+                this.instectionservice.push(this.dataReturned);
+                console.log('instectionservice = ',this.instectionservice);
             }
         });
 
@@ -338,8 +362,8 @@ export class inspectionsform implements OnInit {
         var fieldlist = [];
         var fieldlistmassge = '';
         for (var i = 0; i < this.inspectionsfieldList.length; ++i) {
-            if(this.inspectionsfieldList[i]["fieldname"] == 'cf_job_card'){
-                if(this.instectionjobcard.length < 1){
+            if(this.inspectionsfieldList[i]["fieldname"] == 'cf_scf_service_photos'){
+                if(this.instectionservice.length < 1){
                     var fieldlistmassge1 = 'Please upload Job Card.';
                     this.presentToast(
                         fieldlistmassge1
@@ -366,7 +390,7 @@ export class inspectionsform implements OnInit {
             return false;
         }
     }
-    async submitinspectionsform(){
+    async submitservicecompletionform(){
         var formflag = await this.checkrequiredfields();
         if(formflag){
             var headers = new HttpHeaders();
@@ -375,7 +399,7 @@ export class inspectionsform implements OnInit {
             headers.append("Access-Control-Allow-Origin", "*");
             this.showLoading();
             var params = {
-                'inspectionsfieldList': JSON.stringify(this.inspectionsfieldList),
+                'servicecompletionfieldList': JSON.stringify(this.inspectionsfieldList),
                 'workorderfielddata': JSON.stringify(this.appConst.workOrder[this.serviceid][this.field]),
                 'recordid': this.serviceid,
                 'columnname': this.field,
@@ -384,7 +408,7 @@ export class inspectionsform implements OnInit {
                 'logged_in_user': this.user_id,
             };
             this.httpClient
-            .post(this.apiurl + "saveInspectionform.php", params, {
+            .post(this.apiurl + "saveServiceCompletionForm.php", params, {
               headers: headers,
               observe: "response",
             })
@@ -393,13 +417,14 @@ export class inspectionsform implements OnInit {
                 this.hideLoading();
                 var success = data["body"]["success"];
                 console.log('data return arr == ',data);
-
+                
                 if (success == true) {
                     console.log("Form PDF is Upload successfully");
 
                     var images_details = data["body"]["data"]["images_details"];
                     this.appConst.workOrder[this.serviceid][this.field] = images_details;
                     this.appConst.workOrder[this.serviceid][this.field]["complete_category"] = 'yes';
+                    this.appConst.workOrder[this.serviceid][this.field]["forms_count"] = this.appConst.workOrder[this.serviceid][this.field]["forms_count"]+1;
 
                     this.modalController.dismiss({});
                 } else {
@@ -453,11 +478,6 @@ export class inspectionsform implements OnInit {
             if(this.inspectionsfieldList[i]["value"] != '' && this.inspectionsfieldList[i]["value"] != undefined){
                 flag++;
             }
-        }
-        if(flag == this.inspectionsfieldList.length){
-            this.btnsubmitinspectionsform = 1;
-        }else{
-            //this.btnsubmitinspectionsform = 0;
         }
         console.log('setValuetoInstallfield - flag = ',flag);
     }

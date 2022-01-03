@@ -68,7 +68,7 @@
             <!-- editable fields -->
             <div *ngIf="isCompleteWO == 0">
                 <ion-item-group *ngFor="let blockservice of servicedetail">
-                    <div *ngIf="blockservice.blockname != 'Array Information'">
+                    <div *ngIf="blockservice.blockname != 'Array Information' && (ISServicesForm != 1 || blockservice.blockname == 'Services')">
                     <ion-item class="blockheader_2" lines="none">
                     <ion-label style="font-size: 19px;" class="ion-padding blockheader" (click)="toggleSection(blockservice.blockname)">{{blockservice.blockname}}</ion-label>
                     <ion-icon *ngIf="!blockGroups[blockservice.blockname].open" name="arrow-forward" slot="end"></ion-icon>
@@ -196,26 +196,29 @@
 
                                     <ion-grid *ngIf="service.json">
                                         <ion-row>
-                                            <ion-col *ngIf="blockservice.blockname != 'Inspection Forms'" style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
+                                            <ion-col *ngIf="blockservice.blockname != 'Inspection Forms' && blockservice.blockname != 'Services' " style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
                                                 <ion-text [ngClass]="{'green-text' : completedFields[service.columnname] === true}">
                                                     {{appConst.workOrder[serviceid][service.columnname]['image_count']}} Photos Added
                                                     <div *ngIf="completedFields[service.columnname] === true"  class = "green-text">Section Completed</div>
                                                 </ion-text>
                                             </ion-col>
-                                            <ion-col *ngIf="blockservice.blockname == 'Inspection Forms' && service.fieldlabel != 'New Inspection'" style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
+                                            <ion-col *ngIf="(blockservice.blockname == 'Inspection Forms' || blockservice.blockname == 'Services') && service.fieldlabel != 'New Inspection'  && service.fieldlabel != 'New Service Form' " style="text-align: center;align-items: center!important;display: flex;justify-content:center !important;">
                                                 <ion-text [ngClass]="{'green-text' : completedFields[service.columnname] === true}">
                                                     {{appConst.workOrder[serviceid][service.columnname]['forms_count']}} Forms Submitted
                                                 </ion-text>
                                             </ion-col>
 
                                             <ion-col>
-                                                <div *ngIf="blockservice.blockname != 'Inspection Forms'"  class = "photo-icon" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)">
-                                                    <span>Open Section</span>
+                                                <div *ngIf="blockservice.blockname != 'Inspection Forms' && blockservice.blockname != 'Services' "  class = "photo-icon" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)">
+                                                    <span>Open Section-1</span>
                                                 </div>
-                                                <div *ngIf="service.fieldlabel == 'Submitted In-Process Inspections' || service.fieldlabel == 'Submitted Final Inspections'"  class = "photo-icon" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname, true)">
+                                                <div *ngIf="service.fieldlabel == 'Submitted In-Process Inspections' || service.fieldlabel == 'Submitted Final Inspections' || service.fieldlabel == 'Submitted Service Completion'"  class = "photo-icon" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname, true)">
                                                     <span>Open Section</span>
                                                 </div>
                                                 <div *ngIf="service.fieldlabel == 'New Inspection'"  class = "photo-icon" style="width: 100%;" (click)="openInspectionsForm(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)">
+                                                    <span>Add New</span>
+                                                </div>
+                                                <div *ngIf="service.fieldlabel == 'New Service Form'"  class = "photo-icon" style="width: 100%;" (click)="openServiceCompletionForm(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)">
                                                     <span>Add New</span>
                                                 </div>
                                             </ion-col>
@@ -445,7 +448,7 @@
                 <br>
 
                 <div class="button-grouping ion-padding">
-                    <ion-button (click)="saveWO(workorderdetail.workorderid)" expand="full"  expand="block" color="secondary" disabled={{confirmButtonDisabled}}>Confirm Solar Project Is Complete.
+                    <ion-button (click)="saveWO(workorderdetail.workorderid,true)" expand="full"  expand="block" color="secondary" disabled={{confirmButtonDisabled}}>Confirm Solar Project Is Complete.
                     </ion-button>
                 </div>
             </div>

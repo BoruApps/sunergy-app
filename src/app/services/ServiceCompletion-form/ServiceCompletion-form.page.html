@@ -54,46 +54,13 @@
                                 </div>
                             </ion-select>
                         </div>
-
-                        <ion-list lines="none" *ngIf="fieldDetail.fieldname == 'cf_correction_photos_taken'">
-                            <ul>
-                                <li class="checklist-thumb-list">
-                                    <ion-item class="item-accordion">
-                                        <ion-thumbnail *ngFor="let _img of instectionservice" class="checklist-thumb">
-                                            <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.image_path}}">
-                                        </ion-thumbnail>
-                                        <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionInspection(fieldDetail.fieldname)">
-                                            <ion-icon style="padding: 0px;" size="large" name="add" ></ion-icon>
-                                            <ion-icon style="padding: 0px;" size="large" name="camera" ></ion-icon>
-                                        </ion-button>
-                                    </ion-item>
-                                </li>
-                            </ul>
-                        </ion-list>
-                    </div>
-                    <div *ngIf="fieldDetail.uitype == '333'">
-                        <ion-list lines="none" *ngIf="fieldDetail.fieldname == 'cf_correction_photos_taken'">
-                            <ul>
-                                <li class="checklist-thumb-list">
-                                    <ion-item class="item-accordion">
-                                        <ion-thumbnail *ngFor="let _img of instectionservice" class="checklist-thumb"> 
-                                            <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.image_path}}">
-                                        </ion-thumbnail>
-                                        <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionInspection(fieldDetail.fieldname)">
-                                            <ion-icon style="padding: 0px;" size="large" name="add" ></ion-icon>
-                                            <ion-icon style="padding: 0px;" size="large" name="camera" ></ion-icon>
-                                        </ion-button>
-                                    </ion-item>
-                                </li>
-                            </ul>
-                        </ion-list>
                     </div>
                     <div *ngIf="fieldDetail.uitype == '444'">
                         <ion-list lines="none">
                             <ul>
                                 <li class="checklist-thumb-list">
                                     <ion-item class="item-accordion">
-                                        <ion-thumbnail *ngFor="let _img of instectionjobcard" class="checklist-thumb">
+                                        <ion-thumbnail *ngFor="let _img of instectionservice" class="checklist-thumb"> 
                                             <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.image_path}}">
                                         </ion-thumbnail>
                                         <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionInspection(fieldDetail.fieldname)">
@@ -123,8 +90,8 @@
             </ion-item-group>
     </form>
     <div style="margin-bottom: 25px;text-align: center;">
-        <ion-button type="button" class="add-image" color="secondary" (click)="submitinspectionsform()" [disabled]="!btnsubmitinspectionsform">
-            Submit inspections Form
+        <ion-button type="button" class="add-image" color="secondary" (click)="submitservicecompletionform()">
+            Submit Service Completion Form
         </ion-button>
     </div>
 </ion-content>

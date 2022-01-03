@@ -154,6 +154,7 @@ export class ImageModalPage implements OnInit {
     @ViewChild('img',{static:false}) img: ElementRef;
     ngOnInit() {
         //console.table(this.navParams);
+        console.log('ngOnInit ========== appConst.workOrder ========== ',this.appConst.workOrder);
         this.modelId = this.navParams.data.paramID;
         this.serviceid = this.navParams.data.serviceid;
         this.columnname = this.navParams.data.columnname;
@@ -646,7 +647,7 @@ export class ImageModalPage implements OnInit {
                                     documentid:data['body']['data']['image_id']
                                 });
                             }
-                            console.log(this.appConst.workOrder);
+                            console.log(' ========== appConst.workOrder ========== ',this.appConst.workOrder);
                             this.presentToastPrimary('Photo saved successfully\n');
                             this.closeModal(data['body']['data']);
                         }

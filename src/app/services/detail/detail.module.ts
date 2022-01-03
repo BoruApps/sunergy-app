@@ -22,6 +22,7 @@ import { ImageGallery } from "../image-gallery/image-gallery.page";
 import { ImageSlider } from "../image-slider/image-slider.page";
 import { InstallationForm } from "../Installation-Form/Installation-Form.page";
 import { inspectionsform } from "../inspections-form/inspections-form.page";
+import { servicecompletionform } from "../ServiceCompletion-form/ServiceCompletion-form.page";
 import { ElectricalInstallationForm } from "../ElectricalInstallation-Form/ElectricalInstallation-Form.page";
 import { RoofInstallationForm } from "../RoofInstallation-Form/RoofInstallation-Form.page";
 const routes: Routes = [
@@ -38,8 +39,8 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DetailPage, ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery,ImageSlider,imagePreview,InstallationForm,inspectionsform,ElectricalInstallationForm,RoofInstallationForm],
-    entryComponents: [ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery,ImageSlider,imagePreview,InstallationForm,inspectionsform,ElectricalInstallationForm,RoofInstallationForm],
+  declarations: [DetailPage, ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery,ImageSlider,imagePreview,InstallationForm,inspectionsform,ElectricalInstallationForm,RoofInstallationForm,servicecompletionform],
+    entryComponents: [ImageModalPage, ChecklistModalPage, ImageConfirmModalPage,ImageGallery,ImageSlider,imagePreview,InstallationForm,inspectionsform,ElectricalInstallationForm,RoofInstallationForm,servicecompletionform],
     providers: [
         StatusBar,
         SplashScreen,

@@ -29,6 +29,7 @@ import { InstallationForm } from "../Installation-Form/Installation-Form.page";
 import { ElectricalInstallationForm } from "../ElectricalInstallation-Form/ElectricalInstallation-Form.page";
 import { RoofInstallationForm } from "../RoofInstallation-Form/RoofInstallation-Form.page";
 import { inspectionsform } from "../inspections-form/inspections-form.page";
+import { servicecompletionform } from "../ServiceCompletion-form/ServiceCompletion-form.page";
 
 @Component({
   selector: "app-detail",
@@ -72,6 +73,8 @@ export class DetailPage implements OnInit {
   activityid: string;
   isCompleteWO: number = 0;
   ISInstallationForm: number = 0;
+  ISServicesForm: number = 0;
+  ignoreCompletedFields = ['cf_2303','cf_2192', 'cf_2313'];
   public workorderdetail: any = { workorderid: 0 };
   public servicedetail: any[] = [];
   public itemgrid: any[] = [];
@@ -211,6 +214,7 @@ export class DetailPage implements OnInit {
           console.log("getWorkOrderDetail response was", success);
           if (success == true) {
             var workorder = data["body"]["data"];
+            console.log('==== workorder ====',workorder);
             this.inspection_type = data["body"]["inspection_type"];
             this.activitytype = data["body"]["activitytype"];
             console.log('activitytype == ',this.activitytype);
@@ -307,12 +311,17 @@ export class DetailPage implements OnInit {
                           "forms_count"
                           ] = totalForms;
 
-                      this.completedFields[fieldkey] =
-                        this.appConst.workOrder[this.serviceid][fieldkey][
-                          "complete_category"
-                        ] == "yes"
-                          ? true
-                          : false;
+                      if (!this.ignoreCompletedFields.includes(fieldkey)){
+                          console.log('complete_category - Test-1',this.appConst.workOrder[this.serviceid][fieldkey]);
+                          console.log('complete_category - Test-1.5',this.appConst.workOrder[this.serviceid]);
+                          this.completedFields[fieldkey] =
+                              this.appConst.workOrder[this.serviceid][fieldkey][
+                                  "complete_category"
+                                  ] == "yes"
+                                  ? true
+                                  : false;
+                          console.log('complete_category - Test-2',this.completedFields[fieldkey] , this.appConst.workOrder[this.serviceid][fieldkey]["complete_category"]);
+                      }
 
                       if (
                         workorder[key][fieldkey].fieldlabel ==
@@ -333,18 +342,23 @@ export class DetailPage implements OnInit {
                   }
                 }
                 
-                if(key.includes('Ginlong') || key.includes('Tesla') || key.includes('Enphase') || key.includes('SolarEdge') || key.includes('Delta')){
-                  this.ISInstallationForm = 1;
-                  key = 'Installation';
+                if(key != 'Installation') {
+                  if(key.includes('Ginlong') || key.includes('Tesla') || key.includes('Enphase') || key.includes('SolarEdge') || key.includes('Delta')){
+                    this.ISInstallationForm = 1;
+                    key = 'Installation';
+                  }
+                  if(key === 'Services'){
+                    this.ISServicesForm = 1;
+                  }
+                  this.servicedetail.push({
+                    blockname: key,
+                    fields: fieldArray,
+                  });
                 }
-                this.servicedetail.push({
-                  blockname: key,
-                  fields: fieldArray,
-                });
                 this.blockGroups[key] = { open: false };
               }
             }
-
+            console.log('completedFields',this.completedFields)
             console.log("workOrder", this.appConst.workOrder[serviceid]);
             console.log("servicedetail", this.servicedetail);
             console.log("arrayfields", this.arrayfields);
@@ -368,6 +382,8 @@ export class DetailPage implements OnInit {
         logged_in_user: this.userinfo.id,
         serviceid: this.serviceid,
         currentdate: this.workorderdetail.currentdate,
+        cust_firstname: this.workorderdetail.firstname,
+        cust_lastname: this.workorderdetail.lastname,
         blockname: blockname,
       },
     });
@@ -380,12 +396,15 @@ export class DetailPage implements OnInit {
             this.workorderdetail.cf_formsubmit_count = this.workorderdetail.cf_formsubmit_count+1;
             this.workorderdetail.cf_isformsubmittedtoday = true;
         }
+        this.saveWO(this.workorderdetail.workorderid);
     });
     return await modal_InstallationForm.present();
   }
 
   async openElectricalInstallationForm(blockname){
     console.log('serviceid == ', this.serviceid);
+    console.log('workorderdetail == ', this.workorderdetail);
+    console.log('workorderdetail cf_job_id == ', this.workorderdetail.cf_job_id);
     const modal_ElectricalInstallationForm = await this.modalCtrl.create({
       component: ElectricalInstallationForm,
       componentProps: {
@@ -393,6 +412,12 @@ export class DetailPage implements OnInit {
         logged_in_user: this.userinfo.id,
         serviceid: this.serviceid,
         currentdate: this.workorderdetail.currentdate,
+        fulldatetime: this.workorderdetail.fulldatetime,
+        cf_job_id: this.workorderdetail.cf_job_id,
+        cust_firstname: this.workorderdetail.firstname,
+        cust_lastname: this.workorderdetail.lastname,
+        user_firstname: this.userinfo.first_name,
+        user_lastname: this.userinfo.last_name,
         blockname: blockname,
       },
     });
@@ -636,12 +661,49 @@ export class DetailPage implements OnInit {
         paramTitle: 'Solar Inspections Form',
         logged_in_user: this.userinfo.id,
         serviceid: record_id,
+        currentdate: this.workorderdetail.currentdate,
+        cust_firstname: this.workorderdetail.firstname,
+        cust_lastname: this.workorderdetail.lastname,
+        user_firstname: this.userinfo.first_name,
+        user_lastname: this.userinfo.last_name,
+        fulldatetime: this.workorderdetail.fulldatetime,
       },
     });
     modal_inspectionsform.onDidDismiss().then((dataReturned) => {
       console.log('dataReturned', dataReturned);
+      this.saveWO(this.workorderdetail.workorderid);
     });
     return await modal_inspectionsform.present();
+  }
+
+  async openServiceCompletionForm(
+    record_id,
+    inspection_type,
+    defaultContent,
+    currentValue,
+    title,
+    columnName,
+    isinspection = false){
+    console.log('serviceid == ', this.serviceid);
+    console.log('workorderdetail == ', this.workorderdetail);
+    console.log('userinfo == ', this.userinfo);
+    const modal_servicecompletionform = await this.modalCtrl.create({
+      component: servicecompletionform,
+      componentProps: {
+        paramTitle: 'Service Completion Form',
+        logged_in_user: this.userinfo.id,
+        serviceid: record_id,
+        workorderdetail: this.workorderdetail,
+        user_firstname: this.userinfo.first_name,
+        user_lastname: this.userinfo.last_name,
+        user_email: this.userinfo.email1,
+      },
+    });
+    modal_servicecompletionform.onDidDismiss().then((dataReturned) => {
+      console.log('dataReturned', dataReturned);
+      this.saveWO(this.workorderdetail.workorderid);
+    });
+    return await modal_servicecompletionform.present();
   }
   async openChecklist(
     record_id,
@@ -686,24 +748,16 @@ export class DetailPage implements OnInit {
             } else {
               this.confirmButtonDisabled = false;
               for (let cfield in this.completedFields) {
-                console.log("cfield", cfield);
-                console.log("optionalFieldId", this.optionalFieldId);
-                console.log(
-                  "this.completedFields[cfield]",
-                  this.completedFields[cfield]
-                );
+
                 if (
                   cfield != this.optionalFieldId &&
                   this.completedFields[cfield] === false
                 ) {
                   this.confirmButtonDisabled = true;
                 }
-                console.log(
-                  "confirmButtonDisabled",
-                  this.confirmButtonDisabled
-                );
               }
             }
+              console.log("this.completedFields", this.completedFields);
           }
         }
       }
@@ -821,19 +875,9 @@ export class DetailPage implements OnInit {
     return await modal.present();
   }
 
-  saveWO(worecord) {
+  saveWO(worecord,reqStatus=false) {
     var data = this.appConst.workOrder[this.serviceid];
-    var status = true;
-    for (var column in data) {
-      console.log(data[column]);
-      if (data[column]["photos"] !== undefined) {
-        for (var index in data[column]["photos"]) {
-          if (data[column]["photos"][index]["photos"].length == 0) {
-            status = false;
-          }
-        }
-      }
-    }
+
     var data_stringified = JSON.stringify(data);
     var logged_in_uid = this.userinfo.id;
     console.log("attempting to submitting data to vtiger", worecord, data);
@@ -842,7 +886,7 @@ export class DetailPage implements OnInit {
       updates: data_stringified,
       logged_in_user: logged_in_uid,
       activityid: this.activityid,
-      status: status,
+      status: reqStatus,
     };
     console.log(params);
     console.log("params being sent", params);

@@ -28,6 +28,12 @@ export class ElectricalInstallationForm implements OnInit {
     apiurl: any;
     dataReturned: any;
     currentdate: any;
+    fulldatetime: any;
+    cf_job_id: any;
+    cust_firstname: any;
+    cust_lastname: any;
+    user_firstname: any;
+    user_lastname: any;
     InstallfieldList: any[] = [];
     localInstallform: any;
     localInstallformdate: any;
@@ -80,6 +86,13 @@ export class ElectricalInstallationForm implements OnInit {
         this.user_id = this.navParams.data.logged_in_user;
         this.modalTitle = this.navParams.data.paramTitle;
         this.currentdate = this.navParams.data.currentdate;
+        this.fulldatetime = this.navParams.data.fulldatetime;
+        this.cf_job_id = this.navParams.data.cf_job_id;
+        console.log('cf_job_id ==== ',this.cf_job_id);
+        this.cust_firstname = this.navParams.data.cust_firstname;
+        this.cust_lastname = this.navParams.data.cust_lastname;
+        this.user_firstname = this.navParams.data.user_firstname;
+        this.user_lastname = this.navParams.data.user_lastname;
         this.blockname = this.navParams.data.blockname;
         console.log('blockname == ',this.blockname);
         this.InstallfieldList = [];
@@ -95,22 +108,32 @@ export class ElectricalInstallationForm implements OnInit {
             label : 'Job Number',
             fieldname : 'cf_ele_job_number',
             uitype : 1,
-            typeofdata : 'V~O'
+            typeofdata : 'V~O',
+            value: this.cf_job_id
         },{ 
-            label : 'DateTime',
+            label : 'Date',
             fieldname : 'cf_ele_datetime',
             uitype : 5,
             typeofdata : 'D~O',
-        },{ 
+            value:this.currentdate
+        },{
+            label : 'Time',
+            fieldname : 'cf_ele_time',
+            uitype : 2,
+            typeofdata : 'T~O',
+            value: this.fulldatetime,
+        },{
             label : 'Customer First Name',
             fieldname : 'cf_ele_cut_first_name',
             uitype : 1,
-            typeofdata : 'V~O'
+            typeofdata : 'V~O',
+            value: this.cust_firstname,
         },{ 
             label : 'Customer Last Name',
             fieldname : 'cf_ele_cut_last_name',
             uitype : 1,
-            typeofdata : 'V~O'
+            typeofdata : 'V~O',
+            value: this.cust_lastname,
         },{ 
             label : 'Was Customer Home?',
             fieldname : 'cf_ele_was_cus_home',
@@ -492,14 +515,42 @@ export class ElectricalInstallationForm implements OnInit {
         console.log('flag = ',flag);
         console.log('InstallfieldList = ',this.InstallfieldList);
     }
+    getDataDiff(startDate, endDate) {
+        var diff = endDate.getTime() - startDate.getTime();
+        var days = Math.floor(diff / (60 * 60 * 24 * 1000));
+        var hours = Math.floor(diff / (60 * 60 * 1000)) - (days * 24);
+        var minutes = Math.floor(diff / (60 * 1000)) - ((days * 24 * 60) + (hours * 60));
+        var seconds = Math.floor(diff / 1000) - ((days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60));
+        return { day: days, hour: hours, minute: minutes, second: seconds };
+    }
     setValuetoInstallfield(fieldname, value){
         var flag = 0;
+        var timearrived = '';
+        var timefinished = '';
+        var old_hours_site = '';
         for (var i = 0; i < this.InstallfieldList.length; ++i) {
             if(this.InstallfieldList[i].fieldname === fieldname){
                 this.InstallfieldList[i]["value"] = value;
             }
             if(this.InstallfieldList[i]["value"] != '' && this.InstallfieldList[i]["value"] != undefined){
                 flag++;
+            }
+            if(this.InstallfieldList[i].fieldname == 'cf_ele_time_arrived'){
+                timearrived = this.InstallfieldList[i]["value"]
+            }
+            if(this.InstallfieldList[i].fieldname == 'cf_ele_time_finished'){
+                timefinished = this.InstallfieldList[i]["value"]
+            }
+            if(this.InstallfieldList[i].fieldname == 'cf_ele_hours_on_site'){
+                old_hours_site = this.InstallfieldList[i]["value"]
+            }
+        }
+        if(timefinished != '' && timefinished != undefined && timearrived != '' && timearrived != undefined){
+            var timeDiff = this.getDataDiff(new Date(timearrived), new Date(timefinished));
+            console.log('timeDiff == ',timeDiff);
+            var hours_site = timeDiff.hour+" hours "+ timeDiff.minute +" minutes ";
+            if(hours_site != old_hours_site){
+                this.setValuetoInstallfield('cf_ele_hours_on_site', hours_site);
             }
         }
         console.log('setValuetoInstallfield - flag = ',flag);
