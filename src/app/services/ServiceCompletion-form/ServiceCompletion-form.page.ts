@@ -25,17 +25,19 @@ export class servicecompletionform implements OnInit {
     user_id: any;
     apiurl: any;
     dataReturned: any;
-    workorderdetail: any[] = [];
     currentdate: any;
     cust_firstname: any;
     cust_lastname: any;
     user_firstname: any;
     user_lastname: any;
+    cust_street: any;
+    cust_city: any;
+    cust_state: any;
+    cust_zip: any;
     user_email: any;
     currenttime: any;
-    inspection_type: any;
-    inspectionsfieldList: any[] = [];
-    instectionservice: any[] = [];
+    formfieldList: any[] = [];
+    formPhotoservice: any[] = [];
     field: any;
     fieldindex: any;
     section: any;
@@ -90,20 +92,19 @@ export class servicecompletionform implements OnInit {
         this.serviceid = this.navParams.data.serviceid;
         this.user_id = this.navParams.data.logged_in_user;
         this.modalTitle = this.navParams.data.paramTitle;
-        this.workorderdetail = this.navParams.data.workorderdetail;
-        this.currentdate = this.workorderdetail.currentdate;
-        this.currenttime = this.workorderdetail.fulldatetime;
-        this.cust_firstname = this.workorderdetail.firstname;
-        this.cust_lastname = this.workorderdetail.lastname;
-        this.cust_street = this.workorderdetail.mailingstreet;
-        this.cust_city = this.workorderdetail.mailingcity;
-        this.cust_state = this.workorderdetail.mailingstate;
-        this.cust_zip = this.workorderdetail.mailingzip;
+        this.currentdate = this.navParams.data.currentdate;
+        this.currenttime = this.navParams.data.currenttime;
+        this.cust_firstname = this.navParams.data.cust_firstname;
+        this.cust_lastname = this.navParams.data.cust_lastname;
+        this.cust_street = this.navParams.data.cust_street;
+        this.cust_city = this.navParams.data.cust_city;
+        this.cust_state = this.navParams.data.cust_state;
+        this.cust_zip = this.navParams.data.cust_zip;
         this.user_firstname = this.navParams.data.user_firstname;
         this.user_lastname = this.navParams.data.user_lastname;
         this.user_email = this.navParams.data.user_email;
-        this.inspectionsfieldList = [];
-        this.inspectionsfieldList.push({ 
+        this.formfieldList = [];
+        this.formfieldList.push({ 
             label : 'Sunergy Office Location',
             fieldname : 'cf_scf_office_location',
             uitype : 15,
@@ -189,7 +190,7 @@ export class servicecompletionform implements OnInit {
         },{ 
             label : 'Service Type',
             fieldname : 'cf_scf_service_type',
-            uitype : 33,
+            uitype : 321,
             typeofdata : 'V~O',
             picklistvalues : ['Paneling', 'System Stringing', 'Conduit Run', 'Electrical Tie-In', 'Replace Inverter', 'Placards', 'Ground Rod', 'Bonding/Grounding', 'Roof Tiles', 'Leak Repair', 'Drate/Solar Breaker', 'Other/See Notes']
         },{ 
@@ -231,7 +232,7 @@ export class servicecompletionform implements OnInit {
             uitype : 444,
             typeofdata : 'V~O',
         });
-        console.log('inspectionsfieldList == ',this.inspectionsfieldList);
+        console.log('formfieldList == ',this.formfieldList);
     }
 
     loading: any;
@@ -243,14 +244,13 @@ export class servicecompletionform implements OnInit {
         return await this.loading.present();
     }
 
-    openActionInspection(fieldname) {
+    openActionservice(fieldname) {
         var data = this.appConst.workOrder[this.serviceid];
         console.log('appConst.workOrder = ',data);
         var flagmatch = 0;
         for (var column in data) {
           if (data[column]["photos"] !== undefined) {
             for (var index in data[column]["photos"]) {
-                console.log('Inspections name2 == ',data[column]["photos"][index]["name"]);
               if (data[column]["photos"][index]["name"] == 'Service Photos Taken') {
                 this.field = column;
                 this.fieldindex = index;
@@ -334,8 +334,8 @@ export class servicecompletionform implements OnInit {
             this.dataReturned = dataReturned.data;
             if (this.dataReturned !== null && this.dataReturned != 'Wrapped Up!') {
                 console.log('dataReturned = ',this.dataReturned);
-                this.instectionservice.push(this.dataReturned);
-                console.log('instectionservice = ',this.instectionservice);
+                this.formPhotoservice.push(this.dataReturned);
+                console.log('formPhotoservice = ',this.formPhotoservice);
             }
         });
 
@@ -361,27 +361,27 @@ export class servicecompletionform implements OnInit {
         var flag = 0;
         var fieldlist = [];
         var fieldlistmassge = '';
-        for (var i = 0; i < this.inspectionsfieldList.length; ++i) {
-            if(this.inspectionsfieldList[i]["fieldname"] == 'cf_scf_service_photos'){
-                if(this.instectionservice.length < 1){
-                    var fieldlistmassge1 = 'Please upload Job Card.';
+        for (var i = 0; i < this.formfieldList.length; ++i) {
+            if(this.formfieldList[i]["fieldname"] == 'cf_scf_service_photos'){
+                if(this.formPhotoservice.length < 1){
+                    var fieldlistmassge1 = 'Please upload Image for '+this.formfieldList[i]["label"];
                     this.presentToast(
                         fieldlistmassge1
                     );
                     return false;
                 }else{
-                    this.inspectionsfieldList[i]["value"] = 'image';
+                    this.formfieldList[i]["value"] = 'image';
                 }
             }
-            if(this.inspectionsfieldList[i]["value"] != '' && this.inspectionsfieldList[i]["value"] != undefined){
+            if((this.formfieldList[i]["value"] != '' && this.formfieldList[i]["value"] != undefined)|| this.formfieldList[i]["fieldname"] == 'cf_scf_street_add_2' ){
                 flag++;
             }else{
-                fieldlist.push(this.inspectionsfieldList[i]["label"]);
-                fieldlistmassge += 'This field is Required '+this.inspectionsfieldList[i]["label"] +'\n';
+                fieldlist.push(this.formfieldList[i]["label"]);
+                fieldlistmassge += 'This field is Required '+this.formfieldList[i]["label"] +'\n';
             }
         }
 
-        if(flag == this.inspectionsfieldList.length){
+        if(flag == this.formfieldList.length){
             return true;
         }else{
             this.presentToast(
@@ -399,7 +399,7 @@ export class servicecompletionform implements OnInit {
             headers.append("Access-Control-Allow-Origin", "*");
             this.showLoading();
             var params = {
-                'servicecompletionfieldList': JSON.stringify(this.inspectionsfieldList),
+                'servicecompletionfieldList': JSON.stringify(this.formfieldList),
                 'workorderfielddata': JSON.stringify(this.appConst.workOrder[this.serviceid][this.field]),
                 'recordid': this.serviceid,
                 'columnname': this.field,
@@ -466,16 +466,16 @@ export class servicecompletionform implements OnInit {
         console.log('tagName = ',event.target.tagName);
         console.log('fieldname = ',fieldname);
         console.log('fieldvalue = ',fieldvalue);
-        console.log('inspectionsfieldList == ',this.inspectionsfieldList);
+        console.log('formfieldList == ',this.formfieldList);
   }
     setValuetoInstallfield(fieldname, value){
         var flag = 0;
-        for (var i = 0; i < this.inspectionsfieldList.length; ++i) {
-            if(this.inspectionsfieldList[i].fieldname === fieldname){
-                this.inspectionsfieldList[i]["value"] = '';
-                this.inspectionsfieldList[i]["value"] = value;
+        for (var i = 0; i < this.formfieldList.length; ++i) {
+            if(this.formfieldList[i].fieldname === fieldname){
+                this.formfieldList[i]["value"] = '';
+                this.formfieldList[i]["value"] = value;
             }
-            if(this.inspectionsfieldList[i]["value"] != '' && this.inspectionsfieldList[i]["value"] != undefined){
+            if(this.formfieldList[i]["value"] != '' && this.formfieldList[i]["value"] != undefined){
                 flag++;
             }
         }

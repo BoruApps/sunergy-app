@@ -10,10 +10,10 @@
 </ion-header>
 <ion-content>
     <form #form="ngForm" class="ion-padding">
-            <ion-item-group class="item-background-color" *ngFor="let fieldDetail of inspectionsfieldList; let key=index">
+            <ion-item-group class="item-background-color" *ngFor="let fieldDetail of formfieldList; let key=index">
                 <ion-list lines="none" style="padding: 10px;">
                     <ion-text>
-                        {{fieldDetail.label}} <span class="redColor" *ngIf="fieldDetail.fieldname != 'cf_correction_photos_taken'">*</span>
+                        {{fieldDetail.label}} <span class="redColor" *ngIf="fieldDetail.fieldname != 'cf_scf_street_add_2'">*</span>
                     </ion-text>
                     <ion-input *ngIf="fieldDetail.uitype == '1'" type="text" name="{{fieldDetail.fieldname}}" placeholder="Press Here To Type" (ionChange)="addUpdate($event)" value="{{fieldDetail.value}}">
                     </ion-input>
@@ -55,15 +55,25 @@
                             </ion-select>
                         </div>
                     </div>
+                    <div *ngIf="fieldDetail.uitype == '321'">
+                        <div  class="picklist-drowpdown">
+                            <ion-select multiple="true" style="color: black;background: white;" lines="none" (ionChange)="addUpdate($event)" name="{{fieldDetail.fieldname}}" value="{{fieldDetail.value}}">
+                                <ion-select-option value="" selected="selected">Choose An Option</ion-select-option>
+                                <div *ngFor="let picklist of fieldDetail.picklistvalues">
+                                    <ion-select-option value="{{picklist}}">{{picklist}}</ion-select-option>
+                                </div>
+                            </ion-select>
+                        </div>
+                    </div>
                     <div *ngIf="fieldDetail.uitype == '444'">
                         <ion-list lines="none">
                             <ul>
                                 <li class="checklist-thumb-list">
                                     <ion-item class="item-accordion">
-                                        <ion-thumbnail *ngFor="let _img of instectionservice" class="checklist-thumb"> 
+                                        <ion-thumbnail *ngFor="let _img of formPhotoservice" class="checklist-thumb">
                                             <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.image_path}}">
                                         </ion-thumbnail>
-                                        <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionInspection(fieldDetail.fieldname)">
+                                        <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionservice(fieldDetail.fieldname)">
                                             <ion-icon style="padding: 0px;" size="large" name="add" ></ion-icon>
                                             <ion-icon style="padding: 0px;" size="large" name="camera" ></ion-icon>
                                         </ion-button>

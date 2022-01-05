@@ -685,15 +685,20 @@ export class DetailPage implements OnInit {
     columnName,
     isinspection = false){
     console.log('serviceid == ', this.serviceid);
-    console.log('workorderdetail == ', this.workorderdetail);
-    console.log('userinfo == ', this.userinfo);
     const modal_servicecompletionform = await this.modalCtrl.create({
       component: servicecompletionform,
       componentProps: {
         paramTitle: 'Service Completion Form',
         logged_in_user: this.userinfo.id,
         serviceid: record_id,
-        workorderdetail: this.workorderdetail,
+        currentdate: this.workorderdetail.currentdate,
+        currenttime: this.workorderdetail.fulldatetime,
+        cust_firstname: this.workorderdetail.firstname,
+        cust_lastname: this.workorderdetail.lastname,
+        cust_street: this.workorderdetail.mailingstreet,
+        cust_city: this.workorderdetail.mailingcity,
+        cust_state: this.workorderdetail.mailingstate,
+        cust_zip: this.workorderdetail.mailingzip,
         user_firstname: this.userinfo.first_name,
         user_lastname: this.userinfo.last_name,
         user_email: this.userinfo.email1,
