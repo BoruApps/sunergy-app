@@ -33,7 +33,7 @@
                     </div>
                     
                     <ion-card *ngIf="fieldDetail.uitype == '555' || fieldDetail.uitype == '33'" style="border-radius: 10px;width: fit-content;" lines="none">
-                        <ion-radio-group style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (ionBlur)="addUpdate($event)">
+                        <ion-radio-group style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (click)="addUpdate($event)">
                             <ion-item lines="none">
                                 <ion-label>Yes</ion-label>
                                 <ion-radio [checked]="fieldDetail.value==='Yes'" name="{{fieldDetail.fieldname}}" value="Yes"></ion-radio>

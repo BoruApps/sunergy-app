@@ -117,12 +117,23 @@ export class servicecompletionform implements OnInit {
             typeofdata : 'D~O',
             value : this.currentdate
         },{ 
-            label : 'Scheduled Time',
-            fieldname : 'cf_scf_scheduled_time',
+            label : 'Scheduled Time Start',
+            fieldname : 'cf_scf_scheduled_time_start',
             uitype : 2,
             typeofdata : 'V~O',
             value : this.currenttime
         },{ 
+            label : 'Scheduled Time End',
+            fieldname : 'cf_scf_scheduled_time_end',
+            uitype : 2,
+            typeofdata : 'V~O',
+            value : this.currenttime
+        },{
+            label : 'Time Arrived',
+            fieldname : 'cf_scf_time_arrived',
+            uitype : 2,
+            typeofdata : 'V~O',
+        },{
             label : 'Service Tech First Name',
             fieldname : 'cf_scf_tech_first_name',
             uitype : 1,

@@ -210,7 +210,7 @@
 
                                             <ion-col>
                                                 <div *ngIf="blockservice.blockname != 'Inspection Forms' && blockservice.blockname != 'Services' "  class = "photo-icon" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname)">
-                                                    <span>Open Section-1</span>
+                                                    <span>Open Section</span>
                                                 </div>
                                                 <div *ngIf="service.fieldlabel == 'Submitted In-Process Inspections' || service.fieldlabel == 'Submitted Final Inspections' || service.fieldlabel == 'Submitted Service Completion'"  class = "photo-icon" (click)="openChecklist(workorderdetail.workorderid,inspection_type, service.default, service.value,service.fieldlabel, service.columnname, true)">
                                                     <span>Open Section</span>
