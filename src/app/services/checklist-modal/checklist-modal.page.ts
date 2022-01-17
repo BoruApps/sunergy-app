@@ -128,7 +128,7 @@ export class ChecklistModalPage implements OnInit {
         return url;
     }
     async openConDocViewPDF(pdf, fieldlabel){
-        if (pdf.imgpath != '' && fieldlabel != 'Service Photos Taken'){
+        if (pdf.imgpath != ''){
             var url = this.apiurl.replace('phoneapi/','')+pdf.imgpath;
             if (this.platform.is('android')) {
                 url = 'https://docs.google.com/viewer?url=' + encodeURIComponent(url);

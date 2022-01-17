@@ -40,6 +40,16 @@
             </svg>
         </div>
     </div>
+    <div *ngIf="showDrawTools">
+        <ion-select (ionChange)="addColorUpdate()" [(ngModel)]="drawSelectedColor" name="drawColour" style="width: fit-content;padding-left: 0px;">
+            <ion-select-option value="white">White</ion-select-option>
+            <ion-select-option value="black">Black</ion-select-option>
+            <ion-select-option value="red">Red</ion-select-option>
+            <ion-select-option value="blue">Blue</ion-select-option>
+            <ion-select-option value="green">Green</ion-select-option>
+            <ion-select-option value="yellow">Yellow</ion-select-option>
+        </ion-select>
+    </div>
     <ion-card>
         <ion-item [ngClass]=" elementSelected === 'rotate' ? '' : 'range-display'">
             <ion-range min="0" max="360" step="5" snaps="true" ticks="false" color="secondary"

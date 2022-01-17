@@ -71,10 +71,11 @@ export class DetailPage implements OnInit {
   inspection_type: string;
   activitytype: string;
   activityid: string;
+  blocknamedisplay: string = '';
   isCompleteWO: number = 0;
   ISInstallationForm: number = 0;
   ISServicesForm: number = 0;
-  ignoreCompletedFields = ['cf_2303','cf_2192', 'cf_2313'];
+  ignoreCompletedFields = ['cf_2303','cf_2192', 'cf_2313','cf_2321'];
   public workorderdetail: any = { workorderid: 0 };
   public servicedetail: any[] = [];
   public itemgrid: any[] = [];
@@ -350,6 +351,12 @@ export class DetailPage implements OnInit {
                   if(key === 'Services'){
                     this.ISServicesForm = 1;
                   }
+                  if(key === 'SSA Photos and Questions'){
+                    key = 'Site Assessment';
+                  }
+                  if(this.blocknamedisplay == '' && key != 'Array Information'){
+                    this.blocknamedisplay = key;
+                  }
                   this.servicedetail.push({
                     blockname: key,
                     fields: fieldArray,
@@ -429,6 +436,7 @@ export class DetailPage implements OnInit {
             this.workorderdetail.cf_formsubmit_date = joinDate;
             this.workorderdetail.cf_formsubmit_count = this.workorderdetail.cf_formsubmit_count+1;
             this.workorderdetail.cf_isformsubmittedtoday = true;
+            this.saveWO(this.workorderdetail.workorderid);
         }
     });
     return await modal_ElectricalInstallationForm.present();
@@ -880,9 +888,9 @@ export class DetailPage implements OnInit {
     return await modal.present();
   }
 
-  saveWO(worecord,reqStatus=false) {
+  saveWO(worecord,reqStatus=false,blocknamedisplay=false) {
     var data = this.appConst.workOrder[this.serviceid];
-
+    
     var data_stringified = JSON.stringify(data);
     var logged_in_uid = this.userinfo.id;
     console.log("attempting to submitting data to vtiger", worecord, data);
@@ -892,6 +900,7 @@ export class DetailPage implements OnInit {
       logged_in_user: logged_in_uid,
       activityid: this.activityid,
       status: reqStatus,
+      blocknamedisplay: blocknamedisplay,
     };
     console.log(params);
     console.log("params being sent", params);

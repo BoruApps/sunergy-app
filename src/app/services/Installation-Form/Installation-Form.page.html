@@ -45,12 +45,12 @@
                                         <ion-radio [checked]="fieldDetail.value==='No'" name="{{fieldDetail.fieldname}}" value="No"></ion-radio>
                                     </ion-item>
                                 </ion-radio-group>
-
+                                
                             </ion-list>
                             <ul [hidden]="fieldDetail.value != 'Yes'">
                                 <li class="checklist-thumb-list">
                                     <ion-item class="item-accordion">
-                                        <ion-thumbnail *ngFor="let _img of installphoto[fieldDetail.fieldname]" class="checklist-thumb">
+                                        <ion-thumbnail *ngFor="let _img of installphoto[fieldDetail.fieldname]" class="checklist-thumb"> 
                                             <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.image_path}}">
                                         </ion-thumbnail>
                                         <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionInspection(fieldDetail.fieldname)">

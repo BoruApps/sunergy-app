@@ -485,7 +485,7 @@ export class InstallationForm implements OnInit {
                 console.log('step-1');
                 if(Array.isArray(this.installphoto[this.InstallfieldList[i]["fieldname"]]) && this.installphoto[this.InstallfieldList[i]["fieldname"]].length > 0){
                 console.log('step-2');
-
+                    
                 }else{
                     extraFlag = 1;
                 console.log('step-3');
@@ -677,6 +677,9 @@ export class InstallationForm implements OnInit {
             console.log('No Need to display Image', fieldname);
             var input = document.getElementById('cf_all_grounding_photos');
             document.body.classList.toggle('cf_all_grounding_photos', false);
+            if(extra == 444){
+                fieldvalue = 'No Images';
+            }
         }
         this.setValuetoInstallfield(fieldname, fieldvalue);
         console.log('tagName = ',event.target.tagName);

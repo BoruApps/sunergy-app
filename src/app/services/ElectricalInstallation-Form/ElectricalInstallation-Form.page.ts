@@ -116,13 +116,13 @@ export class ElectricalInstallationForm implements OnInit {
             uitype : 5,
             typeofdata : 'D~O',
             value:this.currentdate
-        },{
+        },{ 
             label : 'Time',
             fieldname : 'cf_ele_time',
             uitype : 2,
             typeofdata : 'T~O',
             value: this.fulldatetime,
-        },{
+        },{ 
             label : 'Customer First Name',
             fieldname : 'cf_ele_cut_first_name',
             uitype : 1,
@@ -427,9 +427,16 @@ export class ElectricalInstallationForm implements OnInit {
             headers.append("Content-Type", "application/x-www-form-urlencoded");
             headers.append("Access-Control-Allow-Origin", "*");
             this.showLoading();
+            var index = 0;
+            var mainfieldname = 'cf_2321';
+            var section = 0;
             var params = {
                 'InstallfieldList': JSON.stringify(this.InstallfieldList),
+                'workorderfielddata': JSON.stringify(this.appConst.workOrder[this.serviceid][mainfieldname]),
                 'recordid': this.serviceid,
+                'columnname': mainfieldname,
+                'fieldindex': index,
+                'section': section,
                 'logged_in_user': this.user_id,
                 'blockname': this.blockname,
             };
@@ -448,6 +455,9 @@ export class ElectricalInstallationForm implements OnInit {
                     //this.clearPad();
                     localStorage.setItem(this.localInstallform, JSON.stringify(this.InstallfieldList));
                     localStorage.setItem(this.localInstallformdate, this.currentdate);
+                    var images_details = data["body"]["data"]["images_details"];
+                    this.appConst.workOrder[this.serviceid][mainfieldname] = images_details;
+                    this.appConst.workOrder[this.serviceid][mainfieldname]["complete_category"] = 'yes';
                     this.modalController.dismiss({'formsubmitted':true});
                 } else {
                   this.presentToast("Failed to save due to an error");

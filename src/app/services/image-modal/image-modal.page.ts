@@ -54,9 +54,9 @@ export class ImageModalPage implements OnInit {
     btnList = [
         { name:"circle", class:"radio-button-off" },
         { name:"square", class:"square-outline" },
-        { name:"search", class:"search-plus" },
         { name:"arrow", class:"arrow-forward" },
         { name:"brush", class:"brush" },
+        { name:"search", class:"search-plus" },
         { name:"undo", class:"undo" },
         { name:"redo", class:"redo" },
         { name:"crop", class:"crop" },
@@ -104,6 +104,8 @@ export class ImageModalPage implements OnInit {
     };
     elementSelected: any;
     touchTracker: any;
+    showDrawTools: any;
+    drawSelectedColor: any;
 
     protected state;
     protected mods;
@@ -166,6 +168,8 @@ export class ImageModalPage implements OnInit {
         this.documentid = this.navParams.data.documentid;
         this.subSection = this.navParams.data.subSection;
         this.imagefrom = this.navParams.data.imagefrom;
+        this.showDrawTools = false;
+        this.drawSelectedColor = 'black';
         console.log('columnname = ',this.columnname);
         console.log('index = ',this.index);
         console.log('subSection = ',this.subSection);
@@ -186,9 +190,20 @@ export class ImageModalPage implements OnInit {
         this.elementSelected = btn;
         if(this._CANVAS.isDrawingMode) this._CANVAS.isDrawingMode = false;
         console.log(this.elementSelected);
+
+        if (this.elementSelected == 'brush' || this.elementSelected == 'circle' || this.elementSelected == 'arrow' || this.elementSelected == 'square'){
+            this.showDrawTools = true;
+        }else{
+            this.showDrawTools = false;
+        }
+
         switch(this.elementSelected) {
             case "brush":
                 this._CANVAS.isDrawingMode = (this._CANVAS.isDrawingMode) ? false: true;
+                if (this._CANVAS.isDrawingMode){
+                    this._CANVAS.freeDrawingBrush.color = this.drawSelectedColor;
+                    console.log('this.drawSelectedColor',this.drawSelectedColor)
+                }
             break;
             case "undo":
                 this.undoImg();
@@ -217,7 +232,6 @@ export class ImageModalPage implements OnInit {
     }
 
     drawCircle() {
-
         let x = ((this.touchTracker.start.x - this.touchTracker.end.x) > 0) ? this.touchTracker.end.x : this.touchTracker.start.x;
 
 
@@ -230,7 +244,7 @@ export class ImageModalPage implements OnInit {
                 radius: Math.abs(this.touchTracker.start.x - this.touchTracker.end.x)/2,
                 fill: 'transparent',
                 strokeWidth: 4,
-                stroke: '#000000'
+                stroke: this.drawSelectedColor
             })
         );
         
@@ -268,6 +282,18 @@ export class ImageModalPage implements OnInit {
             paintFirst: 'stroke',
             fontSize: 20
         }));
+
+        var self = this;
+        this._CANVAS.on("text:editing:entered", function (e) {
+            if (e.target.type === "i-text") {
+                if (e.target.text === "Touch here to edit Text") {
+                    e.target.text = "";
+                    e.target.hiddenTextarea.value = '';
+                    self._CANVAS.renderAll();
+                };
+            }
+        });
+
         this.updateModifications(true);
     }
     
@@ -285,7 +311,7 @@ export class ImageModalPage implements OnInit {
                 height: Math.abs(this.touchTracker.start.y - this.touchTracker.end.y),
                 fill: 'transparent',
                 strokeWidth: 4,
-                stroke: '#000000'
+                stroke: this.drawSelectedColor
             })
         );
         this.updateModifications(true);
@@ -408,7 +434,7 @@ export class ImageModalPage implements OnInit {
         ];
 
         var pline = new fabric.Polyline(points, {
-            fill: 'white',
+            fill: this.drawSelectedColor,
             stroke: 'black',
             opacity: 1,
             strokeWidth: 1,
@@ -491,6 +517,13 @@ export class ImageModalPage implements OnInit {
             this._CANVAS.loadFromJSON(this.state[this.state.length - 1 - this.mods + 1]);
             this._CANVAS.renderAll();
             this.mods -= 1;
+        }
+    }
+
+    addColorUpdate(){
+        if (this._CANVAS.isDrawingMode){
+            this._CANVAS.freeDrawingBrush.color = this.drawSelectedColor;
+            console.log('change this.drawSelectedColor',this.drawSelectedColor)
         }
     }
 
