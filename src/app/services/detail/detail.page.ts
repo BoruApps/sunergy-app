@@ -928,6 +928,11 @@ export class DetailPage implements OnInit {
             console.log(data["body"]);
             if (success == true) {
               console.log("Saved and updated data for workorder");
+              if(blocknamedisplay != false){
+                this.router.navigate(["/services"], {
+                  queryParams: {},
+                });
+              }
             } else {
               this.presentToast("Failed to save due to an error");
               console.log("failed to save record, response was false");

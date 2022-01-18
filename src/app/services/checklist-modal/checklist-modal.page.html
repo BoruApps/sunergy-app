@@ -34,7 +34,7 @@
                 <ion-item lines="none">
                     <ion-textarea *ngIf="service.img.type == 'Text' || service.img == false"  (ionBlur)="addUpdate($event)" name = "{{service.columnname}}" value = "{{service.notes}}" placeholder="Press Here To Type"></ion-textarea>
                     <ion-card *ngIf="service.img.type == 'Checkbox'" style="border-radius: 10px;" lines="none">
-                        <ion-radio-group style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (ionBlur)="addUpdate($event)"  value="{{service.picklist}}">
+                        <ion-radio-group style="color: black;--ion-item-background: white;" lines="none" class = "checkbox-group" (click)="addUpdate($event)"  value="{{service.picklist}}">
                             <ion-item lines="none">
                                 <ion-label>Yes</ion-label>
                                 <ion-radio name = "{{service.columnname}}" value="Yes"></ion-radio>
