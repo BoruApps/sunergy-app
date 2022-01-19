@@ -460,14 +460,9 @@ export class ChecklistModalPage implements OnInit {
         headers.append('Content-Type', 'application/json');
         headers.append('Access-Control-Allow-Origin', '*');
 
-        var completed = 'no';
-        this.picCompleted = event.currentTarget.checked;
-        if (event.currentTarget.checked) {
-            completed = 'yes';
-            this.appConst.workOrder[this.serviceid][this.field].complete_category = 'yes'
-        }else{
-            this.appConst.workOrder[this.serviceid][this.field].complete_category = 'no'
-        }
+        var completed = 'Yes';
+        this.picCompleted = true;
+        this.appConst.workOrder[this.serviceid][this.field].complete_category = 'yes'
 
         var params = {
             serviceid: this.serviceid,
