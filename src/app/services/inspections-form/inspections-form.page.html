@@ -59,7 +59,7 @@
                             <ul>
                                 <li class="checklist-thumb-list">
                                     <ion-item class="item-accordion">
-                                        <ion-thumbnail *ngFor="let _img of instectionservice" class="checklist-thumb">
+                                        <ion-thumbnail *ngFor="let _img of instectionservice" class="checklist-thumb"> 
                                             <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.image_path}}">
                                         </ion-thumbnail>
                                         <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionInspection(fieldDetail.fieldname)">
@@ -93,7 +93,7 @@
                             <ul>
                                 <li class="checklist-thumb-list">
                                     <ion-item class="item-accordion">
-                                        <ion-thumbnail *ngFor="let _img of instectionjobcard" class="checklist-thumb">
+                                        <ion-thumbnail *ngFor="let _img of instectionjobcard" class="checklist-thumb"> 
                                             <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.image_path}}">
                                         </ion-thumbnail>
                                         <ion-button style="height: 40px;width: 60px;" type="button" class="add-image" color="secondary" (click)="openActionInspection(fieldDetail.fieldname)">

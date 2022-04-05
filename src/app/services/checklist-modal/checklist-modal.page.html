@@ -65,8 +65,8 @@
                                     [ngClass]="subSection === _index && sectionKey === key ? 'active-tab' : ''">
 
                                     <div *ngFor="let _img of thumb">
-                                        <!-- <ion-thumbnail class="checklist-thumb" (click)="openSliderModal(_img,thumb)">
-                                            <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}?{{randomNumber}}">
+                                        <!-- <ion-thumbnail class="checklist-thumb" (click)="openSliderModal(_img,thumb)"> 
+                                            <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}?{{randomNumber}}"> 
                                         </ion-thumbnail> -->
                                         <ion-thumbnail *ngIf="_img.imgpath.includes('.pdf') == false" (click)="openSliderModal(_img,thumb)" class="checklist-thumb" > <img src="{{this.apiurl.replace('phoneapi/','')}}{{_img.imgpath}}?{{randomNumber}}"> </ion-thumbnail>
                                         <ion-thumbnail *ngIf="_img.imgpath.includes('.pdf')" (click)="openConDocViewPDF(_img, service.fieldlabel)" class="checklist-thumb" > <ion-icon name="document"></ion-icon> </ion-thumbnail>
@@ -78,7 +78,7 @@
                                     </ion-button>
                                 </ion-item>
                             </li>
-                            <li class = "btn-new-subsection" (click)="addSubsection(key)" *ngIf="service.img.type == 'Sub-Sections' && isinspection == false">
+                            <li class = "btn-new-subsection" (click)="addSubsection(key)" *ngIf="service.img.type == 'Sub-Sections' && isinspection == false"> 
                                 Add another {{service.fieldlabel}}?
                             </li>
                         </ul>

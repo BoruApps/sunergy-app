@@ -15,6 +15,13 @@
 </ion-header>
 
 <ion-content>
+    <ion-refresher slot ="fixed" disabled="false" (ionRefresh)="doRefresh($event)" pullFactor="0.5" pullMin="100" pullMax="200">
+        <ion-refresher-content
+                pullingIcon="arrow-down"
+                pullingText="Pull to refresh"
+                refreshingSpinner="bubbles"
+                refreshingText="Refreshing....."></ion-refresher-content>
+    </ion-refresher>
     <form #form="ngForm" (ngSubmit)="saveWO(workorderdetail.workorderid)">
         <ion-list>
             <div class="readonly-fields">
@@ -64,7 +71,7 @@
             <!-- read only fields -->
 
 
-
+            
             <!-- editable fields -->
             <div *ngIf="isCompleteWO == 0">
                 <ion-item-group *ngFor="let blockservice of servicedetail">

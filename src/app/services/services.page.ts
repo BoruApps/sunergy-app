@@ -55,6 +55,15 @@ export class ServicesPage implements OnInit {
 
     loading: any;
 
+    async doRefresh(event) {
+        this.showLoading();
+        await this.getWorkOrders(this.userinfo.id, 'weekly');
+        await this.getWorkOrders(this.userinfo.id, 'future');
+        await this.getWorkOrders(this.userinfo.id, 'completed');
+        event.target.complete();
+        this.hideLoading();
+    }
+
     async showLoading() {
         this.loading = await this.loadingController.create({
             message: 'Loading ...'

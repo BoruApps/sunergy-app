@@ -110,7 +110,7 @@ export class inspectionsform implements OnInit {
             uitype : 2,
             typeofdata : 'V~O',
             value : this.currenttime
-        },{
+        },{ 
             label : 'Customer First Name',
             fieldname : 'cf_cut_first_name',
             uitype : 1,
@@ -152,13 +152,13 @@ export class inspectionsform implements OnInit {
             uitype : 5,
             typeofdata : 'D~O',
             value : this.currentdate
-        },{
+        },{ 
             label : 'Inspection Time',
             fieldname : 'cf_inspection_time',
             uitype : 2,
             typeofdata : 'V~O',
             value : this.currenttime
-        },{
+        },{ 
             label : 'Inspection Pass/Fail/Cancel',
             fieldname : 'cf_inspection',
             uitype : 15,
@@ -393,7 +393,7 @@ export class inspectionsform implements OnInit {
                 this.hideLoading();
                 var success = data["body"]["success"];
                 console.log('data return arr == ',data);
-
+                
                 if (success == true) {
                     console.log("Form PDF is Upload successfully");
 
