@@ -21,14 +21,14 @@
 
       <ion-item-divider sticky="true">
         <ion-label>
-          Today ({{count_weeklyServices}})
+          Weekly ({{count_weeklyServices}})
         </ion-label>
       </ion-item-divider>
 
     <!-- <ion-list-header>
       <ion-label>Today's Open Services</ion-label>
     </ion-list-header> -->
-    <p class="ion-padding" *ngIf="count_weeklyServices == 0">No work orders available for this section</p>
+    <p class="ion-padding" *ngIf="count_weeklyServices == 0">No solar projects available for this section</p>
     <div  *ngIf="count_weeklyServices > 0">
     <ion-item (click)="goToDetail(service.workorderid,service.activityid)" detail *ngFor="let service of weeklyServices">
       <ion-avatar><ion-icon size="large" name="flash"></ion-icon></ion-avatar>
@@ -88,7 +88,7 @@
           {{service.subjectdisplay}}
       </h2>
       </ion-item>
-    <p class="ion-padding" *ngIf="count_futureServices == 0">No work orders available for this section</p>
+    <p class="ion-padding" *ngIf="count_futureServices == 0">No solar projects available for this section</p>
 
 
     <ion-item-divider sticky="true">
@@ -124,6 +124,6 @@
           {{service.subjectdisplay}}
       </h2>
     </ion-item>
-    <p class="ion-padding" *ngIf="count_completedServices == 0">No work orders available for this section</p>
+    <p class="ion-padding" *ngIf="count_completedServices == 0">No solar projects available for this section</p>
   </ion-list>
 </ion-content>
